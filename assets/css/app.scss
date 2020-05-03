@@ -1,0 +1,16 @@
+
+// vars
+@import "vars";
+
+// font awesome
+@import "~@fortawesome/fontawesome-free/css/all.min.css";
+
+// bootstrap
+$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+
+@import "~bootstrap";
+
+// custom
+@import "body";
+@import "header";
+@import "footer";

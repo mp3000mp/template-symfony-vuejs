@@ -1,0 +1,7 @@
+msg: Bonjour monde !
+
+menu:
+  home: Accueil
+  log_in: Connexion
+  log_out: Déconnexion
+  my_account: Mon compte

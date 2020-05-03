@@ -1,0 +1,7 @@
+msg: Hello world !
+
+menu:
+  home: Home
+  log_in: Log in
+  log_out: Log out
+  my_account: My account

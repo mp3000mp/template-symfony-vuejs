@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% set activeMenu = 'home' %}
+
+{% block title %}{{ 'menu.home'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>{{ 'menu.home'|trans }}</h1>
+
+        <p>{{ 'msg'|trans }}</p>
+    </div>
+{% endblock %}

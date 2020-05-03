@@ -1,0 +1,47 @@
+{%  set activeMenu = activeMenu ?? '' %}
+{%  set activeMenu2 = activeMenu2 ?? '' %}
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navCollapse" aria-controls="navCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navCollapse">
+                <div class="navbar-nav mr-auto flex-column">
+                    <ul class="navbar-nav" id="nav1">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('home') }}">
+                                <i title="{{ 'menu.home'|trans }}" class="fa fa-home"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link{{ activeMenu == 'test' ? ' active' : '' }}" href="{{ url('test') }}">
+                                Test
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav flex-lg-row" id="nav2">
+                        {% if subMenu is defined %}
+                            {{ include('menu/sub/'~subMenu~'.html.twig') }}
+                        {% endif %}
+                    </ul>
+                </div>
+                <ul class="navbar-nav navbar-right" id="nav3">
+                    <li class="nav-item dropdown">
+                        <ul id="flags">
+                            <li class="mx-3 mx-lg-1"><a href="{{ url('lang', {'lang': 'en'}) }}" title="English"><img src="/img/app/flags/en.png" alt="en"></a></li>
+                            <li class="mx-3 mx-lg-1"><a href="{{ url('lang', {'lang': 'fr'}) }}" title="Français"><img src="/img/app/flags/fr.png" alt="fr"></a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" title="{{ 'menu.my_account'|trans }}" href="/profile">{{ 'menu.my_account'|trans }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" title="{{ 'menu.log_out'|trans }}" href="/logout"><i class="fa fa-sign-out-alt"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

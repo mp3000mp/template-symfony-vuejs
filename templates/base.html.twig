@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>{% block title %}Template{% endblock %}</title>
+        <link rel="icon" href="/img/favicon.png" />
+
+        <script type="text/javascript" src="/build/bundle.js"></script>
+
+    </head>
+    <body>
+        {{ include('menu/main.html.twig') }}
+        <main>
+            {% block body %}{% endblock %}
+        </main>
+        {{ include('layout/footer.html.twig') }}
+    </body>
+</html>

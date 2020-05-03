@@ -1,0 +1,39 @@
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+h1 {
+  text-align: center;
+}
+
+.b-rad {
+  border-radius: 5px;
+}
+
+#php-error {
+  p {
+    text-align: center;
+  }
+
+  table {
+    margin: auto;
+
+    tr {
+      border-bottom: 1px solid $body-color;
+
+      td {
+        padding: 0 5px;
+      }
+    }
+  }
+}
