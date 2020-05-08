@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Service\OTP\OTPService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -23,6 +25,31 @@ class AppController extends AbstractController
     {
         return $this->render('app/index.html.twig', [
             'msg' => 'Hello world !',
+        ]);
+    }
+
+    /**
+     * @route("/account", name="account")
+     *
+     * @param Request $request
+     * @param OTPService $OTPService
+     *
+     * @return Response
+     */
+    public function account(Request $request, OTPService $OTPService): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if($request->get('newsecret') !== null || $user->getTwoFactorSecret() === null){
+            $otp = $OTPService->generateNewOtp($user);
+        }else{
+            $otp = $OTPService->getUserOTP($user);
+        }
+
+        return $this->render('app/account.html.twig', [
+            'user' => $this->getUser(),
+            'otpUrl' => $otp->getProvisioningUri(),
+            'showqr' => $request->get('showqr'),
         ]);
     }
 
@@ -72,4 +99,5 @@ class AppController extends AbstractController
 
         return new RedirectResponse($referer, 307);
     }
+
 }

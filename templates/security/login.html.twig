@@ -1,0 +1,30 @@
+{% extends 'layout/public.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-4 col-md-3 col-sm-2"></div>
+        <div class="col-lg-4 col-md-6 col-sm-8">
+            <h2 class="my-5">{{ 'entity.user.action.login'|trans }}</h2>
+            <form action="{{ path("login.check") }}" method="POST">
+                {% if error %}
+                    <div class="alert-danger">{{ error.messageKey|trans({}, 'validation') }}</div>
+                {% endif %}
+                <div class="form-group">
+                    <label for="username">{{ 'entity.user.field.username'|trans }}</label>
+                    <input type="text" required="required" class="form-control" name="_username" id="username" placeholder="{{ 'entity.user.field.username'|trans }}" />
+                </div>
+                <div class="form-group">
+                    <label for="username">{{ 'entity.user.field.password'|trans }}</label>
+                    <input type="password" class="form-control" name="_password" required="required" id="password" placeholder="{{ 'entity.user.field.password'|trans }}" />
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+                <button type="submit" class="float-right btn btn-primary">
+                    {{ 'security.login'|trans }} <i class="fa fa-sign-in-alt"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

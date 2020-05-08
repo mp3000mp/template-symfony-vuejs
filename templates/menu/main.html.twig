@@ -11,12 +11,12 @@
                 <div class="navbar-nav mr-auto flex-column">
                     <ul class="navbar-nav" id="nav1">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('home') }}">
+                            <a class="nav-link" href="{{ path('home') }}">
                                 <i title="{{ 'menu.home'|trans }}" class="fa fa-home"></i>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link{{ activeMenu == 'test' ? ' active' : '' }}" href="{{ url('test') }}">
+                            <a class="nav-link{{ activeMenu == 'test' ? ' active' : '' }}" href="{{ path('test') }}">
                                 Test
                             </a>
                         </li>
@@ -30,15 +30,15 @@
                 <ul class="navbar-nav navbar-right" id="nav3">
                     <li class="nav-item dropdown">
                         <ul id="flags">
-                            <li class="mx-3 mx-lg-1"><a href="{{ url('lang', {'lang': 'en'}) }}" title="English"><img src="/img/app/flags/en.png" alt="en"></a></li>
-                            <li class="mx-3 mx-lg-1"><a href="{{ url('lang', {'lang': 'fr'}) }}" title="Français"><img src="/img/app/flags/fr.png" alt="fr"></a></li>
+                            <li class="mx-3 mx-lg-1"><a href="{{ path('lang', {'lang': 'en'}) }}" title="English"><img src="/img/app/flags/en.png" alt="en"></a></li>
+                            <li class="mx-3 mx-lg-1"><a href="{{ path('lang', {'lang': 'fr'}) }}" title="Français"><img src="/img/app/flags/fr.png" alt="fr"></a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" title="{{ 'menu.my_account'|trans }}" href="/profile">{{ 'menu.my_account'|trans }}</a>
+                        <a class="nav-link" title="{{ 'menu.my_account'|trans }}" href="{{ path('account') }}">{{ 'menu.my_account'|trans }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" title="{{ 'menu.log_out'|trans }}" href="/logout"><i class="fa fa-sign-out-alt"></i></a>
+                        <a class="nav-link" title="{{ 'menu.log_out'|trans }}" href="{{ path('logout') }}"><i class="fa fa-sign-out-alt"></i></a>
                     </li>
                 </ul>
             </div>

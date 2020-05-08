@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <header>
+        <ul id="flags" class="text-center">
+            <li class="mx-3 mx-lg-1"><a href="{{ path('lang', {'lang': 'en'}) }}" title="English"><img src="/img/app/flags/en.png" alt="en"></a></li>
+            <li class="mx-3 mx-lg-1"><a href="{{ path('lang', {'lang': 'fr'}) }}" title="Français"><img src="/img/app/flags/fr.png" alt="fr"></a></li>
+        </ul>
+    </header>
+    <main>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+        {{ include('layout/footer.html.twig') }}
+    </main>
+{% endblock %}

@@ -10,10 +10,19 @@
 
     </head>
     <body>
-        {{ include('menu/main.html.twig') }}
-        <main>
-            {% block body %}{% endblock %}
-        </main>
-        {{ include('layout/footer.html.twig') }}
+
+        <div class="container">
+            <div id="flash-messages">
+                {% for category in ['success','warning','danger','info'] %}
+                    {% for messages in app.session.flashbag.get(category) %}
+                        {% for message in messages %}
+                            <span class="d-inline-block alert alert-{{ category }}">{{ message|trans }}</span>
+                        {% endfor %}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+
+        {% block body %}{% endblock %}
     </body>
 </html>

@@ -17,9 +17,9 @@ class LocaleSubscriber implements EventSubscriberInterface
     private $defaultLocale = 'en';
 
     /**
-     * @return array
+     * @return array[]
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => [['onKernelRequest', 20]],

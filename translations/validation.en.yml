@@ -1,0 +1,5 @@
+security:
+    connexion:
+        err:
+            account_disabled: Account disabled
+            bad_credentials: Bad credentials
