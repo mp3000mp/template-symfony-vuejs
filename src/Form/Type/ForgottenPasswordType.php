@@ -3,14 +3,14 @@
 namespace App\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Class TwoFactorType
+ * Class ForgettenPassword
  * @package App\Form\Type
  */
-class TwoFactorType extends AbstractType
+class ForgottenPasswordType extends AbstractType
 {
 
     /**
@@ -21,9 +21,9 @@ class TwoFactorType extends AbstractType
     {
 
         $builder
-            ->add('code', TextType::class, [
+            ->add('email', EmailType::class, [
                 'attr' => ['autofocus' => true],
-                'label' => 'entity.user.field.code',
+                'label' => 'entity.user.field.email',
             ])
         ;
 

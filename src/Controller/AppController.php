@@ -40,15 +40,16 @@ class AppController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        if($request->get('newsecret') !== null || $user->getTwoFactorSecret() === null){
-            $otp = $OTPService->generateNewOtp($user);
-        }else{
+        $otpUrl = null;
+        if($user->getTwoFactorSecret() !== null){
             $otp = $OTPService->getUserOTP($user);
+            $otpUrl = $otp->getProvisioningUri();
         }
 
+        // view
         return $this->render('app/account.html.twig', [
             'user' => $this->getUser(),
-            'otpUrl' => $otp->getProvisioningUri(),
+            'otpUrl' => $otpUrl,
             'showqr' => $request->get('showqr'),
         ]);
     }

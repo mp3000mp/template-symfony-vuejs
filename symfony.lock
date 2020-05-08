@@ -129,6 +129,12 @@
             "./.php_cs.dist"
         ]
     },
+    "gregwar/captcha": {
+        "version": "v1.1.8"
+    },
+    "gregwar/captcha-bundle": {
+        "version": "v2.1.3"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
@@ -203,6 +209,9 @@
     },
     "spomky-labs/otphp": {
         "version": "v10.0.1"
+    },
+    "swiftmailer/swiftmailer": {
+        "version": "v6.2.3"
     },
     "symfony/asset": {
         "version": "v5.0.8"
@@ -489,6 +498,20 @@
     },
     "symfony/string": {
         "version": "v5.0.8"
+    },
+    "symfony/swiftmailer-bundle": {
+        "version": "2.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.5",
+            "ref": "ae4d22af30bbd484506bc1817c5a3ef72c855b93"
+        },
+        "files": [
+            "./config/packages/dev/swiftmailer.yaml",
+            "./config/packages/swiftmailer.yaml",
+            "./config/packages/test/swiftmailer.yaml"
+        ]
     },
     "symfony/test-pack": {
         "version": "v1.0.6"

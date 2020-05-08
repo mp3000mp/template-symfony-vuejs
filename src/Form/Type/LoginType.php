@@ -2,18 +2,25 @@
 
 namespace App\Form\Type;
 
+use Gregwar\CaptchaBundle\Type\CaptchaType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class LoginFormType
  * @package App\Form\Type
  */
-class LoginFormType extends AbstractType
+class LoginType extends AbstractType
 {
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+        //$resolver->setRequired('captcha');
+    }
 
     /**
      * @param FormBuilderInterface $builder
@@ -30,10 +37,12 @@ class LoginFormType extends AbstractType
             ->add('password', PasswordType::class, [
                 'label' => 'entity.user.field.password',
             ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'form.action.submit',
-            ])
             ;
-
+        /*if($options['captcha']){
+            $builder->add('captcha', CaptchaType::class, [
+                'height' => 40,
+                'length' => 6,
+            ]);
+        }*/
     }
 }

@@ -40,12 +40,15 @@ class TwoFactorController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
+        // create OTP from user
         $otp = $OTPService->getUserOTP($user);
 
-        $form = $this->createForm(TwoFactorType::class);
+        // create form
+        $form = $this->createForm(TwoFactorType::class, null);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // check code
             $code = $form->get('code')->getData();
             if(!$otp->verify($code)){
                 $form->get('code')->addError(new FormError('security.connexion.err.two_factor_bad_code'));
@@ -55,10 +58,19 @@ class TwoFactorController extends AbstractController
             }
         }
 
+        // reset field
+        $formView = $form->createView();
+        $formView->children['code']->vars['value'] = '';
+
+        // view
         return $this->render('security/double_factor.html.twig', [
-            'form' => $form->createView(),
+            'form' => $formView,
         ]);
     }
+
+
+
+
 
     /**
      * @route("/two-factor/enable", name="two_factor.enable")
@@ -67,21 +79,61 @@ class TwoFactorController extends AbstractController
      * @param OTPService $OTPService
      *
      * @return Response
+     * @throws \Exception
      */
     public function enable(Request $request, OTPService $OTPService): Response
     {
-        $em = $this->getDoctrine()->getManager();
+        // get user
         /** @var User $user */
         $user = $this->getUser();
 
-        $secret = $OTPService->generateSecret();
-        $user->setTwoFactorSecret($secret);
+        // create form
+        $form = $this->createForm(TwoFactorType::class);
+        $form->handleRequest($request);
 
-        $em->persist($user);
-        $em->flush();
-        $request->getSession()->getFlashBag()->add('success', 'security.two_factor.msg.enabled');
+        if ($form->isSubmitted() && $form->isValid()) {
 
-        return $this->redirectToRoute('account', ['showqr' => true]);
+            // create OTP from session
+            $secret = $request->getSession()->get('otp_secret');
+            $otp = $OTPService->generateNewOtp($user, $secret);
+
+            // check code
+            $code = $form->get('code')->getData();
+            if(!$otp->verify($code)){
+                $form->get('code')->addError(new FormError('security.connexion.err.two_factor_bad_code'));
+            }else{
+                // store secret in user
+                $user->setTwoFactorSecret($secret);
+
+                // persist
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($user);
+                $em->flush();
+
+                // clean up session
+                $request->getSession()->remove('otp_secret');
+
+                // redirect
+                $request->getSession()->getFlashBag()->add('success', 'security.two_factor.msg.enabled');
+                return $this->redirectToRoute('account');
+            }
+        }else{
+            // generate secret and store it in session
+            $secret = $OTPService->generateSecret();
+            $request->getSession()->set('otp_secret', $secret);
+        }
+
+        // reset field
+        $formView = $form->createView();
+        $formView->children['code']->vars['value'] = '';
+
+        // view
+        $otp = $OTPService->generateNewOtp($user, $secret);
+        return $this->render('security/double_factor_test.html.twig', [
+            'otpUrl' => $otp->getProvisioningUri(),
+            'form' => $formView,
+        ]);
+
     }
 
     /**
@@ -93,16 +145,19 @@ class TwoFactorController extends AbstractController
      */
     public function disable(Request $request): Response
     {
-        $em = $this->getDoctrine()->getManager();
+        // disable two-factor auth
         /** @var User $user */
         $user = $this->getUser();
         $user->setTwoFactorSecret(null);
+
+        // persist
+        $em = $this->getDoctrine()->getManager();
         $em->persist($user);
         $em->flush();
+
+        // view
         $request->getSession()->getFlashBag()->add('success', 'security.two_factor.msg.disabled');
         return $this->redirectToRoute('account');
     }
-
-
 
 }

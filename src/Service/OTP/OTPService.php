@@ -18,7 +18,7 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
  */
 class OTPService{
 
-    public const IMG_URL = 'https://assets.gitlab-static.net/uploads/-/system/user/avatar/2876944/avatar.png';
+    public const IMG_URL = 'https://assets.gitlab-static.net/uploads/-/system/user/avatar/2876944/avatar.png'; // todo
     public const ROLE_TWO_FACTOR_SUCCEED = 'TWO_FACTOR_SUCCEED';
     public const ROUTE_TWO_FACTOR = 'two_factor';
 
@@ -41,12 +41,17 @@ class OTPService{
 
     /**
      * @param User $user
+     * @param string|null $secret
      *
      * @return TOTPInterface
+     * @throws \Exception
      */
-    public function generateNewOtp(User $user)
+    public function generateNewOtp(User $user, ?string $secret = null): TOTPInterface
     {
-        return $this->createOTP($this->generateSecret(), $user);
+        if($secret === null){
+            $secret = $this->generateSecret();
+        }
+        return $this->createOTP($secret, $user);
     }
 
     /**
@@ -55,7 +60,7 @@ class OTPService{
      *
      * @return TOTPInterface
      */
-    private function createOTP(string $secret, User $user)
+    private function createOTP(string $secret, User $user): TOTPInterface
     {
         $otp = TOTP::create($secret);
         $otp->setLabel($user->getUsername());
@@ -66,10 +71,11 @@ class OTPService{
 
     /**
      * @return string
+     * @throws \Exception
      */
     public function generateSecret(): string
     {
-        $this->secret = trim(Base32::encodeUpper(hash('sha256', uniqid('Template-SF', true))),'=');;
+        $this->secret = trim(Base32::encodeUpper(hash('sha256', random_bytes('64'))),'=');;
         return $this->secret;
     }
 

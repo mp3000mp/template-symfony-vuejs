@@ -1,19 +1,21 @@
 {% extends 'layout/public.html.twig' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Double factor{% endblock %}
 
 {% block content %}
     <div class="row">
         <div class="col-lg-4 col-md-3 col-sm-2"></div>
         <div class="col-lg-4 col-md-6 col-sm-8">
-            <h2 class="my-5">{{ 'entity.user.action.login'|trans }}</h2>
-            {{ form_start(form, {'action': path("login.check")}) }}
+            <h2 class="my-5">{{ 'entity.user.action.two_factor_test'|trans }}</h2>
+
+            <img src="{{ qr_code_path(otpUrl) }}" />
+
+            {{ form_start(form) }}
             {{ form_widget(form) }}
             <button type="submit" class="float-right btn btn-primary">
-                {{ 'security.login'|trans }} <i class="fa fa-sign-in-alt"></i>
+                {{ 'security.two_factor.validate'|trans }} <i class="fa fa-sign-in-alt"></i>
             </button>
             {{ form_end(form) }}
-            <a href="{{ path('forgotten_password') }}">{{ 'security.forgotten_password'|trans }}</a>
         </div>
     </div>
 {% endblock %}

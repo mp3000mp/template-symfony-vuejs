@@ -77,11 +77,7 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
      */
     public function getCredentials(Request $request)
     {
-        $credentials = [
-            'username' => $request->request->get('_username'),
-            'password' => $request->request->get('_password'),
-            'csrf_token' => $request->request->get('_csrf_token'),
-        ];
+        $credentials = $request->request->get('login');
         $request->getSession()->set(
             Security::LAST_USERNAME,
             $credentials['username']
@@ -99,9 +95,9 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $token = new CsrfToken('authenticate', $credentials['csrf_token']);
+        $token = new CsrfToken('login', $credentials['_token']);
         if (!$this->csrfTokenManager->isTokenValid($token)) {
-            throw new InvalidCsrfTokenException();
+            throw new InvalidCsrfTokenException('security.connexion.err.csrf_token');
         }
 
         /** @var User $user */
