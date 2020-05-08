@@ -229,4 +229,45 @@ class SecurityController extends AbstractController
 
     }
 
+    /**
+     * @Route("/expired-password", name="expired_password")
+     *
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
+     */
+    public function expiredPassword(Request $request, UserPasswordEncoderInterface $encoder)
+    {
+
+        // create form
+        $form = $this->createForm(SetPasswordType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // get user
+            /** @var User $user */
+            $user = $this->getUser();
+
+            // change password
+            $newPassword = $form->get('password_new')->getData();
+            $user->setPasswordUpdatedAt(new \DateTime());
+            $user->setResetPasswordAt(null);
+            $user->setResetPasswordToken(null);
+            $user->setPassword($encoder->encodePassword($user, $newPassword));
+
+            // persist
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            // redirect
+            $this->addFlash('success', 'security.set_password_success');
+            return $this->redirectToRoute('home');
+        }
+
+        // view
+        return $this->render('security/expired_password.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
 }
