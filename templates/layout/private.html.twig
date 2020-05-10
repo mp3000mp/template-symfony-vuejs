@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block js %}
+    <script type="text/javascript" src="/build/private.bundle.js"></script>
+{% endblock %}
+
 {% block body %}
     {{ include('menu/main.html.twig') }}
     <main>
@@ -8,4 +12,6 @@
         </div>
         {{ include('layout/footer.html.twig') }}
     </main>
+
+    <div id="js-infos" data-token="{{ getSharedSession() }}"></div>
 {% endblock %}

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  * Class AbstractController
+ *
  * @package App\Tests\Controller
  */
 abstract class AbstractController extends WebTestCase
@@ -21,10 +22,7 @@ abstract class AbstractController extends WebTestCase
     /** @var EntityManagerInterface */
     protected $doctrine;
 
-    /**
-     *
-     */
-    public function setUp()
+    public function setUp(): void
     {
         $this->client = self::createClient();
         $this->doctrine = $this->client->getContainer()->get('doctrine')->getManager();
@@ -33,7 +31,7 @@ abstract class AbstractController extends WebTestCase
     /**
      * @param array $roles
      */
-    protected function login(array $roles)
+    protected function login(array $roles): void
     {
         $session = $this->client->getContainer()->get('session');
         $securityContext = $this->client->getContainer()->get('security.token_storage');
@@ -51,10 +49,10 @@ abstract class AbstractController extends WebTestCase
      * @param string $url
      * @param $crawler
      */
-    protected function debug500(string $url, $crawler)
+    protected function debug500(string $url, $crawler): void
     {
         if ('500' == $this->client->getResponse()->getStatusCode()) {
-            echo "\n -Url: $url => ".$crawler->filter('div.exception-message-wrapper')->text();
+            echo "\n -Url: {$url} => ".$crawler->filter('div.exception-message-wrapper')->text();
             exit();
         }
     }

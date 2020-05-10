@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -22,7 +23,6 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
  */
 class SecurityController extends AbstractController
 {
-
     /**
      * @Route("/login", name="login", methods={"GET"})
      *
@@ -32,23 +32,22 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
         // create form
-        $form = $this->createForm(LoginType::class, null, [
-            //'captcha' => $error !== null,
-        ]);
+        $form = $this->createForm(LoginType::class, null, []);
 
         // set error
-        if($error !== null){
+        if (null !== $error) {
             $form->addError(new FormError($error->getMessageKey()));
         }
 
         // set username data
-        if($lastUsername !== null){
+        if (null !== $lastUsername) {
             $form->get('username')->setData($lastUsername);
         }
 
@@ -78,7 +77,6 @@ class SecurityController extends AbstractController
         throw new \Exception('Don\'t forget to activate logout in security.yaml');
     }
 
-
     /**
      * @Route("/reset-password", name="reset_password")
      *
@@ -86,6 +84,7 @@ class SecurityController extends AbstractController
      * @param UserPasswordEncoderInterface $encoder
      *
      * @return RedirectResponse|Response
+     *
      * @throws \Exception
      */
     public function resetPassword(Request $request, UserPasswordEncoderInterface $encoder)
@@ -101,7 +100,7 @@ class SecurityController extends AbstractController
             $user = $this->getUser();
 
             // check password
-            if($encoder->isPasswordValid($user, $form->get('password_current')->getData())){
+            if ($encoder->isPasswordValid($user, $form->get('password_current')->getData())) {
                 // change password
                 $newPassword = $form->get('password_new')->getData();
                 $user->setPasswordUpdatedAt(new \DateTime());
@@ -117,7 +116,7 @@ class SecurityController extends AbstractController
                 // redirect
                 $this->addFlash('success', 'security.reset_password_success');
                 return $this->redirectToRoute('home');
-            }else{
+            } else {
                 $form->get('password_current')->addError(new FormError('security.connexion.err.bad_password'));
             }
         }
@@ -128,7 +127,6 @@ class SecurityController extends AbstractController
         ]);
     }
 
-
     /**
      * @Route("/forgotten-password", name="forgotten_password")
      *
@@ -136,6 +134,7 @@ class SecurityController extends AbstractController
      * @param MailerService $mailerService
      *
      * @return RedirectResponse|Response
+     *
      * @throws \Exception
      */
     public function forgottenPassword(Request $request, MailerService $mailerService)
@@ -150,9 +149,10 @@ class SecurityController extends AbstractController
             // get user
             $em = $this->getDoctrine()->getManager();
             $user = $em->getRepository(User::class)
-                ->findOneBy(['email' => $form->get('email')->getData()]);
+                ->findOneBy(['email' => $form->get('email')->getData()])
+            ;
 
-            if($user !== null){
+            if (null !== $user) {
                 // set reset token
                 $user->setResetPasswordAt(new \DateTime());
                 $user->setResetPasswordToken(md5(random_bytes(64)));
@@ -168,7 +168,9 @@ class SecurityController extends AbstractController
             }
 
             // redirect login
-            $request->getSession()->getFlashBag()->add('info', 'security.forgotten_password.msg.success');
+            /** @var Session $session */
+            $session = $request->getSession();
+            $session->getFlashBag()->add('info', 'security.forgotten_password.msg.success');
             return $this->redirectToRoute('login');
         }
 
@@ -185,6 +187,7 @@ class SecurityController extends AbstractController
      * @param UserPasswordEncoderInterface $encoder
      *
      * @return RedirectResponse|Response
+     *
      * @throws \Exception
      */
     public function setPassword(Request $request, UserPasswordEncoderInterface $encoder, string $token)
@@ -192,11 +195,14 @@ class SecurityController extends AbstractController
         // get user from token
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository(User::class)
-            ->findOneBy(['reset_password_token' => $token]);
+            ->findOneBy(['reset_password_token' => $token])
+        ;
 
         // if not user, bad token
-        if($user === null){
-            $request->getSession()->getFlashBag()->add('warning', 'security.set_password.bad_token');
+        if (null === $user) {
+            /** @var Session $session */
+            $session = $request->getSession();
+            $session->getFlashBag()->add('warning', 'security.set_password.bad_token');
             return $this->redirectToRoute('login');
         }
 
@@ -226,7 +232,6 @@ class SecurityController extends AbstractController
         return $this->render('security/set_password.html.twig', [
             'form' => $form->createView(),
         ]);
-
     }
 
     /**
@@ -235,7 +240,16 @@ class SecurityController extends AbstractController
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
      */
-    public function expiredPassword(Request $request, UserPasswordEncoderInterface $encoder)
+
+    /**
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
+     *
+     * @return Response
+     *
+     * @throws \Exception
+     */
+    public function expiredPassword(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
 
         // create form
@@ -269,5 +283,4 @@ class SecurityController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
 }

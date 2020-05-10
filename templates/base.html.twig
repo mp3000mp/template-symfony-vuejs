@@ -6,7 +6,8 @@
         <title>{% block title %}Template{% endblock %}</title>
         <link rel="icon" href="/img/favicon.png" />
 
-        <script type="text/javascript" src="/build/bundle.js"></script>
+        {% block js %}
+        {% endblock %}
 
     </head>
     <body>

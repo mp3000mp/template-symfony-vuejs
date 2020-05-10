@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
@@ -18,13 +19,11 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
  */
 class TwoFactorController extends AbstractController
 {
-
     /**
      * @Route("/two-factor", name="two_factor")
      *
      * @param Request $request
      * @param TokenStorageInterface $tokenStorage
-     *
      * @param OTPService $OTPService
      *
      * @return Response
@@ -36,7 +35,8 @@ class TwoFactorController extends AbstractController
         $currentToken = $tokenStorage->getToken();
         /** @var User $user */
         $user = $this->getUser();
-        if(in_array(OTPService::ROLE_TWO_FACTOR_SUCCEED, $currentToken->getRoleNames(),true)){
+
+        if (in_array(OTPService::ROLE_TWO_FACTOR_SUCCEED, $currentToken->getRoleNames(), true)) {
             return $this->redirectToRoute('home');
         }
 
@@ -50,9 +50,10 @@ class TwoFactorController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // check code
             $code = $form->get('code')->getData();
-            if(!$otp->verify($code)){
+
+            if (!$otp->verify($code)) {
                 $form->get('code')->addError(new FormError('security.connexion.err.two_factor_bad_code'));
-            }else{
+            } else {
                 $OTPService->addTwoFactorRole($tokenStorage, $request->getSession());
                 return $this->redirectToRoute('home'); // todo target
             }
@@ -68,10 +69,6 @@ class TwoFactorController extends AbstractController
         ]);
     }
 
-
-
-
-
     /**
      * @route("/two-factor/enable", name="two_factor.enable")
      *
@@ -79,6 +76,7 @@ class TwoFactorController extends AbstractController
      * @param OTPService $OTPService
      *
      * @return Response
+     *
      * @throws \Exception
      */
     public function enable(Request $request, OTPService $OTPService): Response
@@ -99,9 +97,10 @@ class TwoFactorController extends AbstractController
 
             // check code
             $code = $form->get('code')->getData();
-            if(!$otp->verify($code)){
+
+            if (!$otp->verify($code)) {
                 $form->get('code')->addError(new FormError('security.connexion.err.two_factor_bad_code'));
-            }else{
+            } else {
                 // store secret in user
                 $user->setTwoFactorSecret($secret);
 
@@ -114,10 +113,12 @@ class TwoFactorController extends AbstractController
                 $request->getSession()->remove('otp_secret');
 
                 // redirect
-                $request->getSession()->getFlashBag()->add('success', 'security.two_factor.msg.enabled');
+                /** @var Session $session */
+                $session = $request->getSession();
+                $session->getFlashBag()->add('success', 'security.two_factor.msg.enabled');
                 return $this->redirectToRoute('account');
             }
-        }else{
+        } else {
             // generate secret and store it in session
             $secret = $OTPService->generateSecret();
             $request->getSession()->set('otp_secret', $secret);
@@ -133,7 +134,6 @@ class TwoFactorController extends AbstractController
             'otpUrl' => $otp->getProvisioningUri(),
             'form' => $formView,
         ]);
-
     }
 
     /**
@@ -156,8 +156,9 @@ class TwoFactorController extends AbstractController
         $em->flush();
 
         // view
-        $request->getSession()->getFlashBag()->add('success', 'security.two_factor.msg.disabled');
+        /** @var Session $session */
+        $session = $request->getSession();
+        $session->getFlashBag()->add('success', 'security.two_factor.msg.disabled');
         return $this->redirectToRoute('account');
     }
-
 }

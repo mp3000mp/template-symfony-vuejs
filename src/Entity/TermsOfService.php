@@ -1,21 +1,21 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-
 /**
  * Class User
+ *
  * @package App\Entity
  *
  * @ORM\Entity(repositoryClass="App\Repository\TermsOfServiceRepository")
  */
 class TermsOfService
 {
-
     /**
+     * @var int
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -23,11 +23,13 @@ class TermsOfService
     private $id;
 
     /**
+     * @var DateTime
      * @ORM\Column(type="date")
      */
     private $published_at;
 
     /**
+     * @var TermsOfServiceSignature
      * @ORM\OneToMany(targetEntity="App\Entity\TermsOfServiceSignature", mappedBy="terms_of_service")
      */
     private $terms_of_service_signatures;
@@ -79,5 +81,4 @@ class TermsOfService
     {
         $this->terms_of_service_signatures = $terms_of_service_signatures;
     }
-
 }

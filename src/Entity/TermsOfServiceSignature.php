@@ -1,21 +1,21 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-
 /**
  * Class User
+ *
  * @package App\Entity
  *
  * @ORM\Entity(repositoryClass="App\Repository\TermsOfServiceSignatureRepository")
  */
 class TermsOfServiceSignature
 {
-
     /**
+     * @var int
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -23,18 +23,21 @@ class TermsOfServiceSignature
     private $id;
 
     /**
+     * @var User
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="terms_of_service_signatures")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
     /**
+     * @var TermsOfService
      * @ORM\ManyToOne(targetEntity="App\Entity\TermsOfService", inversedBy="terms_of_service_signatures")
      * @ORM\JoinColumn(nullable=false)
      */
     private $terms_of_service;
 
     /**
+     * @var DateTime
      * @ORM\Column(type="datetime")
      */
     private $signed_at;
@@ -102,5 +105,4 @@ class TermsOfServiceSignature
     {
         $this->signed_at = $signed_at;
     }
-
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\DataFixtures;
 
@@ -31,9 +31,10 @@ class UserFixtures extends Fixture
         $user->setPasswordUpdatedAt(new \DateTime());
         $user->setRoles(['ROLE_USER']);
         $user->setIsEnabled(true);
+
         $manager->persist($user);
         $manager->flush();
-        $this->addReference(AppFixtures::FIRST_USER, $user);
 
+        $this->addReference(AppFixtures::FIRST_USER, $user);
     }
 }

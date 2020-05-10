@@ -8,6 +8,7 @@ use App\Service\TOS\TOSService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -15,7 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class TermsOfServiceController extends AbstractController
 {
-
     /**
      * @route("/tos", name="tos")
      *
@@ -23,6 +23,7 @@ class TermsOfServiceController extends AbstractController
      * @param TOSService $TOSService
      *
      * @return Response
+     *
      * @throws \Exception
      */
     public function tos(Request $request, TOSService $TOSService): Response
@@ -31,17 +32,19 @@ class TermsOfServiceController extends AbstractController
         $user = $this->getUser();
         $locale = $request->getLocale();
 
-        if($request->getMethod() === 'POST'){
+        if ('POST' === $request->getMethod()) {
 
             // if already signed
-            if($TOSService->hasSignedLastTOS($user)){
+            if ($TOSService->hasSignedLastTOS($user)) {
                 return $this->redirectToRoute('home');
-            }else{
+            } else {
                 // if not checked
-                if($request->get('accept') !== 'on'){
-                    $request->getSession()->getFlashBag()->add('info', 'tos.please_check');
+                if ('on' !== $request->get('accept')) {
+                    /** @var Session $session */
+                    $session = $request->getSession();
+                    $session->getFlashBag()->add('info', 'tos.please_check');
                     return $this->redirectToRoute('tos');
-                }else{
+                } else {
                     // create signature
                     $signature = new TermsOfServiceSignature();
                     $signature->setUser($user);
@@ -64,5 +67,4 @@ class TermsOfServiceController extends AbstractController
             'signed' => $TOSService->hasSignedLastTOS($user),
         ]);
     }
-
 }

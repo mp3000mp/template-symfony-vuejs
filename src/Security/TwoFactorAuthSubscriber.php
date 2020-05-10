@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Entity\User;
 use App\Service\OTP\OTPService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -19,7 +20,6 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
  */
 class TwoFactorAuthSubscriber implements EventSubscriberInterface
 {
-
     private const FIREWALL_NAME = 'main';
 
     /** @var RouterInterface  */
@@ -62,18 +62,22 @@ class TwoFactorAuthSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if($event->getRequest()->attributes->get('_route') === OTPService::ROUTE_TWO_FACTOR){
+        if (OTPService::ROUTE_TWO_FACTOR === $event->getRequest()->attributes->get('_route')) {
             return;
         }
 
         $currentToken = $this->tokenStorage->getToken();
-        if($currentToken instanceof PostAuthenticationGuardToken
-            && $currentToken->getProviderKey() === self::FIREWALL_NAME
-            && !in_array(OTPService::ROLE_TWO_FACTOR_SUCCEED, $currentToken->getRoleNames(),true)
-        ){
-            if($currentToken->getUser()->getTwoFactorSecret() === null){
+
+        if ($currentToken instanceof PostAuthenticationGuardToken
+            && self::FIREWALL_NAME === $currentToken->getProviderKey()
+            && !in_array(OTPService::ROLE_TWO_FACTOR_SUCCEED, $currentToken->getRoleNames(), true)
+        ) {
+            /** @var User $user */
+            $user = $currentToken->getUser();
+
+            if (null === $user->getTwoFactorSecret()) {
                 $this->OTPService->addTwoFactorRole($this->tokenStorage, $event->getRequest()->getSession());
-            }else{
+            } else {
                 $response = new RedirectResponse($this->router->generate(OTPService::ROUTE_TWO_FACTOR));
                 $event->setResponse($response);
             }

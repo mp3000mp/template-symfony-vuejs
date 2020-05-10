@@ -1,12 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Entity\TermsOfService;
 use App\Entity\TermsOfServiceSignature;
-use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,7 +14,6 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TermsOfServiceSignatureRepository extends ServiceEntityRepository
 {
-
     /**
      * UserRepository constructor.
      *
@@ -27,5 +23,4 @@ class TermsOfServiceSignatureRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, TermsOfServiceSignature::class);
     }
-
 }

@@ -3,10 +3,13 @@ const StylelintPlugin = require('stylelint-webpack-plugin');
 
 const config = {
 	cache: true,
-	entry: './assets/js/app.js',
+	entry: {
+	  public: './assets/js/public.js',
+    private: './assets/js/app.js',
+  },
 	output: {
 		path: path.resolve(__dirname, './public/build'),
-		filename: 'bundle.js',
+		filename: '[name].bundle.js',
 		publicPath: '/build/'
 	},
 	module: {
@@ -15,7 +18,10 @@ const config = {
 				enforce: 'pre',
 				test: /\.js$/,
 				exclude: /node_modules/,
-				loader: ['eslint-loader']
+				loader: 'eslint-loader',
+        options: {
+				  fix: true
+        }
 			},
 			{
 				test: /\.js$/,

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Validator\Constraints;
 
@@ -7,9 +7,18 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
+/**
+ * Class ComplexPatternValidator
+ * @package App\Validator\Constraints
+ */
 class ComplexPatternValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $constraint)
+
+    /**
+     * @param mixed $value
+     * @param Constraint $constraint
+     */
+    public function validate($value, Constraint $constraint): void
     {
         if (!$constraint instanceof ComplexPattern) {
             throw new UnexpectedTypeException($constraint, ComplexPattern::class);
@@ -25,40 +34,47 @@ class ComplexPatternValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-// regex invalidantes
+        // regex invalidantes
         foreach ($constraint->regexInvalid as $regex) {
             $test = preg_match('/'.$regex.'/', $value);
+
             if (false === $test) {
                 $this->context->buildViolation('Invalid regex')
                     ->setInvalidValue($value)
                     ->setCode('Invalid regex')
-                    ->addViolation();
+                    ->addViolation()
+                ;
 
                 return;
             } elseif (0 !== $test) {
                 $this->context->buildViolation($constraint->message)
                     ->setInvalidValue($value)
                     ->setCode(Regex::REGEX_FAILED_ERROR)
-                    ->addViolation();
+                    ->addViolation()
+                ;
 
                 return;
             }
         }
+
         // regex validantes
         foreach ($constraint->regexValid as $regex) {
             $test = preg_match('/'.$regex.'/', $value);
+
             if (false === $test) {
                 $this->context->buildViolation('Invalid regex')
                     ->setInvalidValue($value)
                     ->setCode('Invalid regex')
-                    ->addViolation();
+                    ->addViolation()
+                ;
 
                 return;
             } elseif (0 === $test) {
                 $this->context->buildViolation($constraint->message)
                     ->setInvalidValue($value)
                     ->setCode(Regex::REGEX_FAILED_ERROR)
-                    ->addViolation();
+                    ->addViolation()
+                ;
 
                 return;
             }

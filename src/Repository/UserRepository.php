@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -14,7 +14,6 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserRepository extends ServiceEntityRepository
 {
-
     /**
      * UserRepository constructor.
      *
@@ -28,10 +27,11 @@ class UserRepository extends ServiceEntityRepository
     /**
      * @param string $username
      *
-     * @return mixed
+     * @return User|null
+     *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function findForLogin(string $username)
+    public function findForLogin(string $username): ?User
     {
         $q = $this->createQueryBuilder('u')
             ->where('u.username = :username')
@@ -41,5 +41,4 @@ class UserRepository extends ServiceEntityRepository
             ;
         return $q->getOneOrNullResult();
     }
-
 }

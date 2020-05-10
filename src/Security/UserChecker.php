@@ -1,18 +1,29 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Security;
 
 use App\Entity\User;
 use App\Security\Exception\AccountDisabledException;
-use Symfony\Component\Security\Core\Exception\AccountExpiredException;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * Class UserChecker
+ *
+ * @package App\Security
+ */
 class UserChecker implements UserCheckerInterface
 {
-    public function checkPreAuth(UserInterface $user)
+    /**
+     * UserChecker constructor.
+     */
+    public function __construct()
     {
-        if ( ! $user instanceof User) {
+    }
+
+    public function checkPreAuth(UserInterface $user): void
+    {
+        if (! $user instanceof User) {
             return;
         }
 
@@ -22,15 +33,10 @@ class UserChecker implements UserCheckerInterface
         }
     }
 
-    public function checkPostAuth(UserInterface $user)
+    public function checkPostAuth(UserInterface $user): void
     {
-        if ( ! $user instanceof User) {
+        if (! $user instanceof User) {
             return;
         }
-
-        // user account is expired, the user may be notified
-        /*if ($user->isExpired()) {
-            throw new AccountExpiredException('...');
-        }*/
     }
 }

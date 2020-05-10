@@ -1,15 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Security;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Core\Security;
@@ -23,11 +23,11 @@ use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 /**
  * Class MainAuthenticator
+ *
  * @package App\Security
  */
 class MainAuthenticator extends AbstractFormLoginAuthenticator implements PasswordAuthenticatedInterface
 {
-
     use TargetPathTrait;
 
     public const LOGIN_ROUTE = 'login.check';
@@ -59,6 +59,7 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
 
     /**
      * Does this guard has to been called ?
+     *
      * @param Request $request
      *
      * @return bool
@@ -71,6 +72,7 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
 
     /**
      * Get credentials from request
+     *
      * @param Request $request
      *
      * @return array
@@ -78,16 +80,14 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
     public function getCredentials(Request $request)
     {
         $credentials = $request->request->get('login');
-        $request->getSession()->set(
-            Security::LAST_USERNAME,
-            $credentials['username']
-        );
+        $request->getSession()->set(Security::LAST_USERNAME, $credentials['username']);
 
         return $credentials;
     }
 
     /**
      * Try to get user
+     *
      * @param mixed $credentials
      * @param UserProviderInterface $userProvider
      *
@@ -96,14 +96,16 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $token = new CsrfToken('login', $credentials['_token']);
+
         if (!$this->csrfTokenManager->isTokenValid($token)) {
             throw new InvalidCsrfTokenException('security.connexion.err.csrf_token');
         }
 
-        /** @var User $user */
-        $user = $this->entityManager->getRepository(User::class)->findForLogin($credentials['username']);
+        /** @var UserRepository $userRep */
+        $userRep = $this->entityManager->getRepository(User::class);
+        $user = $userRep->findForLogin($credentials['username']);
 
-        if (!$user) {
+        if (null === $user) {
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('security.connexion.err.bad_credentials');
         }
@@ -112,6 +114,7 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
 
     /**
      * Check credentials
+     *
      * @param mixed $credentials
      * @param UserInterface $user
      *
@@ -119,7 +122,7 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
-        if(!$this->passwordEncoder->isPasswordValid($user, $credentials['password'])){
+        if (!$this->passwordEncoder->isPasswordValid($user, $credentials['password'])) {
             throw new CustomUserMessageAuthenticationException('security.connexion.err.bad_credentials');
         }
         return true;
@@ -158,5 +161,4 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
     {
         return $credentials['password'];
     }
-
 }

@@ -5,7 +5,6 @@ namespace App\EventSubscriber;
 use App\Entity\User;
 use App\Service\OTP\OTPService;
 use App\Service\TOS\TOSService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -21,7 +20,6 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
  */
 class TermsOfServiceSubscriber implements EventSubscriberInterface
 {
-
     private const FIREWALL_NAME = 'main';
 
     /** @var RouterInterface  */
@@ -63,20 +61,22 @@ class TermsOfServiceSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if(in_array($event->getRequest()->attributes->get('_route'),[TOSService::ROUTE_TOS, OTPService::ROUTE_TWO_FACTOR],true)){
+        if (in_array($event->getRequest()->attributes->get('_route'), [TOSService::ROUTE_TOS, OTPService::ROUTE_TWO_FACTOR], true)) {
             return;
         }
 
         $currentToken = $this->tokenStorage->getToken();
-        if($currentToken instanceof PostAuthenticationGuardToken
-           && $currentToken->getProviderKey() === self::FIREWALL_NAME
-           && !in_array(TOSService::ROLE_TOS_SIGNED, $currentToken->getRoleNames(),true)
-        ){
+
+        if ($currentToken instanceof PostAuthenticationGuardToken
+           && self::FIREWALL_NAME === $currentToken->getProviderKey()
+           && !in_array(TOSService::ROLE_TOS_SIGNED, $currentToken->getRoleNames(), true)
+        ) {
             /** @var User $currentUser */
             $currentUser = $currentToken->getUser();
-            if($this->TOSService->hasSignedLastTOS($currentUser)){
+
+            if ($this->TOSService->hasSignedLastTOS($currentUser)) {
                 $this->TOSService->addTOSSignedRole($this->tokenStorage, $event->getRequest()->getSession());
-            }else{
+            } else {
                 $response = new RedirectResponse($this->router->generate(TOSService::ROUTE_TOS));
                 $event->setResponse($response);
             }

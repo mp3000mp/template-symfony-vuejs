@@ -1,16 +1,17 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-
 /**
  * Class User
+ *
  * @package App\Entity
  *
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -18,8 +19,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class User implements UserInterface, \Serializable, EquatableInterface
 {
-
     /**
+     * @var int
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -27,60 +28,77 @@ class User implements UserInterface, \Serializable, EquatableInterface
     private $id;
 
     /**
+     * @var TermsOfServiceSignature[]
      * @ORM\OneToMany(targetEntity="App\Entity\TermsOfServiceSignature", mappedBy="user")
      */
     private $terms_of_service_signatures;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=100, unique=true)
      * @Assert\Email(message = "entity.User.constraint.email.email")
      */
     private $email;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=55)
      */
     private $username;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $password;
 
     /**
+     * @var DateTime|null
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $password_updated_at;
 
     /**
+     * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $reset_password_token;
 
     /**
+     * @var DateTime|null
      * @ORM\Column(type="datetime", length=255, nullable=true)
      */
     private $reset_password_at;
 
     /**
+     * @var bool
      * @ORM\Column(type="boolean")
      */
     private $is_enabled = false;
 
     /**
+     * @var array
      * @ORM\Column(type="json", nullable=false)
      */
     private $roles = [];
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=2)
      */
     private $locale = 'en';
 
     /**
+     * @var string|null
      * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $twoFactorSecret;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=128, nullable=true)
+     */
+    private $shared_session;
 
     /**
      * @return mixed
@@ -238,10 +256,13 @@ class User implements UserInterface, \Serializable, EquatableInterface
 
     /**
      * Returns the roles or permissions granted to the user for security.
+     *
+     * @return array
      */
     public function getRoles(): array
     {
         $roles = $this->roles;
+
         if (!in_array('ROLE_USER', $roles, true)) {
             $roles[] = 'ROLE_USER';
         }
@@ -264,11 +285,10 @@ class User implements UserInterface, \Serializable, EquatableInterface
         return $this;
     }
 
-
     /**
      * @inheritDoc
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize([
             $this->id,
@@ -279,21 +299,14 @@ class User implements UserInterface, \Serializable, EquatableInterface
             // see section on salt below
             // $this->salt,
         ]);
-
     }
 
     /**
      * @inheritDoc
      */
-    public function unserialize($serialized)
+    public function unserialize($serialized): array
     {
-        return list(
-            $this->id,
-            $this->username,
-            $this->email,
-            $this->password,
-            $this->is_enabled,
-            // see section on salt below
+        return list($this->id, $this->username, $this->email, $this->password, $this->is_enabled,            // see section on salt below
             // $this->salt
             ) = unserialize($serialized, ['allowed_classes' => false]);
     }
@@ -306,15 +319,13 @@ class User implements UserInterface, \Serializable, EquatableInterface
         // you *may* need a real salt depending on your encoder
         // see section on salt below
         return null;
-
     }
 
     /**
      * @inheritDoc
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
-
     }
 
     /**
@@ -334,19 +345,26 @@ class User implements UserInterface, \Serializable, EquatableInterface
     }
 
     /**
-     * @return TermsOfServiceSignature
+     * @return TermsOfServiceSignature[]
      */
-    public function getTermsOfServiceSignatures()
+    public function getTermsOfServiceSignatures(): array
     {
         return $this->terms_of_service_signatures;
     }
 
     /**
-     * @param TermsOfServiceSignature $terms_of_service_signatures
+     * @return string
      */
-    public function setTermsOfServiceSignatures($terms_of_service_signatures): void
+    public function getSharedSession(): ?string
     {
-        $this->terms_of_service_signatures = $terms_of_service_signatures;
+        return $this->shared_session;
     }
 
+    /**
+     * @param string|null $shared_session
+     */
+    public function setSharedSession(?string $shared_session): void
+    {
+        $this->shared_session = $shared_session;
+    }
 }

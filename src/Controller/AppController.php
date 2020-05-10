@@ -41,7 +41,8 @@ class AppController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         $otpUrl = null;
-        if($user->getTwoFactorSecret() !== null){
+
+        if (null !== $user->getTwoFactorSecret()) {
             $otp = $OTPService->getUserOTP($user);
             $otpUrl = $otp->getProvisioningUri();
         }
@@ -100,5 +101,4 @@ class AppController extends AbstractController
 
         return new RedirectResponse($referer, 307);
     }
-
 }

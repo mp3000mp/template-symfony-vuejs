@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -14,7 +14,6 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TermsOfServiceRepository extends ServiceEntityRepository
 {
-
     /**
      * UserRepository constructor.
      *
@@ -27,6 +26,7 @@ class TermsOfServiceRepository extends ServiceEntityRepository
 
     /**
      * @return TermsOfService|null
+     *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findLast(): ?TermsOfService
@@ -34,7 +34,7 @@ class TermsOfServiceRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->orderBy('t.published_at', 'DESC')
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult()
+        ;
     }
-
 }

@@ -21,7 +21,6 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
  */
 class ExpiredPasswordSubscriber implements EventSubscriberInterface
 {
-
     private const FIREWALL_NAME = 'main';
     private const ROUTE_EXPIRED_PASSWORD = 'expired_password';
     private const ROLE_EXPIRED_PASSWORD_SUCCEED = 'EXPIRED_PASSWORD_SUCCEED';
@@ -33,7 +32,7 @@ class ExpiredPasswordSubscriber implements EventSubscriberInterface
     private $tokenStorage;
 
     /**
-     * DoubleAuthSubscriber constructor.
+     * ExpiredPasswordSubscriber constructor.
      *
      * @param TokenStorageInterface $tokenStorage
      * @param RouterInterface $router
@@ -63,31 +62,33 @@ class ExpiredPasswordSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if(in_array($event->getRequest()->attributes->get('_route'), [self::ROUTE_EXPIRED_PASSWORD, OTPService::ROUTE_TWO_FACTOR], true)){
+        if (in_array($event->getRequest()->attributes->get('_route'), [self::ROUTE_EXPIRED_PASSWORD, OTPService::ROUTE_TWO_FACTOR], true)) {
             return;
         }
 
         $currentToken = $this->tokenStorage->getToken();
-        if($currentToken instanceof PostAuthenticationGuardToken
-           && $currentToken->getProviderKey() === self::FIREWALL_NAME
-           && !in_array(self::ROLE_EXPIRED_PASSWORD_SUCCEED, $currentToken->getRoleNames(),true)
-        ){
+
+        if ($currentToken instanceof PostAuthenticationGuardToken
+           && self::FIREWALL_NAME === $currentToken->getProviderKey()
+           && !in_array(self::ROLE_EXPIRED_PASSWORD_SUCCEED, $currentToken->getRoleNames(), true)
+        ) {
             // check if expired password
             /** @var User $currentUser */
             $currentUser = $currentToken->getUser();
             $now = new \DateTime();
             $passwordUpdatedAt = $currentUser->getPasswordUpdatedAt();
             $diff = $now->diff($passwordUpdatedAt);
-            if($diff->format('%a') < self::PASSWORD_EXPIRATION_DAYS){
+
+            if ($diff->format('%a') < self::PASSWORD_EXPIRATION_DAYS) {
                 $this->addExpiredPasswordRole($this->tokenStorage, $event->getRequest()->getSession());
-            }else{
+            } else {
                 $response = new RedirectResponse($this->router->generate(self::ROUTE_EXPIRED_PASSWORD));
                 $event->setResponse($response);
             }
         }
     }
 
-    private function addExpiredPasswordRole(TokenStorageInterface $tokenStorage, SessionInterface $session)
+    private function addExpiredPasswordRole(TokenStorageInterface $tokenStorage, SessionInterface $session): void
     {
         /** @var PostAuthenticationGuardToken $currentToken */
         $currentToken = $tokenStorage->getToken();
@@ -96,6 +97,4 @@ class ExpiredPasswordSubscriber implements EventSubscriberInterface
         $tokenStorage->setToken($newToken);
         $session->set('_security_' . $currentToken->getProviderKey(), serialize($newToken));
     }
-
-
 }

@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Service\TOS;
 
 use App\Entity\TermsOfService;
 use App\Entity\TermsOfServiceSignature;
 use App\Entity\User;
+use App\Repository\TermsOfServiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -12,7 +13,6 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 class TOSService
 {
-
     public const ROLE_TOS_SIGNED = 'TOS_SIGNED';
     public const ROUTE_TOS = 'tos';
 
@@ -34,8 +34,9 @@ class TOSService
      */
     public function getLastTOS(): TermsOfService
     {
-        return $this->em->getRepository(TermsOfService::class)
-                            ->findLast();
+        /** @var TermsOfServiceRepository $repTOS */
+        $repTOS = $this->em->getRepository(TermsOfService::class);
+        return $repTOS->findLast();
     }
 
     /**
@@ -47,8 +48,9 @@ class TOSService
     {
         $lastTOS = $this->getLastTOS();
         $signature = $this->em->getRepository(TermsOfServiceSignature::class)
-            ->findOneBy(['user' => $user, 'terms_of_service' => $lastTOS]);
-        return $signature !== null;
+            ->findOneBy(['user' => $user, 'terms_of_service' => $lastTOS])
+        ;
+        return null !== $signature;
     }
 
     /**
@@ -64,5 +66,4 @@ class TOSService
         $tokenStorage->setToken($newToken);
         $session->set('_security_' . $currentToken->getProviderKey(), serialize($newToken));
     }
-
 }

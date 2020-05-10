@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
@@ -6,14 +6,19 @@ use App\Entity\User;
 
 /**
  * Class SecurityControllerTest
+ *
  * @package App\Tests\Controller
  */
 class SecurityControllerTest extends AbstractController
 {
     /**
      * @dataProvider urlProvider
+     *
+     * @param mixed $url
+     * @param mixed $codeAnonym
+     * @param mixed $codeRoleUser
      */
-    public function testAppUrlsAnonym($url, $codeAnonym, $codeRoleUser)
+    public function testAppUrlsAnonym($url, $codeAnonym, $codeRoleUser): void
     {
         $crawler = $this->client->request('GET', $url);
         $this->debug500($url, $crawler);
@@ -22,8 +27,12 @@ class SecurityControllerTest extends AbstractController
 
     /**
      * @dataProvider urlProvider
+     *
+     * @param mixed $url
+     * @param mixed $codeAnonym
+     * @param mixed $codeRoleUser
      */
-    public function testAppUrlsRoleUser($url, $codeAnonym, $codeRoleUser)
+    public function testAppUrlsRoleUser($url, $codeAnonym, $codeRoleUser): void
     {
         $this->login(['ROLE_USER']);
         $crawler = $this->client->request('GET', $url);
@@ -42,30 +51,33 @@ class SecurityControllerTest extends AbstractController
             //['/forgottenpass/matthias.perret@qodelis.fr', 302, 200],
             //['/resetpass/token', 302, 200],
             ['/profile', 302, 200],
-	        //['/logincheck', 302, 302], todo
+            //['/logincheck', 302, 302], todo
             ['/logout', 302, 302],
             ['/user', 302, 200],
             ['/user/1/show', 302, 200],
             //['/user/new', 302, 200], todo
-	        //['/user/1/edit', 302, 200], todo
-	        ['/api/contact/new', 302, 200],
-	        ['/api/contact/1/edit', 302, 200],
-	        ['/api/contact/1/delete', 302, 200],
-	        ['/api/visit', 302, 200],
-	        ['/api/visit/new', 302, 200],
-	        ['/api/visit/1/edit', 302, 200],
-	        ['/api/visit/1/start', 302, 200],
-	        ['/api/visit/1/delete', 302, 200],
-	        ['/api/visit/2/product/new', 302, 200],
-	        ['/api/visit/2/product/1/edit', 302, 200],
-	        ['/api/visit/2/product/1/delete', 302, 200],
+            //['/user/1/edit', 302, 200], todo
+            ['/api/contact/new', 302, 200],
+            ['/api/contact/1/edit', 302, 200],
+            ['/api/contact/1/delete', 302, 200],
+            ['/api/visit', 302, 200],
+            ['/api/visit/new', 302, 200],
+            ['/api/visit/1/edit', 302, 200],
+            ['/api/visit/1/start', 302, 200],
+            ['/api/visit/1/delete', 302, 200],
+            ['/api/visit/2/product/new', 302, 200],
+            ['/api/visit/2/product/1/edit', 302, 200],
+            ['/api/visit/2/product/1/delete', 302, 200],
         ];
     }
 
     /**
      * @dataProvider forgottenPassProvider
+     *
+     * @param mixed $email
+     * @param mixed $code
      */
-    public function testForgottenPass($email, $code)
+    public function testForgottenPass($email, $code): void
     {
         $url = 'forgottenpass/'.$email;
         $crawler = $this->client->request('GET', $url);
@@ -87,8 +99,11 @@ class SecurityControllerTest extends AbstractController
 
     /**
      * @dataProvider resetPassRedirectProvider
+     *
+     * @param mixed $token
+     * @param mixed $code
      */
-    public function testResetPassRedirect($token, $code)
+    public function testResetPassRedirect($token, $code): void
     {
         $url = 'resetpass/'.$token;
         $crawler = $this->client->request('GET', $url);
@@ -110,7 +125,7 @@ class SecurityControllerTest extends AbstractController
     /**
      * @throws \Exception
      */
-    public function testResetPassSuccess()
+    public function testResetPassSuccess(): void
     {
         // opé base
         $token = 'testSuccess';

@@ -11,12 +11,13 @@
     "build": "webpack -p"
   },
   "author": "mp3000mp",
-  "license": "Apache 2.0",
+  "license": "MIT",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
     "bootstrap": "^4.4.1",
     "jquery": "^3.4.1",
-    "popper.js": "^1.16.1"
+    "popper.js": "^1.16.1",
+    "socket.io-client": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
