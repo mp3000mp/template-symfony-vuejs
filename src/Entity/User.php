@@ -95,10 +95,10 @@ class User implements UserInterface, \Serializable, EquatableInterface
     private $twoFactorSecret;
 
     /**
-     * @var string|null
-     * @ORM\Column(type="string", length=128, nullable=true)
+     * @var bool
+     * @ORM\Column(type="boolean")
      */
-    private $shared_session;
+    private $is_super_admin = false;
 
     /**
      * @return mixed
@@ -302,6 +302,7 @@ class User implements UserInterface, \Serializable, EquatableInterface
     }
 
     /**
+     * @param string $serialized
      * @inheritDoc
      */
     public function unserialize($serialized): array
@@ -353,18 +354,18 @@ class User implements UserInterface, \Serializable, EquatableInterface
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getSharedSession(): ?string
+    public function isIsSuperAdmin(): bool
     {
-        return $this->shared_session;
+        return $this->is_super_admin;
     }
 
     /**
-     * @param string|null $shared_session
+     * @param bool $is_super_admin
      */
-    public function setSharedSession(?string $shared_session): void
+    public function setIsSuperAdmin(bool $is_super_admin): void
     {
-        $this->shared_session = $shared_session;
+        $this->is_super_admin = $is_super_admin;
     }
 }

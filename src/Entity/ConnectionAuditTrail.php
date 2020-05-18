@@ -33,13 +33,25 @@ class ConnectionAuditTrail
      * @var DateTime
      * @ORM\Column(type="datetime")
      */
-    private $updated_at;
+    private $started_at;
+
+    /**
+     * @var DateTime
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $ended_at;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
      */
-    private $device;
+    private $user_agent;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=55, unique=true)
+     */
+    private $device_session_token;
 
     /**
      * @var string
@@ -48,19 +60,19 @@ class ConnectionAuditTrail
     private $ip;
 
     /**
-     * @var string
-     * @ORM\Column(type="string", length=55)
+     * @var Application
+     * @ORM\ManyToOne(targetEntity="App\Entity\Application")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $application;
 
     /**
-     * 1=insert, 2=update, 3=show
+     * 1=logout, 2=timeout, 3=force
      *
-     * @var ApplicationType
-     * @ORM\ManyToOne(targetEntity="App\Entity\ApplicationType")
-     * @ORM\JoinColumn(nullable=false)
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
      */
-    private $action;
+    private $reason;
 
     /**
      * @return int
@@ -97,33 +109,65 @@ class ConnectionAuditTrail
     /**
      * @return DateTime
      */
-    public function getUpdatedAt(): DateTime
+    public function getStartedAt(): DateTime
     {
-        return $this->updated_at;
+        return $this->started_at;
     }
 
     /**
-     * @param DateTime $updated_at
+     * @param DateTime $started_at
      */
-    public function setUpdatedAt(DateTime $updated_at): void
+    public function setStartedAt(DateTime $started_at): void
     {
-        $this->updated_at = $updated_at;
+        $this->started_at = $started_at;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getEndedAt(): DateTime
+    {
+        return $this->ended_at;
+    }
+
+    /**
+     * @param DateTime $ended_at
+     */
+    public function setEndedAt(DateTime $ended_at): void
+    {
+        $this->ended_at = $ended_at;
     }
 
     /**
      * @return string
      */
-    public function getDevice(): string
+    public function getUseragent(): string
     {
-        return $this->device;
+        return $this->user_agent;
     }
 
     /**
-     * @param string $device
+     * @param string $user_agent
      */
-    public function setDevice(string $device): void
+    public function setUseragent(string $user_agent): void
     {
-        $this->device = $device;
+        $this->user_agent = $user_agent;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeviceSessionToken(): string
+    {
+        return $this->device_session_token;
+    }
+
+    /**
+     * @param string $device_session_token
+     */
+    public function setDeviceSessionToken(string $device_session_token): void
+    {
+        $this->device_session_token = $device_session_token;
     }
 
     /**
@@ -143,34 +187,34 @@ class ConnectionAuditTrail
     }
 
     /**
-     * @return string
+     * @return Application
      */
-    public function getApplication(): string
+    public function getApplication(): Application
     {
         return $this->application;
     }
 
     /**
-     * @param string $application
+     * @param Application $application
      */
-    public function setApplication(string $application): void
+    public function setApplication(Application $application): void
     {
         $this->application = $application;
     }
 
     /**
-     * @return ApplicationType
+     * @return int
      */
-    public function getAction(): ApplicationType
+    public function getReason(): int
     {
-        return $this->action;
+        return $this->reason;
     }
 
     /**
-     * @param ApplicationType $action
+     * @param int $reason
      */
-    public function setAction(ApplicationType $action): void
+    public function setReason(int $reason): void
     {
-        $this->action = $action;
+        $this->reason = $reason;
     }
 }

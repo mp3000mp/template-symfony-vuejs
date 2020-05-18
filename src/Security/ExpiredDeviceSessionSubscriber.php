@@ -3,8 +3,7 @@
 namespace App\Security;
 
 use App\Entity\User;
-use App\Service\OTP\OTPService;
-use App\Service\SharedSession\SharedSession;
+use App\Service\DeviceSession\DeviceSession;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -15,34 +14,35 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
- * Logout if session has expired
- * Class ExpiredSessionSubscriber
+ * Check if local session and redis synchro
+ * Class ExpiredDeviceSessionSubscriber
  *
  * @package App\EventSubscriber
  */
-class ExpiredSessionSubscriber implements EventSubscriberInterface
+class ExpiredDeviceSessionSubscriber implements EventSubscriberInterface
 {
-    private const SESSION_EXPIRATION_SECONDS = 300;
+    /** @var string  */
+    private const FIREWALL_NAME = 'main';
 
     /** @var RouterInterface  */
     private $router;
     /** @var TokenStorageInterface  */
     private $tokenStorage;
-    /** @var SharedSession  */
-    private $sharedSession;
+    /** @var DeviceSession  */
+    private $deviceSession;
 
     /**
      * ExpiredSessionSubscriber constructor.
      *
      * @param TokenStorageInterface $tokenStorage
      * @param RouterInterface $router
-     * @param SharedSession $sharedSession
+     * @param DeviceSession $deviceSession
      */
-    public function __construct(TokenStorageInterface $tokenStorage, RouterInterface $router, SharedSession $sharedSession)
+    public function __construct(TokenStorageInterface $tokenStorage, RouterInterface $router, DeviceSession $deviceSession)
     {
         $this->router = $router;
         $this->tokenStorage = $tokenStorage;
-        $this->sharedSession = $sharedSession;
+        $this->deviceSession = $deviceSession;
     }
 
     /**
@@ -51,7 +51,7 @@ class ExpiredSessionSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::REQUEST => [['onKernelRequest', -30]],
+            KernelEvents::REQUEST => [['onKernelRequest', -10]],
         ];
     }
 
@@ -70,26 +70,22 @@ class ExpiredSessionSubscriber implements EventSubscriberInterface
         $currentToken = $this->tokenStorage->getToken();
 
         if ($currentToken instanceof PostAuthenticationGuardToken) {
+
             /** @var User $user */
             $user = $currentToken->getUser();
+            /** @var Session $session */
+            $session = $event->getRequest()->getSession();
 
-            // if authenticated
-            if (null !== $user->getTwoFactorSecret() && in_array(OTPService::ROLE_TWO_FACTOR_SUCCEED, $currentToken->getRoleNames(), true)) {
+            // if authenticated with device session and not already expired shared session ok
+            if (self::FIREWALL_NAME === $currentToken->getProviderKey()
+                && $session->has('device_session_token')) {
 
-                // on compare shared token en local et en redis
-                /** @var Session $session */
-                $session = $event->getRequest()->getSession();
-
-                // si pas encore de shared session, on la créé
-                if (!$session->has('shared_session')) {
-                    $this->sharedSession->create($user);
-                }
-
-                // si session redis existe pas => timeout ou que session en base ne correspond pas (secours si socket server down)
-                if (!$this->sharedSession->exists($session->get('shared_session'))) {
+                // si session redis existe pas => timeout ou que session en base ne correspond pas (=session php expiration trop long par rapport socket)
+                if (!$this->deviceSession->deviceSessionExists($session->get('device_session_token'))) {
                     // si anomalie on kill la session
-                    $this->sharedSession->destroy($user);
+                    $this->deviceSession->destroy($session->get('device_session_token'), 2);
                     $this->tokenStorage->setToken(null);
+                    $session->invalidate();
                     $session->getFlashBag()->add('info', 'security.session_error');
                     $response = new RedirectResponse($this->router->generate('login'));
                     $event->setResponse($response);

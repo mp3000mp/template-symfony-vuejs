@@ -19,29 +19,33 @@ class MailerService
     private $mailer;
     /** @var Environment  */
     private $renderer;
-    /** @var TranslatorInterface translator */
-    private $translator;
     /** @var string */
     private $env;
+    /** @var TranslatorInterface */
+    private $translator;
     /** @var string  */
     public static $EMAIL_DEV;
+    /** @var string */
+    public static $EMAIL_FROM;
 
     /**
      * Swift constructor.
      *
      * @param string $APP_ENV
      * @param string $EMAIL_DEV
+     * @param string $EMAIL_FROM
      * @param Swift_Mailer $mailer
      * @param Environment $renderer
      * @param TranslatorInterface $translator
      */
-    public function __construct(string $APP_ENV, string $EMAIL_DEV, Swift_Mailer $mailer, Environment $renderer, TranslatorInterface $translator)
+    public function __construct(string $APP_ENV, string $EMAIL_DEV, string $EMAIL_FROM, Swift_Mailer $mailer, Environment $renderer, TranslatorInterface $translator)
     {
         $this->mailer = $mailer;
         $this->renderer = $renderer;
         $this->translator = $translator;
         $this->env = $APP_ENV;
         self::$EMAIL_DEV = $EMAIL_DEV;
+        self::$EMAIL_FROM = $EMAIL_FROM;
     }
 
     /**
@@ -59,9 +63,6 @@ class MailerService
      */
     public function sendEmail(string $template, array $template_params, string $subject, array $subject_params, array $to, array $cc = [], array $bcc = []): void
     {
-        // envoi mail
-        $from = 'no-reply@mp3000.fr';
-
         // remove recipients if not prod
         if ('prod' !== $this->env) {
             $to  = [];
@@ -74,10 +75,10 @@ class MailerService
 
         // configure mail
         $mail = new \Swift_Message();
-        $mail->setFrom($from, 'mp3000 Bot')
-            ->setReplyTo($from)
-            ->setReturnPath($from)
-            ->setSender($from, 'mp3000 Bot')
+        $mail->setFrom(self::$EMAIL_FROM, 'mp3000 Bot')
+            ->setReplyTo(self::$EMAIL_FROM)
+            ->setReturnPath(self::$EMAIL_FROM)
+            ->setSender(self::$EMAIL_FROM, 'mp3000 Bot')
             ->setSubject($this->translator->trans($subject, $subject_params))
             ->setBody($this->renderer->render('email/'.$template.'.html.twig', $template_params), 'text/html')
             ->addPart($this->renderer->render('email/'.$template.'.txt.twig', $template_params), 'text/plain')
@@ -85,7 +86,7 @@ class MailerService
         $mail->setTo($to);
         $mail->setCc($cc);
         $mail->setBcc($bcc);
-        $mail->getHeaders()->addMailboxHeader('From', [$from]);
+        $mail->getHeaders()->addMailboxHeader('From', [self::$EMAIL_FROM]);
 
         // send
         $this->mailer->send($mail);
@@ -96,6 +97,6 @@ class MailerService
      */
     public function setLocale(string $locale): void
     {
-        $this->translator->setLocale($locale);
+        $this->translator->setLocale($locale); // todo user request->setLocale() ?
     }
 }

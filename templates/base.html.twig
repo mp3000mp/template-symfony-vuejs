@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}Template{% endblock %}</title>
         <link rel="icon" href="/img/favicon.png" />
 
@@ -11,7 +12,6 @@
 
     </head>
     <body>
-
         <div class="container">
             <div id="flash-messages">
                 {% for category in ['success','warning','danger','info'] %}

@@ -23,4 +23,17 @@ class ConnectionAuditTrailRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ConnectionAuditTrail::class);
     }
+
+    /**
+     * @param int $reason 1=logout, 2=timeout, 3=force
+     * @param string $deviceSessionToken
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function logoutDevice(string $deviceSessionToken, int $reason): void
+    {
+        $sSql = 'UPDATE connection_audit_trail SET reason = :reason, ended_at = NOW() WHERE ended_at IS NULL AND device_session_token = :device_session_token';
+        $params = ['reason' => $reason, 'device_session_token' => $deviceSessionToken];
+        $this->getEntityManager()->getConnection()->executeUpdate($sSql, $params);
+    }
 }

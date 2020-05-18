@@ -24,12 +24,12 @@ class ApplicationTypeFixtures extends Fixture
 
         // app1
         $appType = new ApplicationType();
-        $appType->setName('Portal');
+        $appType->setName('App1');
         $manager->persist($appType);
 
         // app2
         $appType = new ApplicationType();
-        $appType->setName('Portal');
+        $appType->setName('App2');
         $manager->persist($appType);
         $manager->flush();
     }

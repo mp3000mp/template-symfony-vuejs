@@ -13,11 +13,11 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 /**
  * Class OTPService
  *
- * @package App\Service\Noshare
+ * @package App\Service\OTPService
  */
 class OTPService
 {
-    public const IMG_URL = 'https://assets.gitlab-static.net/uploads/-/system/user/avatar/2876944/avatar.png'; // todo
+    public const IMG_URL = 'https://assets.gitlab-static.net/uploads/-/system/user/avatar/2876944/avatar.png'; // todo favicon
     public const ROLE_TWO_FACTOR_SUCCEED = 'TWO_FACTOR_SUCCEED';
     public const ROUTE_TWO_FACTOR = 'two_factor';
 
@@ -28,6 +28,8 @@ class OTPService
      * @param User $user
      *
      * @return TOTPInterface
+     *
+     * @throws \Exception
      */
     public function getUserOTP(User $user): TOTPInterface
     {
@@ -83,6 +85,8 @@ class OTPService
     /**
      * @param TokenStorageInterface $tokenStorage
      * @param SessionInterface $session
+     *
+     * @throws \Exception
      */
     public function addTwoFactorRole(TokenStorageInterface $tokenStorage, SessionInterface $session): void
     {

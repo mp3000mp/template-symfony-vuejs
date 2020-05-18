@@ -20,6 +20,7 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
  */
 class TermsOfServiceSubscriber implements EventSubscriberInterface
 {
+    /** @var string  */
     private const FIREWALL_NAME = 'main';
 
     /** @var RouterInterface  */
@@ -61,10 +62,12 @@ class TermsOfServiceSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // if already on TOS
         if (in_array($event->getRequest()->attributes->get('_route'), [TOSService::ROUTE_TOS, OTPService::ROUTE_TWO_FACTOR], true)) {
             return;
         }
 
+        // if authenticated and not already TOS ok
         $currentToken = $this->tokenStorage->getToken();
 
         if ($currentToken instanceof PostAuthenticationGuardToken
@@ -74,9 +77,11 @@ class TermsOfServiceSubscriber implements EventSubscriberInterface
             /** @var User $currentUser */
             $currentUser = $currentToken->getUser();
 
+            // if ok
             if ($this->TOSService->hasSignedLastTOS($currentUser)) {
                 $this->TOSService->addTOSSignedRole($this->tokenStorage, $event->getRequest()->getSession());
             } else {
+                // else redirect
                 $response = new RedirectResponse($this->router->generate(TOSService::ROUTE_TOS));
                 $event->setResponse($response);
             }

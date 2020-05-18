@@ -13,5 +13,8 @@
         {{ include('layout/footer.html.twig') }}
     </main>
 
-    <div id="js-infos" data-token="{{ getSharedSession() }}"></div>
+    <div id="js-infos"
+         data-device-token="{{ app.request.session.get('device_session_token') }}"
+         data-this-app="{{ app.request.session.get('this_app') }}"
+    ></div>
 {% endblock %}

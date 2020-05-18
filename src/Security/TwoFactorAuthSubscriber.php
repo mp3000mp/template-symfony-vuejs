@@ -49,12 +49,14 @@ class TwoFactorAuthSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::REQUEST => [['onKernelRequest', -10]],
+            KernelEvents::REQUEST => [['onKernelRequest', -5]],
         ];
     }
 
     /**
      * @param RequestEvent $event
+     *
+     * @throws \Exception
      */
     public function onKernelRequest(RequestEvent $event): void
     {
@@ -62,10 +64,12 @@ class TwoFactorAuthSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // if already on two factor form
         if (OTPService::ROUTE_TWO_FACTOR === $event->getRequest()->attributes->get('_route')) {
             return;
         }
 
+        // if authenticated and not already two factor ok
         $currentToken = $this->tokenStorage->getToken();
 
         if ($currentToken instanceof PostAuthenticationGuardToken
@@ -75,9 +79,11 @@ class TwoFactorAuthSubscriber implements EventSubscriberInterface
             /** @var User $user */
             $user = $currentToken->getUser();
 
+            // if two factor not set
             if (null === $user->getTwoFactorSecret()) {
                 $this->OTPService->addTwoFactorRole($this->tokenStorage, $event->getRequest()->getSession());
             } else {
+                // else redirect
                 $response = new RedirectResponse($this->router->generate(OTPService::ROUTE_TWO_FACTOR));
                 $event->setResponse($response);
             }

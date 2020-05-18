@@ -6,6 +6,7 @@
 parameters:
     APP_ENV: '%env(APP_ENV)%'
     EMAIL_DEV: '%env(EMAIL_DEV)%'
+    EMAIL_FROM: '%env(EMAIL_FROM)%'
 
 services:
     # default configuration for services in *this* file
@@ -28,7 +29,7 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     App\Service\Mailer\MailerService:
-        arguments: ['%APP_ENV%', '%EMAIL_DEV%']
+        arguments: ['%APP_ENV%', '%EMAIL_DEV%', '%EMAIL_FROM%']
 
     App\Service\Redis\RedisClient:
         arguments: ['%env(REDIS_HOST)%', '%env(REDIS_PORT)%', '%env(REDIS_AUTH)%']

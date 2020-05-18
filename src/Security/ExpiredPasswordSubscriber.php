@@ -4,6 +4,7 @@ namespace App\Security;
 
 use App\Entity\User;
 use App\Service\OTP\OTPService;
+use DateTime;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -62,32 +63,41 @@ class ExpiredPasswordSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // if already on expired password form
         if (in_array($event->getRequest()->attributes->get('_route'), [self::ROUTE_EXPIRED_PASSWORD, OTPService::ROUTE_TWO_FACTOR], true)) {
             return;
         }
 
+        // if authenticated and not already expired password ok
         $currentToken = $this->tokenStorage->getToken();
 
         if ($currentToken instanceof PostAuthenticationGuardToken
            && self::FIREWALL_NAME === $currentToken->getProviderKey()
            && !in_array(self::ROLE_EXPIRED_PASSWORD_SUCCEED, $currentToken->getRoleNames(), true)
         ) {
+
             // check if expired password
             /** @var User $currentUser */
             $currentUser = $currentToken->getUser();
-            $now = new \DateTime();
+            $now = new DateTime();
             $passwordUpdatedAt = $currentUser->getPasswordUpdatedAt();
             $diff = $now->diff($passwordUpdatedAt);
 
+            // if ok
             if ($diff->format('%a') < self::PASSWORD_EXPIRATION_DAYS) {
                 $this->addExpiredPasswordRole($this->tokenStorage, $event->getRequest()->getSession());
             } else {
+                // else redirect
                 $response = new RedirectResponse($this->router->generate(self::ROUTE_EXPIRED_PASSWORD));
                 $event->setResponse($response);
             }
         }
     }
 
+    /**
+     * @param TokenStorageInterface $tokenStorage
+     * @param SessionInterface $session
+     */
     private function addExpiredPasswordRole(TokenStorageInterface $tokenStorage, SessionInterface $session): void
     {
         /** @var PostAuthenticationGuardToken $currentToken */

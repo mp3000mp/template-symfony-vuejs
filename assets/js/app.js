@@ -10,11 +10,12 @@ window.$ = require('jquery');
 require('bootstrap');
 
 // socket
-require('../modules/shared-session/shared-session');
+require('../modules/device-session/device-session');
 
 // on page ready
 window.addEventListener('load', function () {
 
-
+	// socket modules
+	require('../modules/device-session/status-session');
 
 });

@@ -21,7 +21,7 @@ class AppController extends AbstractController
      *
      * @return Response
      */
-    public function home(): Response
+    public function home(Request $req): Response
     {
         return $this->render('app/index.html.twig', [
             'msg' => 'Hello world !',

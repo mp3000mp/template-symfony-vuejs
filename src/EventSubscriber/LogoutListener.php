@@ -2,8 +2,7 @@
 
 namespace App\EventSubscriber;
 
-use App\Entity\User;
-use App\Service\SharedSession\SharedSession;
+use App\Service\DeviceSession\DeviceSession;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -22,29 +21,33 @@ class LogoutListener implements LogoutSuccessHandlerInterface
     private $tokenStorage;
     /** @var RouterInterface  */
     private $router;
-    /** @var SharedSession  */
-    private $sharedSession;
+    /** @var DeviceSession  */
+    private $deviceSession;
 
-    public function __construct(TokenStorageInterface $tokenStorage, RouterInterface $router, SharedSession $sharedSession)
+    public function __construct(TokenStorageInterface $tokenStorage, RouterInterface $router, DeviceSession $deviceSession)
     {
         $this->tokenStorage = $tokenStorage;
         $this->router = $router;
-        $this->sharedSession = $sharedSession;
+        $this->deviceSession = $deviceSession;
     }
 
     /**
      * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response|void
+     *
+     * @throws \Exception
      */
     public function onLogoutSuccess(Request $request)
     {
         $currentToken = $this->tokenStorage->getToken();
 
         if ($currentToken instanceof PostAuthenticationGuardToken) {
-            /** @var User $user */
-            $user = $currentToken->getUser();
-            $this->sharedSession->destroy($user);
+            if ($request->getSession()->has('device_session_token')) {
+                $this->deviceSession->destroy($request->getSession()->get('device_session_token'), 1);
+            } else {
+                $request->getSession()->invalidate();
+            }
         }
         return new RedirectResponse($this->router->generate('login'));
     }

@@ -9,11 +9,11 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
  * Class ComplexPatternValidator
+ *
  * @package App\Validator\Constraints
  */
 class ComplexPatternValidator extends ConstraintValidator
 {
-
     /**
      * @param mixed $value
      * @param Constraint $constraint

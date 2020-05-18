@@ -24,7 +24,7 @@ class ApplicationFixtures extends Fixture
         $app->setType($portalType);
         $app->setVersion('1.1');
         $app->setImg('/img/favicon.png');
-        $app->setUrl('/');
+        $app->setUrl('http://template-sf.localhost');
 
         $manager->persist($app);
         $manager->flush();

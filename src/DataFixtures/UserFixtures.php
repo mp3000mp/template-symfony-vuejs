@@ -21,7 +21,7 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $password = 'ppaallddoorr';
+        $password = 'first_user';
 
         $user = new User();
         $encodedPassword = $this->encoder->encodePassword($user, $password);
