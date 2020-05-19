@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 use App\Kernel;
 use Symfony\Component\ErrorHandler\Debug;
