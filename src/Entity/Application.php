@@ -53,6 +53,12 @@ class Application
     private $version;
 
     /**
+     * @var string
+     * @ORM\Column(type="string", length=255)
+     */
+    private $api_token;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -147,4 +153,21 @@ class Application
     {
         $this->version = $version;
     }
+
+    /**
+     * @return string
+     */
+    public function getApiToken(): string
+    {
+        return $this->api_token;
+    }
+
+    /**
+     * @param string $api_token
+     */
+    public function setApiToken(string $api_token): void
+    {
+        $this->api_token = $api_token;
+    }
+
 }

@@ -3,13 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Service\Client\PortalClient;
 use App\Service\OTP\OTPService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * Class AppController.
@@ -21,8 +24,13 @@ class AppController extends AbstractController
      *
      * @return Response
      */
-    public function home(Request $req): Response
+    public function home(Request $req, PortalClient $client): Response
     {
+
+        // todo circular reference
+        //$response = $client->request('GET', 'user/1');
+        //dump($response->getContent(false));
+
         return $this->render('app/index.html.twig', [
             'msg' => 'Hello world !',
         ]);

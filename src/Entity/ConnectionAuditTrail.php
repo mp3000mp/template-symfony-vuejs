@@ -24,7 +24,7 @@ class ConnectionAuditTrail
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="App\Entity\user")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

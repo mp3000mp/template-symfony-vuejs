@@ -348,7 +348,7 @@ class User implements UserInterface, \Serializable, EquatableInterface
     /**
      * @return TermsOfServiceSignature[]
      */
-    public function getTermsOfServiceSignatures(): array
+    public function getTermsOfServiceSignatures()
     {
         return $this->terms_of_service_signatures;
     }

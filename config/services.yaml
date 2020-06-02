@@ -7,7 +7,7 @@ parameters:
     APP_ENV: '%env(APP_ENV)%'
     EMAIL_DEV: '%env(EMAIL_DEV)%'
     EMAIL_FROM: '%env(EMAIL_FROM)%'
-    
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -33,3 +33,6 @@ services:
 
     App\Service\Redis\RedisClient:
         arguments: ['%env(REDIS_HOST)%', '%env(REDIS_PORT)%', '%env(REDIS_AUTH)%']
+
+    App\Service\Client\PortalClient:
+        arguments: ['%env(PORTAL_URL)%', '%env(APP_SECRET)%']
