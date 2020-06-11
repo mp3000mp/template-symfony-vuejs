@@ -8,6 +8,7 @@ use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Class User
@@ -21,6 +22,7 @@ class User implements UserInterface, \Serializable, EquatableInterface
 {
     /**
      * @var int
+     * @Groups("g1")
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -35,6 +37,7 @@ class User implements UserInterface, \Serializable, EquatableInterface
 
     /**
      * @var string
+     * @Groups("g1")
      * @ORM\Column(type="string", length=100, unique=true)
      * @Assert\Email(message = "entity.User.constraint.email.email")
      */
@@ -42,6 +45,7 @@ class User implements UserInterface, \Serializable, EquatableInterface
 
     /**
      * @var string
+     * @Groups("g1")
      * @ORM\Column(type="string", length=55)
      */
     private $username;
@@ -84,6 +88,7 @@ class User implements UserInterface, \Serializable, EquatableInterface
 
     /**
      * @var string
+     * @Groups("g1")
      * @ORM\Column(type="string", length=2)
      */
     private $locale = 'en';

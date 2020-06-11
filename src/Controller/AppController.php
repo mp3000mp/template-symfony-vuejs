@@ -28,8 +28,8 @@ class AppController extends AbstractController
     {
 
         // todo circular reference
-        //$response = $client->request('GET', 'user/1');
-        //dump($response->getContent(false));
+        $response = $client->request('GET', 'user/1');
+        dump($response->getContent(false));
 
         return $this->render('app/index.html.twig', [
             'msg' => 'Hello world !',

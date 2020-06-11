@@ -4,7 +4,7 @@ fos_rest:
     allowed_methods_listener:  true
 #    routing_loader: true
     view:
-        view_response_listener:  'force'
+        view_response_listener:  true
 #    exception:
 #        codes:
 #            App\Exception\MyException: 403
@@ -13,5 +13,4 @@ fos_rest:
     format_listener:
         enabled: true
         rules:
-            - { path: ^/api, prefer_extension: true, fallback_format: json, priorities: [ json, html ] }
-            - { path: '^/', priorities: [ 'html', '*/*'], fallback_format: html, prefer_extension: true }
+            - { path: '^/api', fallback_format: 'json', priorities: [ 'json' ] }
