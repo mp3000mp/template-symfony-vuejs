@@ -8,6 +8,7 @@ use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -15,6 +16,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *
  * @package App\Entity
  *
+ * @ApiResource(
+ *     collectionOperations={"get", "post"},
+ *     itemOperations={"get", "patch"},
+ *     normalizationContext={"groups"={"api", "api.readonly"}},
+ *     denormalizationContext={"groups"={"api"}}
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="entity.User.email.already_exists")
  */
@@ -22,10 +29,10 @@ class User implements UserInterface, \Serializable, EquatableInterface
 {
     /**
      * @var int
-     * @Groups("g1")
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("api")
      */
     private $id;
 
@@ -37,16 +44,16 @@ class User implements UserInterface, \Serializable, EquatableInterface
 
     /**
      * @var string
-     * @Groups("g1")
      * @ORM\Column(type="string", length=100, unique=true)
      * @Assert\Email(message = "entity.User.constraint.email.email")
+     * @Groups("api")
      */
     private $email;
 
     /**
      * @var string
-     * @Groups("g1")
      * @ORM\Column(type="string", length=55)
+     * @Groups("api")
      */
     private $username;
 
@@ -77,8 +84,9 @@ class User implements UserInterface, \Serializable, EquatableInterface
     /**
      * @var bool
      * @ORM\Column(type="boolean")
+     * @Groups("api.readonly")
      */
-    private $is_enabled = false;
+    private $isEnabled = false;
 
     /**
      * @var array
@@ -88,8 +96,8 @@ class User implements UserInterface, \Serializable, EquatableInterface
 
     /**
      * @var string
-     * @Groups("g1")
      * @ORM\Column(type="string", length=2)
+     * @Groups("api")
      */
     private $locale = 'en';
 
@@ -102,8 +110,9 @@ class User implements UserInterface, \Serializable, EquatableInterface
     /**
      * @var bool
      * @ORM\Column(type="boolean")
+     * @Groups("api.readonly")
      */
-    private $is_super_admin = false;
+    private $isSuperAdmin = false;
 
     /**
      * @return mixed
@@ -246,17 +255,17 @@ class User implements UserInterface, \Serializable, EquatableInterface
     /**
      * @return bool
      */
-    public function isEnabled(): bool
+    public function getIsEnabled(): bool
     {
-        return $this->is_enabled;
+        return $this->isEnabled;
     }
 
     /**
-     * @param bool $is_enabled
+     * @param bool $isEnabled
      */
-    public function setIsEnabled(bool $is_enabled): void
+    public function setIsEnabled(bool $isEnabled): void
     {
-        $this->is_enabled = $is_enabled;
+        $this->isEnabled = $isEnabled;
     }
 
     /**
@@ -291,6 +300,19 @@ class User implements UserInterface, \Serializable, EquatableInterface
     }
 
     /**
+     * @param string $role
+     *
+     * @return $this
+     */
+    public function addRole(string $role): self
+    {
+        if (!in_array($role, $this->roles, true)) {
+            $this->roles[] = $role;
+        }
+        return $this;
+    }
+
+    /**
      * @inheritDoc
      */
     public function serialize(): string
@@ -300,7 +322,7 @@ class User implements UserInterface, \Serializable, EquatableInterface
             $this->username,
             $this->email,
             $this->password,
-            $this->is_enabled,
+            $this->isEnabled,
             // see section on salt below
             // $this->salt,
         ]);
@@ -312,7 +334,7 @@ class User implements UserInterface, \Serializable, EquatableInterface
      */
     public function unserialize($serialized): array
     {
-        return list($this->id, $this->username, $this->email, $this->password, $this->is_enabled,            // see section on salt below
+        return list($this->id, $this->username, $this->email, $this->password, $this->isEnabled,            // see section on salt below
             // $this->salt
             ) = unserialize($serialized, ['allowed_classes' => false]);
     }
@@ -361,16 +383,16 @@ class User implements UserInterface, \Serializable, EquatableInterface
     /**
      * @return bool
      */
-    public function isIsSuperAdmin(): bool
+    public function getIsSuperAdmin(): bool
     {
-        return $this->is_super_admin;
+        return $this->isSuperAdmin;
     }
 
     /**
-     * @param bool $is_super_admin
+     * @param bool $isSuperAdmin
      */
-    public function setIsSuperAdmin(bool $is_super_admin): void
+    public function setIsSuperAdmin(bool $isSuperAdmin): void
     {
-        $this->is_super_admin = $is_super_admin;
+        $this->isSuperAdmin = $isSuperAdmin;
     }
 }
