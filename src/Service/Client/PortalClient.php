@@ -2,6 +2,7 @@
 
 namespace App\Service\Client;
 
+use App\Service\DeviceSession\DeviceSession;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -32,7 +33,7 @@ class PortalClient
     public function __construct(string $portalUrl, string $appSecret, SessionInterface $session, HttpClientInterface $client)
     {
         $this->portalUrl = $portalUrl.(substr($portalUrl,-1) === '/' ? '' : '/').'api/';
-        $this->bearer = $appSecret.'.'.$session->get('device_session_token');
+        $this->bearer = $appSecret.'.'.$session->get(DeviceSession::SESSION_TOKEN_KEY);
         $this->client = $client;
     }
 

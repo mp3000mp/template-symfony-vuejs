@@ -4,7 +4,7 @@ namespace App\EventSubscriber;
 
 use App\Entity\User;
 use App\Service\OTP\OTPService;
-use App\Service\TOS\TOSService;
+use App\Service\TermsOfService\TOSService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;

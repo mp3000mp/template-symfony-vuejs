@@ -115,6 +115,12 @@ class User implements UserInterface, \Serializable, EquatableInterface
     private $isSuperAdmin = false;
 
     /**
+     * @var Application[]
+     * @ORM\ManyToMany(targetEntity="App\Entity\Application", inversedBy="users")
+     */
+    private $applications;
+
+    /**
      * @return mixed
      */
     public function getId()

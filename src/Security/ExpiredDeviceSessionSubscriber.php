@@ -78,12 +78,12 @@ class ExpiredDeviceSessionSubscriber implements EventSubscriberInterface
 
             // if authenticated with device session and not already expired shared session ok
             if (self::FIREWALL_NAME === $currentToken->getProviderKey()
-                && $session->has('device_session_token')) {
+                && $session->has(DeviceSession::SESSION_TOKEN_KEY)) {
 
                 // si session redis existe pas => timeout ou que session en base ne correspond pas (=session php expiration trop long par rapport socket)
-                if (!$this->deviceSession->deviceSessionExists($session->get('device_session_token'))) {
+                if (!$this->deviceSession->deviceSessionExists($session->get(DeviceSession::SESSION_TOKEN_KEY))) {
                     // si anomalie on kill la session
-                    $this->deviceSession->destroy($session->get('device_session_token'), 2);
+                    $this->deviceSession->destroy($session->get(DeviceSession::SESSION_TOKEN_KEY), 2);
                     $this->tokenStorage->setToken(null);
                     $session->invalidate();
                     $session->getFlashBag()->add('info', 'security.session_error');

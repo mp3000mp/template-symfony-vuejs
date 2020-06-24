@@ -19,6 +19,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 class AppController extends AbstractController
 {
+
     /**
      * @route("/", name="home")
      *

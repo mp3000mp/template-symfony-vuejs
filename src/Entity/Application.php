@@ -59,6 +59,12 @@ class Application
     private $api_token;
 
     /**
+     * @var User[]
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="applications")
+     */
+    private $users;
+
+    /**
      * @return int
      */
     public function getId(): int

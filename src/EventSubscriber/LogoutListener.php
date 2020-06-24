@@ -43,8 +43,8 @@ class LogoutListener implements LogoutSuccessHandlerInterface
         $currentToken = $this->tokenStorage->getToken();
 
         if ($currentToken instanceof PostAuthenticationGuardToken) {
-            if ($request->getSession()->has('device_session_token')) {
-                $this->deviceSession->destroy($request->getSession()->get('device_session_token'), 1);
+            if ($request->getSession()->has(DeviceSession::SESSION_TOKEN_KEY)) {
+                $this->deviceSession->destroy($request->getSession()->get(DeviceSession::SESSION_TOKEN_KEY), 1);
             } else {
                 $request->getSession()->invalidate();
             }

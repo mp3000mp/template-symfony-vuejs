@@ -20,6 +20,10 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class DeviceSession
 {
+
+    /** @var string  */
+    public const SESSION_TOKEN_KEY = 'device_session_token';
+
     private const prefix = 'DST_';
 
     /** @var EntityManagerInterface */
@@ -78,7 +82,7 @@ class DeviceSession
         $this->deviceSessionToken = $this->generateToken();
 
         // set session
-        $this->session->set('device_session_token', $this->deviceSessionToken);
+        $this->session->set(DeviceSession::SESSION_TOKEN_KEY, $this->deviceSessionToken);
         $this->session->set('this_app', $portal->getId());
 
         // set session token in db
@@ -99,7 +103,7 @@ class DeviceSession
         $this->redis->delete($deviceSessionToken);
 
         // destroy in session
-        $this->session->remove('device_session_token');
+        $this->session->remove(DeviceSession::SESSION_TOKEN_KEY);
 
         // log logout
         /** @var ConnectionAuditTrailRepository $repConnAT */

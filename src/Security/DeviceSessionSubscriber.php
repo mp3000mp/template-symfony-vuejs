@@ -73,7 +73,7 @@ class DeviceSessionSubscriber implements EventSubscriberInterface
 
             // if authenticated and not already device session
             if (self::FIREWALL_NAME === $currentToken->getProviderKey()
-                && !$session->has('device_session_token')
+                && !$session->has(DeviceSession::SESSION_TOKEN_KEY)
                 && in_array(OTPService::ROLE_TWO_FACTOR_SUCCEED, $currentToken->getRoleNames(), true)) {
 
                 // start device session

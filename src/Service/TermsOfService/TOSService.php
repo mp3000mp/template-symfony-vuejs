@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Service\TOS;
+namespace App\Service\TermsOfService;
 
 use App\Entity\TermsOfService;
 use App\Entity\TermsOfServiceSignature;
