@@ -122,6 +122,9 @@
     "doctrine/reflection": {
         "version": "1.2.1"
     },
+    "doctrine/sql-formatter": {
+        "version": "1.1.1"
+    },
     "egulias/email-validator": {
         "version": "2.1.17"
     },
@@ -130,6 +133,9 @@
     },
     "endroid/qr-code-bundle": {
         "version": "3.4.3"
+    },
+    "exsyst/swagger": {
+        "version": "v0.4.1"
     },
     "fig/link-util": {
         "version": "1.1.1"
@@ -166,6 +172,19 @@
     },
     "myclabs/php-enum": {
         "version": "1.7.6"
+    },
+    "nelmio/api-doc-bundle": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "c8e0c38e1a280ab9e37587a8fa32b251d5bc1c94"
+        },
+        "files": [
+            "./config/packages/nelmio_api_doc.yaml",
+            "./config/routes/nelmio_api_doc.yaml"
+        ]
     },
     "nelmio/cors-bundle": {
         "version": "1.5",
@@ -445,6 +464,9 @@
     "symfony/polyfill-intl-idn": {
         "version": "v1.17.0"
     },
+    "symfony/polyfill-intl-normalizer": {
+        "version": "v1.18.1"
+    },
     "symfony/polyfill-mbstring": {
         "version": "v1.17.0"
     },
@@ -631,5 +653,8 @@
     },
     "zendframework/zend-eventmanager": {
         "version": "3.2.1"
+    },
+    "zircote/swagger-php": {
+        "version": "2.0.16"
     }
 }

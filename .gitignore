@@ -27,9 +27,7 @@
 # npm/yarn
 /node_modules
 /npm-debug.log
-/package-lock.json
 /yarn-debug.log
-/yarn.lock
 
 ###> friendsofphp/php-cs-fixer ###
 /.php_cs

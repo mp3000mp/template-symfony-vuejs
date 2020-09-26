@@ -22,9 +22,10 @@ class ApplicationFixtures extends Fixture
         $app = new Application();
         $app->setName('portal');
         $app->setType($portalType);
-        $app->setVersion('1.1');
+        $app->setVersion('2.0');
         $app->setImg('/img/favicon.png');
-        $app->setUrl('http://template-sf.localhost');
+        $app->setUrl('http://template-symfony.localhost');
+        $app->setApiToken(uniqid());
 
         $manager->persist($app);
         $manager->flush();

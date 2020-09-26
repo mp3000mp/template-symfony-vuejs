@@ -60,7 +60,7 @@ class Application
 
     /**
      * @var User[]
-     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="applications")
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="applications")
      */
     private $users;
 
