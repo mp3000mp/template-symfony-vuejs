@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Form\Type;
 
@@ -10,16 +12,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Class LoginFormType
- *
- * @package App\Form\Type
+ * Class LoginFormType.
  */
 class LoginType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -31,7 +27,6 @@ class LoginType extends AbstractType
                 'label' => 'entity.user.field.password',
             ])
             ->add(SSOService::SESSION_SP_URL_KEY, HiddenType::class, [
-
             ])
             ;
     }

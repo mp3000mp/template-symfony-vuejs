@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Security;
 
@@ -15,28 +17,22 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
  * Check if local session and redis synchro
- * Class ExpiredDeviceSessionSubscriber
- *
- * @package App\EventSubscriber
+ * Class ExpiredDeviceSessionSubscriber.
  */
 class ExpiredDeviceSessionSubscriber implements EventSubscriberInterface
 {
-    /** @var string  */
+    /** @var string */
     private const FIREWALL_NAME = 'main';
 
-    /** @var RouterInterface  */
+    /** @var RouterInterface */
     private $router;
-    /** @var TokenStorageInterface  */
+    /** @var TokenStorageInterface */
     private $tokenStorage;
-    /** @var DeviceSession  */
+    /** @var DeviceSession */
     private $deviceSession;
 
     /**
      * ExpiredSessionSubscriber constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     * @param RouterInterface $router
-     * @param DeviceSession $deviceSession
      */
     public function __construct(TokenStorageInterface $tokenStorage, RouterInterface $router, DeviceSession $deviceSession)
     {
@@ -56,8 +52,6 @@ class ExpiredDeviceSessionSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param RequestEvent $event
-     *
      * @throws \Exception
      */
     public function onKernelRequest(RequestEvent $event): void
@@ -70,7 +64,6 @@ class ExpiredDeviceSessionSubscriber implements EventSubscriberInterface
         $currentToken = $this->tokenStorage->getToken();
 
         if ($currentToken instanceof PostAuthenticationGuardToken) {
-
             /** @var User $user */
             $user = $currentToken->getUser();
             /** @var Session $session */
@@ -79,7 +72,6 @@ class ExpiredDeviceSessionSubscriber implements EventSubscriberInterface
             // if authenticated with device session and not already expired shared session ok
             if (self::FIREWALL_NAME === $currentToken->getProviderKey()
                 && $session->has(DeviceSession::SESSION_TOKEN_KEY)) {
-
                 // si session redis existe pas => timeout ou que session en base ne correspond pas (=session php expiration trop long par rapport socket)
                 if (!$this->deviceSession->deviceSessionExists($session->get(DeviceSession::SESSION_TOKEN_KEY))) {
                     // si anomalie on kill la session
@@ -89,6 +81,7 @@ class ExpiredDeviceSessionSubscriber implements EventSubscriberInterface
                     $session->getFlashBag()->add('info', 'security.session_error');
                     $response = new RedirectResponse($this->router->generate('login'));
                     $event->setResponse($response);
+
                     return;
                 }
             }

@@ -1,20 +1,20 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\EquatableInterface;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class User
- *
- * @package App\Entity
+ * Class User.
  *
  * @ApiResource(
  *     collectionOperations={"get", "post"},
@@ -136,27 +136,16 @@ class User implements UserInterface, \Serializable, EquatableInterface
         $this->id = $id;
     }
 
-    /**
-     * @param UserInterface $user
-     *
-     * @return bool
-     */
     public function isEqualTo(UserInterface $user): bool
     {
         return $this->username === $user->getUsername();
     }
 
-    /**
-     * @return string|null
-     */
     public function getTwoFactorSecret(): ?string
     {
         return $this->twoFactorSecret;
     }
 
-    /**
-     * @param string|null $twoFactorSecret
-     */
     public function setTwoFactorSecret(?string $twoFactorSecret): void
     {
         $this->twoFactorSecret = $twoFactorSecret;
@@ -258,17 +247,11 @@ class User implements UserInterface, \Serializable, EquatableInterface
         $this->reset_password_at = $reset_password_at;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsEnabled(): bool
     {
         return $this->isEnabled;
     }
 
-    /**
-     * @param bool $isEnabled
-     */
     public function setIsEnabled(bool $isEnabled): void
     {
         $this->isEnabled = $isEnabled;
@@ -276,8 +259,6 @@ class User implements UserInterface, \Serializable, EquatableInterface
 
     /**
      * Returns the roles or permissions granted to the user for security.
-     *
-     * @return array
      */
     public function getRoles(): array
     {
@@ -291,8 +272,6 @@ class User implements UserInterface, \Serializable, EquatableInterface
     }
 
     /**
-     * @param array $roles
-     *
      * @return User
      */
     public function setRoles(array $roles): self
@@ -306,8 +285,6 @@ class User implements UserInterface, \Serializable, EquatableInterface
     }
 
     /**
-     * @param string $role
-     *
      * @return $this
      */
     public function addRole(string $role): self
@@ -315,11 +292,12 @@ class User implements UserInterface, \Serializable, EquatableInterface
         if (!in_array($role, $this->roles, true)) {
             $this->roles[] = $role;
         }
+
         return $this;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function serialize(): string
     {
@@ -336,7 +314,7 @@ class User implements UserInterface, \Serializable, EquatableInterface
 
     /**
      * @param string $serialized
-     * @inheritDoc
+     *                           {@inheritdoc}
      */
     public function unserialize($serialized): array
     {
@@ -346,7 +324,7 @@ class User implements UserInterface, \Serializable, EquatableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getSalt()
     {
@@ -356,23 +334,17 @@ class User implements UserInterface, \Serializable, EquatableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function eraseCredentials(): void
     {
     }
 
-    /**
-     * @return string
-     */
     public function getLocale(): string
     {
         return $this->locale;
     }
 
-    /**
-     * @param string $locale
-     */
     public function setLocale(string $locale): void
     {
         $this->locale = $locale;
@@ -386,17 +358,11 @@ class User implements UserInterface, \Serializable, EquatableInterface
         return $this->terms_of_service_signatures;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsSuperAdmin(): bool
     {
         return $this->isSuperAdmin;
     }
 
-    /**
-     * @param bool $isSuperAdmin
-     */
     public function setIsSuperAdmin(bool $isSuperAdmin): void
     {
         $this->isSuperAdmin = $isSuperAdmin;

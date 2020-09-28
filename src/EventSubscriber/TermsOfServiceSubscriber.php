@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
@@ -14,27 +16,22 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
- * Class LocaleSubscriber
- *
- * @package App\EventSubscriber
+ * Class LocaleSubscriber.
  */
 class TermsOfServiceSubscriber implements EventSubscriberInterface
 {
-    /** @var string  */
+    /** @var string */
     private const FIREWALL_NAME = 'main';
 
-    /** @var RouterInterface  */
+    /** @var RouterInterface */
     private $router;
-    /** @var TokenStorageInterface  */
+    /** @var TokenStorageInterface */
     private $tokenStorage;
-    /** @var TOSService  */
+    /** @var TOSService */
     private $TOSService;
 
     /**
      * DoubleAuthSubscriber constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     * @param RouterInterface $router
      */
     public function __construct(TokenStorageInterface $tokenStorage, RouterInterface $router, TOSService $TOSService)
     {
@@ -53,9 +50,6 @@ class TermsOfServiceSubscriber implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param RequestEvent $event
-     */
     public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMasterRequest()) {

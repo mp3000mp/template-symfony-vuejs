@@ -31,7 +31,7 @@ services:
     App\Service\Mailer\MailerService:
         arguments: ['%APP_ENV%', '%EMAIL_DEV%', '%EMAIL_FROM%']
 
-    App\Service\Redis\RedisClient:
+    mp3000mp\RedisClient\RedisClient:
         arguments: ['%env(REDIS_HOST)%', '%env(REDIS_PORT)%', '%env(REDIS_AUTH)%']
 
     App\Service\Client\PortalClient:

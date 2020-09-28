@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Service\OTP;
 
@@ -11,9 +13,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
- * Class OTPService
- *
- * @package App\Service\OTPService
+ * Class OTPService.
  */
 class OTPService
 {
@@ -25,10 +25,6 @@ class OTPService
     private $secret;
 
     /**
-     * @param User $user
-     *
-     * @return TOTPInterface
-     *
      * @throws \Exception
      */
     public function getUserOTP(User $user): TOTPInterface
@@ -41,11 +37,6 @@ class OTPService
     }
 
     /**
-     * @param User $user
-     * @param string|null $secret
-     *
-     * @return TOTPInterface
-     *
      * @throws \Exception
      */
     public function generateNewOtp(User $user, ?string $secret = null): TOTPInterface
@@ -53,39 +44,31 @@ class OTPService
         if (null === $secret) {
             $secret = $this->generateSecret();
         }
+
         return $this->createOTP($secret, $user);
     }
 
-    /**
-     * @param string $secret
-     * @param User $user
-     *
-     * @return TOTPInterface
-     */
     private function createOTP(string $secret, User $user): TOTPInterface
     {
         $otp = TOTP::create($secret);
         $otp->setLabel($user->getUsername());
         $otp->setIssuer('Template');
         $otp->setParameter('image', self::IMG_URL);
+
         return $otp;
     }
 
     /**
-     * @return string
-     *
      * @throws \Exception
      */
     public function generateSecret(): string
     {
         $this->secret = trim(Base32::encodeUpper(hash('sha256', random_bytes(64))), '=');
+
         return $this->secret;
     }
 
     /**
-     * @param TokenStorageInterface $tokenStorage
-     * @param SessionInterface $session
-     *
      * @throws \Exception
      */
     public function addTwoFactorRole(TokenStorageInterface $tokenStorage, SessionInterface $session): void
@@ -95,6 +78,6 @@ class OTPService
         $roles = array_merge($currentToken->getRoleNames(), [self::ROLE_TWO_FACTOR_SUCCEED]);
         $newToken = new PostAuthenticationGuardToken($currentToken->getUser(), $currentToken->getProviderKey(), $roles);
         $tokenStorage->setToken($newToken);
-        $session->set('_security_' . $currentToken->getProviderKey(), serialize($newToken));
+        $session->set('_security_'.$currentToken->getProviderKey(), serialize($newToken));
     }
 }

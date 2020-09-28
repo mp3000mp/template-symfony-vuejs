@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Security;
 
@@ -14,25 +16,20 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
  * Init device session
- * Class DeviceSessionSubscriber
- *
- * @package App\EventSubscriber
+ * Class DeviceSessionSubscriber.
  */
 class DeviceSessionSubscriber implements EventSubscriberInterface
 {
-    /** @var string  */
+    /** @var string */
     private const FIREWALL_NAME = 'main';
 
-    /** @var TokenStorageInterface  */
+    /** @var TokenStorageInterface */
     private $tokenStorage;
-    /** @var DeviceSession  */
+    /** @var DeviceSession */
     private $deviceSession;
 
     /**
      * ExpiredSessionSubscriber constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     * @param DeviceSession $deviceSession
      */
     public function __construct(TokenStorageInterface $tokenStorage, DeviceSession $deviceSession)
     {
@@ -51,8 +48,6 @@ class DeviceSessionSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param RequestEvent $event
-     *
      * @throws \Exception
      */
     public function onKernelRequest(RequestEvent $event): void
@@ -65,7 +60,6 @@ class DeviceSessionSubscriber implements EventSubscriberInterface
         $currentToken = $this->tokenStorage->getToken();
 
         if ($currentToken instanceof PostAuthenticationGuardToken) {
-
             /** @var User $user */
             $user = $currentToken->getUser();
             /** @var Session $session */
@@ -75,7 +69,6 @@ class DeviceSessionSubscriber implements EventSubscriberInterface
             if (self::FIREWALL_NAME === $currentToken->getProviderKey()
                 && !$session->has(DeviceSession::SESSION_TOKEN_KEY)
                 && in_array(OTPService::ROLE_TWO_FACTOR_SUCCEED, $currentToken->getRoleNames(), true)) {
-
                 // start device session
                 $this->deviceSession->createSession($user);
             }

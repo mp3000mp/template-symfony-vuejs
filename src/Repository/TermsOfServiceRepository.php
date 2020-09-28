@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -16,8 +18,6 @@ class TermsOfServiceRepository extends ServiceEntityRepository
 {
     /**
      * UserRepository constructor.
-     *
-     * @param ManagerRegistry $registry
      */
     public function __construct(ManagerRegistry $registry)
     {
@@ -25,8 +25,6 @@ class TermsOfServiceRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return TermsOfService|null
-     *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findLast(): ?TermsOfService

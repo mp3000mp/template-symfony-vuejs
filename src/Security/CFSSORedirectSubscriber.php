@@ -1,6 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
-    namespace App\Security;
+declare(strict_types=1);
+
+namespace App\Security;
 
     use App\Entity\User;
     use App\Service\SingleSignOn\SSOService;
@@ -15,25 +17,21 @@
 
     /**
      * Init device session
-     * Class CFSSORedirectSubscriber
-     *
-     * @package App\EventSubscriber
+     * Class CFSSORedirectSubscriber.
      */
     class CFSSORedirectSubscriber implements EventSubscriberInterface
     {
-        /** @var string  */
+        /** @var string */
         private const FIREWALL_NAME = 'main';
 
-        /** @var TokenStorageInterface  */
+        /** @var TokenStorageInterface */
         private $tokenStorage;
 
-        /** @var RouterInterface  */
+        /** @var RouterInterface */
         private $router;
 
         /**
          * CFSSORedirectSubscriber constructor.
-         *
-         * @param TokenStorageInterface $tokenStorage
          */
         public function __construct(TokenStorageInterface $tokenStorage, RouterInterface $router)
         {
@@ -52,8 +50,6 @@
         }
 
         /**
-         * @param RequestEvent $event
-         *
          * @throws \Exception
          */
         public function onKernelRequest(RequestEvent $event): void
@@ -66,18 +62,16 @@
             $currentToken = $this->tokenStorage->getToken();
 
             if ($currentToken instanceof PostAuthenticationGuardToken) {
-
                 /** @var User $user */
                 $user = $currentToken->getUser();
                 /** @var Session $session */
                 $session = $event->getRequest()->getSession();
 
                 // if authenticated and not already device session
-                if ($user !== null
+                if (null !== $user
                     && self::FIREWALL_NAME === $currentToken->getProviderKey()
                     && $session->has(SSOService::SESSION_SP_URL_KEY)
-                ){
-
+                ) {
                     // redirect
                     $url = $session->get(SSOService::SESSION_SP_URL_KEY);
                     $session->remove(SSOService::SESSION_SP_URL_KEY);

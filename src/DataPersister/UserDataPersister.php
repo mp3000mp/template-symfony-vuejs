@@ -5,25 +5,23 @@ namespace App\DataPersister;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use App\Entity\User;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class UserDataPersister implements ContextAwareDataPersisterInterface
 {
-
-    /** @var DataPersisterInterface  */
+    /** @var DataPersisterInterface */
     private $decorated;
 
     /**
      * UserDataPersister constructor.
-     *
-     * @param DataPersisterInterface $decorated
      */
     public function __construct(DataPersisterInterface $decorated)
     {
         $this->decorated = $decorated;
     }
 
+    /**
+     * @param mixed $data
+     */
     public function supports($data, array $context = []): bool
     {
         return $data instanceof User;
@@ -31,14 +29,13 @@ class UserDataPersister implements ContextAwareDataPersisterInterface
 
     /**
      * @param User $data
-     * @param array $context
      *
      * @return object|void
      */
     public function persist($data, array $context = [])
     {
         // if create
-        if ($context['collection_operation_name'] !== 'post') {
+        if ('post' !== $context['collection_operation_name']) {
             $data->setResetPasswordToken('todo'); // todo token
             $data->setResetPasswordAt(new \DateTime());
             $data->addRole('ROLE_USER');
@@ -53,9 +50,11 @@ class UserDataPersister implements ContextAwareDataPersisterInterface
         return $data;
     }
 
-    public function remove($data, array $context = [])
+    /**
+     * @param User $data
+     */
+    public function remove($data, array $context = []): void
     {
         // on remove pas
     }
-
 }

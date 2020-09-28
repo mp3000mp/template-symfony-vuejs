@@ -1,10 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\Type\ForgottenPasswordType;
-use App\Form\Type\LoginType;
 use App\Form\Type\ResetPasswordType;
 use App\Form\Type\SetPasswordType;
 use App\Service\Mailer\MailerService;
@@ -16,19 +17,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
  * Class AppController.
  */
 class PasswordController extends AbstractController
 {
-
     /**
      * @Route("/reset-password", name="reset_password")
-     *
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
      *
      * @return RedirectResponse|Response
      *
@@ -36,7 +32,6 @@ class PasswordController extends AbstractController
      */
     public function resetPassword(Request $request, UserPasswordEncoderInterface $encoder)
     {
-
         // create form
         $form = $this->createForm(ResetPasswordType::class);
         $form->handleRequest($request);
@@ -62,6 +57,7 @@ class PasswordController extends AbstractController
 
                 // redirect
                 $this->addFlash('success', 'security.reset_password_success');
+
                 return $this->redirectToRoute('home');
             } else {
                 $form->get('password_current')->addError(new FormError('security.connexion.err.bad_password'));
@@ -77,22 +73,17 @@ class PasswordController extends AbstractController
     /**
      * @Route("/forgotten-password", name="forgotten_password")
      *
-     * @param Request $request
-     * @param MailerService $mailerService
-     *
      * @return RedirectResponse|Response
      *
      * @throws \Exception
      */
     public function forgottenPassword(Request $request, MailerService $mailerService)
     {
-
         // create form
         $form = $this->createForm(ForgottenPasswordType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             // get user
             $em = $this->getDoctrine()->getManager();
             $user = $em->getRepository(User::class)
@@ -118,6 +109,7 @@ class PasswordController extends AbstractController
             /** @var Session $session */
             $session = $request->getSession();
             $session->getFlashBag()->add('info', 'security.forgotten_password.msg.success');
+
             return $this->redirectToRoute('login');
         }
 
@@ -129,9 +121,6 @@ class PasswordController extends AbstractController
 
     /**
      * @Route("/set-password/{token}", name="set_password")
-     *
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
      *
      * @return RedirectResponse|Response
      *
@@ -150,6 +139,7 @@ class PasswordController extends AbstractController
             /** @var Session $session */
             $session = $request->getSession();
             $session->getFlashBag()->add('warning', 'security.set_password.bad_token');
+
             return $this->redirectToRoute('login');
         }
 
@@ -172,6 +162,7 @@ class PasswordController extends AbstractController
 
             // redirect
             $this->addFlash('success', 'security.set_password_success');
+
             return $this->redirectToRoute('home');
         }
 
@@ -183,22 +174,13 @@ class PasswordController extends AbstractController
 
     /**
      * @Route("/expired-password", name="expired_password")
-     *
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
      */
 
     /**
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
-     *
-     * @return Response
-     *
      * @throws \Exception
      */
     public function expiredPassword(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
-
         // create form
         $form = $this->createForm(SetPasswordType::class);
         $form->handleRequest($request);
@@ -222,6 +204,7 @@ class PasswordController extends AbstractController
 
             // redirect
             $this->addFlash('success', 'security.set_password_success');
+
             return $this->redirectToRoute('home');
         }
 

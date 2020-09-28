@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\DataFixtures;
 
@@ -7,9 +9,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 /**
- * Class ApplicationTypeFixtures
- *
- * @package App\DataFixtures
+ * Class ApplicationTypeFixtures.
  */
 class ApplicationTypeFixtures extends Fixture
 {

@@ -1,42 +1,33 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Service\Mailer;
 
 use Swift_Mailer;
-
-use Symfony\Component\Translation\Translator;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 /**
- * Class MailerService
- *
- * @package App\Service\Mailer
+ * Class MailerService.
  */
 class MailerService
 {
-    /** @var Swift_Mailer  */
+    /** @var Swift_Mailer */
     private $mailer;
-    /** @var Environment  */
+    /** @var Environment */
     private $renderer;
     /** @var string */
     private $env;
     /** @var TranslatorInterface */
     private $translator;
-    /** @var string  */
+    /** @var string */
     public static $EMAIL_DEV;
     /** @var string */
     public static $EMAIL_FROM;
 
     /**
      * Swift constructor.
-     *
-     * @param string $APP_ENV
-     * @param string $EMAIL_DEV
-     * @param string $EMAIL_FROM
-     * @param Swift_Mailer $mailer
-     * @param Environment $renderer
-     * @param TranslatorInterface $translator
      */
     public function __construct(string $APP_ENV, string $EMAIL_DEV, string $EMAIL_FROM, Swift_Mailer $mailer, Environment $renderer, TranslatorInterface $translator)
     {
@@ -52,10 +43,6 @@ class MailerService
      * @param string $template        twig template (without extension, will search for .txt.twig and .html.twig)
      * @param array  $template_params associative array to be passed to twig
      * @param string $subject         will be translated
-     * @param array $subject_params
-     * @param array $to
-     * @param array $cc
-     * @param array $bcc
      *
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
@@ -65,8 +52,8 @@ class MailerService
     {
         // remove recipients if not prod
         if ('prod' !== $this->env) {
-            $to  = [];
-            $cc  = [];
+            $to = [];
+            $cc = [];
             $bcc = [];
         }
 
@@ -92,9 +79,6 @@ class MailerService
         $this->mailer->send($mail);
     }
 
-    /**
-     * @param string $locale
-     */
     public function setLocale(string $locale): void
     {
         $this->translator->setLocale($locale); // todo user request->setLocale() ?

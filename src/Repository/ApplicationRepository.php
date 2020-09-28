@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -17,8 +19,6 @@ class ApplicationRepository extends ServiceEntityRepository
 {
     /**
      * UserRepository constructor.
-     *
-     * @param ManagerRegistry $registry
      */
     public function __construct(ManagerRegistry $registry)
     {
@@ -26,10 +26,8 @@ class ApplicationRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param User $user
-     * @param Application $application
-     *
      * @return bool
+     *
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
@@ -43,7 +41,7 @@ class ApplicationRepository extends ServiceEntityRepository
             ->setParameter('application', $application)
             ->setParameter('user', $user)
             ->getQuery();
+
         return $q->getSingleScalarResult() > 0;
     }
-
 }

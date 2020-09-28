@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -16,20 +18,15 @@ class ConnectionAuditTrailRepository extends ServiceEntityRepository
 {
     /**
      * UserRepository constructor.
-     *
-     * @param ManagerRegistry $registry
      */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ConnectionAuditTrail::class);
     }
 
-
     /**
-     * @param string $apiToken
-     * @param string $deviceSessionToken
-     *
      * @return int|mixed|string|null
+     *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findApiSession(string $apiToken, string $deviceSessionToken)
@@ -45,13 +42,12 @@ class ConnectionAuditTrailRepository extends ServiceEntityRepository
             ->setParameter('api_token', $apiToken)
             ->setParameter('device_session_token', $deviceSessionToken)
             ->getQuery();
+
         return $q->getOneOrNullResult();
     }
 
-
     /**
      * @param int $reason 1=logout, 2=timeout, 3=force
-     * @param string $deviceSessionToken
      *
      * @throws \Doctrine\DBAL\DBALException
      */

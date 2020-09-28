@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
@@ -11,17 +13,15 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
 /**
- * Class LogoutListener
- *
- * @package App\EventSubscriber
+ * Class LogoutListener.
  */
 class LogoutListener implements LogoutSuccessHandlerInterface
 {
-    /** @var TokenStorageInterface  */
+    /** @var TokenStorageInterface */
     private $tokenStorage;
-    /** @var RouterInterface  */
+    /** @var RouterInterface */
     private $router;
-    /** @var DeviceSession  */
+    /** @var DeviceSession */
     private $deviceSession;
 
     public function __construct(TokenStorageInterface $tokenStorage, RouterInterface $router, DeviceSession $deviceSession)
@@ -32,8 +32,6 @@ class LogoutListener implements LogoutSuccessHandlerInterface
     }
 
     /**
-     * @param Request $request
-     *
      * @return \Symfony\Component\HttpFoundation\Response|void
      *
      * @throws \Exception
@@ -49,6 +47,7 @@ class LogoutListener implements LogoutSuccessHandlerInterface
                 $request->getSession()->invalidate();
             }
         }
+
         return new RedirectResponse($this->router->generate('login'));
     }
 }

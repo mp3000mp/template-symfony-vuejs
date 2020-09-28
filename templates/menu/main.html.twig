@@ -16,6 +16,11 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link{{ activeMenu == 'admin' ? ' active' : '' }}" href="{{ path('admin.users.index') }}">
+                                Admin
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link{{ activeMenu == 'test' ? ' active' : '' }}" href="{{ path('test') }}">
                                 Test
                             </a>

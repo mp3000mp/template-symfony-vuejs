@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
@@ -7,9 +9,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Class LocaleSubscriber
- *
- * @package App\EventSubscriber
+ * Class LocaleSubscriber.
  */
 class LocaleSubscriber implements EventSubscriberInterface
 {
@@ -26,9 +26,6 @@ class LocaleSubscriber implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param RequestEvent $event
-     */
     public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();

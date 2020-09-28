@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Security;
 
@@ -8,15 +10,13 @@ use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Class UserChecker
- *
- * @package App\Security
+ * Class UserChecker.
  */
 class UserChecker implements UserCheckerInterface
 {
     public function checkPreAuth(UserInterface $user): void
     {
-        if (! $user instanceof User) {
+        if (!$user instanceof User) {
             return;
         }
 
@@ -28,7 +28,7 @@ class UserChecker implements UserCheckerInterface
 
     public function checkPostAuth(UserInterface $user): void
     {
-        if (! $user instanceof User) {
+        if (!$user instanceof User) {
             return;
         }
     }

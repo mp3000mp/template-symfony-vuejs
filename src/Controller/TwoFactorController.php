@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -21,12 +23,6 @@ class TwoFactorController extends AbstractController
 {
     /**
      * @Route("/two-factor", name="two_factor")
-     *
-     * @param Request $request
-     * @param TokenStorageInterface $tokenStorage
-     * @param OTPService $OTPService
-     *
-     * @return Response
      */
     public function twoFactor(Request $request, TokenStorageInterface $tokenStorage, OTPService $OTPService): Response
     {
@@ -55,6 +51,7 @@ class TwoFactorController extends AbstractController
                 $form->get('code')->addError(new FormError('security.connexion.err.two_factor_bad_code'));
             } else {
                 $OTPService->addTwoFactorRole($tokenStorage, $request->getSession());
+
                 return $this->redirectToRoute('home'); // todo target
             }
         }
@@ -72,11 +69,6 @@ class TwoFactorController extends AbstractController
     /**
      * @route("/two-factor/enable", name="two_factor.enable")
      *
-     * @param Request $request
-     * @param OTPService $OTPService
-     *
-     * @return Response
-     *
      * @throws \Exception
      */
     public function enable(Request $request, OTPService $OTPService): Response
@@ -90,7 +82,6 @@ class TwoFactorController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             // create OTP from session
             $secret = $request->getSession()->get('otp_secret');
             $otp = $OTPService->generateNewOtp($user, $secret);
@@ -116,6 +107,7 @@ class TwoFactorController extends AbstractController
                 /** @var Session $session */
                 $session = $request->getSession();
                 $session->getFlashBag()->add('success', 'security.two_factor.msg.enabled');
+
                 return $this->redirectToRoute('account');
             }
         } else {
@@ -130,6 +122,7 @@ class TwoFactorController extends AbstractController
 
         // view
         $otp = $OTPService->generateNewOtp($user, $secret);
+
         return $this->render('security/double_factor_test.html.twig', [
             'otpUrl' => $otp->getProvisioningUri(),
             'form' => $formView,
@@ -138,10 +131,6 @@ class TwoFactorController extends AbstractController
 
     /**
      * @route("/two-factor/disable", name="two_factor.disable")
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function disable(Request $request): Response
     {
@@ -159,6 +148,7 @@ class TwoFactorController extends AbstractController
         /** @var Session $session */
         $session = $request->getSession();
         $session->getFlashBag()->add('success', 'security.two_factor.msg.disabled');
+
         return $this->redirectToRoute('account');
     }
 }

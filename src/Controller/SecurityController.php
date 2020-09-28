@@ -1,23 +1,17 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\Type\ForgottenPasswordType;
 use App\Form\Type\LoginType;
-use App\Form\Type\ResetPasswordType;
-use App\Form\Type\SetPasswordType;
-use App\Security\CFSSORedirectSubscriber;
-use App\Service\Mailer\MailerService;
 use App\Service\SingleSignOn\SSOService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
@@ -27,15 +21,10 @@ class SecurityController extends AbstractController
 {
     /**
      * @Route("/login", name="login", methods={"GET"})
-     *
-     * @param AuthenticationUtils $authenticationUtils
-     *
-     * @return Response
      */
     public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
-
-        if($this->getUser() !== null){
+        if (null !== $this->getUser()) {
             return $this->redirectToRoute('home');
         }
 
@@ -59,10 +48,10 @@ class SecurityController extends AbstractController
 
         // service provider
         $sp = $request->get(SSOService::GET_SP_PARAM);
-        if($sp === null && $error !== null){
+        if (null === $sp && null !== $error) {
             $sp = $request->getSession()->get(SSOService::SESSION_SP_URL_KEY);
         }
-        if($sp !== null){
+        if (null !== $sp) {
             $form->get(SSOService::SESSION_SP_URL_KEY)->setData($sp);
         }
 
@@ -91,7 +80,4 @@ class SecurityController extends AbstractController
         // controller can be blank: it will never be executed!
         throw new \Exception('Don\'t forget to activate logout in security.yaml');
     }
-
-
-
 }

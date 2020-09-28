@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Security;
 
 use App\Entity\ConnectionAuditTrail;
+use App\Repository\ConnectionAuditTrailRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,23 +18,17 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class ApiAuthenticator
- *
- * @package App\Security
+ * Class ApiAuthenticator.
  */
 class ApiAuthenticator extends AbstractGuardAuthenticator
 {
-
-    /** @var EntityManagerInterface  */
+    /** @var EntityManagerInterface */
     private $entityManager;
-    /** @var TranslatorInterface  */
+    /** @var TranslatorInterface */
     private $translator;
 
     /**
      * MainAuthenticator constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     * @param TranslatorInterface $translator
      */
     public function __construct(EntityManagerInterface $entityManager, TranslatorInterface $translator)
     {
@@ -42,8 +39,6 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
     /**
      * Does this guard has to been called ?
      *
-     * @param Request $request
-     *
      * @return bool
      */
     public function supports(Request $request)
@@ -52,21 +47,17 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * Get credentials from request
-     *
-     * @param Request $request
-     *
-     * @return array
+     * Get credentials from request.
      */
-    public function getCredentials(Request $request)
+    public function getCredentials(Request $request): ?array
     {
         $auth = $request->headers->get('authorization');
-        $arr = explode(' ',$auth);
+        $arr = explode(' ', $auth);
         $bearer = end($arr);
         $arr = explode('.', $bearer);
-        if(count($arr) !== 2){
+        if (2 !== count($arr)) {
             return null;
-        }else{
+        } else {
             return [
                 'api_token' => $arr[0],
                 'device_session_token' => $arr[1],
@@ -75,10 +66,9 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * Try to get user
+     * Try to get user.
      *
      * @param mixed $credentials
-     * @param UserProviderInterface $userProvider
      *
      * @return object|UserInterface|null
      */
@@ -91,18 +81,18 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
         }
 
         // on check si session ouverte et on récupère le user
-        /** @var ConnectionAuditTrail $device */
-        $conn = $this->entityManager->getRepository(ConnectionAuditTrail::class)
-                        ->findApiSession($credentials['api_token'], $credentials['device_session_token'])
-            ;
-        return $conn === null ? null : $conn->getUser();
+        /** @var ConnectionAuditTrailRepository $rep */
+        $rep = $this->entityManager->getRepository(ConnectionAuditTrail::class);
+        /** @var ConnectionAuditTrail|null $conn */
+        $conn = $rep->findApiSession($credentials['api_token'], $credentials['device_session_token']);
+
+        return null === $conn ? null : $conn->getUser();
     }
 
     /**
-     * Check credentials
+     * Check credentials.
      *
      * @param mixed $credentials
-     * @param UserInterface $user
      *
      * @return bool
      */
@@ -112,8 +102,6 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * @param Request $request
-     * @param TokenInterface $token
      * @param string $providerKey
      *
      * @return null
@@ -124,33 +112,28 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * @param Request $request
-     * @param AuthenticationException $exception
-     *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
         $data = [
-            'message' => $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
+            'message' => $this->translator->trans($exception->getMessageKey(), $exception->getMessageData()),
         ];
 
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
     }
 
     /**
-     * Called when authentication is needed, but it's not sent
-     *
-     * @param Request $request
-     * @param AuthenticationException|null $authException
+     * Called when authentication is needed, but it's not sent.
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
         $data = [
-            'message' => 'Authentication Required'
+            'message' => 'Authentication Required',
         ];
+
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
     }
 
@@ -161,5 +144,4 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
     {
         return false;
     }
-
 }

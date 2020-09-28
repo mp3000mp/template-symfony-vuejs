@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Security;
 
@@ -16,9 +18,7 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
  * On oblige à changer le mdp si expiré
- * Class ExpiredPasswordSubscriber
- *
- * @package App\EventSubscriber
+ * Class ExpiredPasswordSubscriber.
  */
 class ExpiredPasswordSubscriber implements EventSubscriberInterface
 {
@@ -27,16 +27,13 @@ class ExpiredPasswordSubscriber implements EventSubscriberInterface
     private const ROLE_EXPIRED_PASSWORD_SUCCEED = 'EXPIRED_PASSWORD_SUCCEED';
     private const PASSWORD_EXPIRATION_DAYS = 90;
 
-    /** @var RouterInterface  */
+    /** @var RouterInterface */
     private $router;
-    /** @var TokenStorageInterface  */
+    /** @var TokenStorageInterface */
     private $tokenStorage;
 
     /**
      * ExpiredPasswordSubscriber constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     * @param RouterInterface $router
      */
     public function __construct(TokenStorageInterface $tokenStorage, RouterInterface $router)
     {
@@ -54,9 +51,6 @@ class ExpiredPasswordSubscriber implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param RequestEvent $event
-     */
     public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMasterRequest()) {
@@ -75,7 +69,6 @@ class ExpiredPasswordSubscriber implements EventSubscriberInterface
            && self::FIREWALL_NAME === $currentToken->getProviderKey()
            && !in_array(self::ROLE_EXPIRED_PASSWORD_SUCCEED, $currentToken->getRoleNames(), true)
         ) {
-
             // check if expired password
             /** @var User $currentUser */
             $currentUser = $currentToken->getUser();
@@ -94,10 +87,6 @@ class ExpiredPasswordSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param TokenStorageInterface $tokenStorage
-     * @param SessionInterface $session
-     */
     private function addExpiredPasswordRole(TokenStorageInterface $tokenStorage, SessionInterface $session): void
     {
         /** @var PostAuthenticationGuardToken $currentToken */
@@ -105,6 +94,6 @@ class ExpiredPasswordSubscriber implements EventSubscriberInterface
         $roles = array_merge($currentToken->getRoleNames(), [self::ROLE_EXPIRED_PASSWORD_SUCCEED]);
         $newToken = new PostAuthenticationGuardToken($currentToken->getUser(), $currentToken->getProviderKey(), $roles);
         $tokenStorage->setToken($newToken);
-        $session->set('_security_' . $currentToken->getProviderKey(), serialize($newToken));
+        $session->set('_security_'.$currentToken->getProviderKey(), serialize($newToken));
     }
 }

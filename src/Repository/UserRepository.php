@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -16,8 +18,6 @@ class UserRepository extends ServiceEntityRepository
 {
     /**
      * UserRepository constructor.
-     *
-     * @param ManagerRegistry $registry
      */
     public function __construct(ManagerRegistry $registry)
     {
@@ -25,10 +25,6 @@ class UserRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string $username
-     *
-     * @return User|null
-     *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findForLogin(string $username): ?User
@@ -39,6 +35,7 @@ class UserRepository extends ServiceEntityRepository
             ->setParameter('username', $username)
             ->getQuery()
             ;
+
         return $q->getOneOrNullResult();
     }
 }

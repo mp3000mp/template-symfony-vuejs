@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Security;
 
@@ -14,27 +16,21 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
  * On redirige vers le formulaire de double auth si pas déjà fait
- * Class DoubleAuthSubscriber
- *
- * @package App\EventSubscriber
+ * Class DoubleAuthSubscriber.
  */
 class TwoFactorAuthSubscriber implements EventSubscriberInterface
 {
     private const FIREWALL_NAME = 'main';
 
-    /** @var RouterInterface  */
+    /** @var RouterInterface */
     private $router;
-    /** @var TokenStorageInterface  */
+    /** @var TokenStorageInterface */
     private $tokenStorage;
     /** @var OTPService */
     private $OTPService;
 
     /**
      * DoubleAuthSubscriber constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     * @param RouterInterface $router
-     * @param OTPService $OTPService
      */
     public function __construct(TokenStorageInterface $tokenStorage, RouterInterface $router, OTPService $OTPService)
     {
@@ -54,8 +50,6 @@ class TwoFactorAuthSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param RequestEvent $event
-     *
      * @throws \Exception
      */
     public function onKernelRequest(RequestEvent $event): void

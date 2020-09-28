@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Security;
 
@@ -11,7 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Core\Security;
@@ -24,9 +25,7 @@ use Symfony\Component\Security\Guard\PasswordAuthenticatedInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 /**
- * Class MainAuthenticator
- *
- * @package App\Security
+ * Class MainAuthenticator.
  */
 class MainAuthenticator extends AbstractFormLoginAuthenticator implements PasswordAuthenticatedInterface
 {
@@ -34,22 +33,17 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
 
     public const LOGIN_ROUTE = 'login.check';
 
-    /** @var EntityManagerInterface  */
+    /** @var EntityManagerInterface */
     private $entityManager;
-    /** @var UrlGeneratorInterface  */
+    /** @var UrlGeneratorInterface */
     private $urlGenerator;
-    /** @var CsrfTokenManagerInterface  */
+    /** @var CsrfTokenManagerInterface */
     private $csrfTokenManager;
-    /** @var UserPasswordEncoderInterface  */
+    /** @var UserPasswordEncoderInterface */
     private $passwordEncoder;
 
     /**
      * MainAuthenticator constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     * @param UrlGeneratorInterface $urlGenerator
-     * @param CsrfTokenManagerInterface $csrfTokenManager
-     * @param UserPasswordEncoderInterface $passwordEncoder
      */
     public function __construct(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder)
     {
@@ -62,8 +56,6 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
     /**
      * Does this guard has to been called ?
      *
-     * @param Request $request
-     *
      * @return bool
      */
     public function supports(Request $request)
@@ -73,16 +65,14 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
     }
 
     /**
-     * Get credentials from request
-     *
-     * @param Request $request
+     * Get credentials from request.
      *
      * @return array
      */
     public function getCredentials(Request $request)
     {
         $credentials = $request->request->get('login');
-        if(($credentials[SSOService::SESSION_SP_URL_KEY] ?? '') !== ''){
+        if (($credentials[SSOService::SESSION_SP_URL_KEY] ?? '') !== '') {
             $request->getSession()->set(SSOService::SESSION_SP_URL_KEY, $credentials[SSOService::SESSION_SP_URL_KEY]);
         }
         $request->getSession()->set(Security::LAST_USERNAME, $credentials['username']);
@@ -91,10 +81,9 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
     }
 
     /**
-     * Try to get user
+     * Try to get user.
      *
      * @param mixed $credentials
-     * @param UserProviderInterface $userProvider
      *
      * @return object|UserInterface|null
      */
@@ -114,14 +103,14 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('security.connexion.err.bad_credentials');
         }
+
         return $user;
     }
 
     /**
-     * Check credentials
+     * Check credentials.
      *
      * @param mixed $credentials
-     * @param UserInterface $user
      *
      * @return bool
      */
@@ -130,12 +119,11 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
         if (!$this->passwordEncoder->isPasswordValid($user, $credentials['password'])) {
             throw new CustomUserMessageAuthenticationException('security.connexion.err.bad_credentials');
         }
+
         return true;
     }
 
     /**
-     * @param Request $request
-     * @param TokenInterface $token
      * @param string $providerKey
      *
      * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response|null
@@ -159,8 +147,6 @@ class MainAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
 
     /**
      * @param mixed $credentials
-     *
-     * @return string|null
      */
     public function getPassword($credentials): ?string
     {

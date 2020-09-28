@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller\api;
 
@@ -12,7 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SecurityController extends AbstractController
 {
-
     /**
      * @route("/api/test", name="api.test")
      *
@@ -22,10 +23,10 @@ class SecurityController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
+
         return $this->json([
             'user_id' => $user->getId(),
             'name' => $user->getUsername(),
         ]);
     }
-
 }

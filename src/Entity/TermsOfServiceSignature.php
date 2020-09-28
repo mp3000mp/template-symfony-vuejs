@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -6,9 +8,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class User
- *
- * @package App\Entity
+ * Class User.
  *
  * @ORM\Entity(repositoryClass="App\Repository\TermsOfServiceSignatureRepository")
  */

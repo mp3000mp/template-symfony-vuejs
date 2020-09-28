@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Service\DeviceSession;
 
@@ -6,22 +8,19 @@ use App\Entity\Application;
 use App\Entity\ConnectionAuditTrail;
 use App\Entity\User;
 use App\Repository\ConnectionAuditTrailRepository;
-use App\Service\Redis\RedisClient;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use mp3000mp\RedisClient\RedisClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
- * Class DeviceSession
- *
- * @package App\Service\DeviceSession
+ * Class DeviceSession.
  */
 class DeviceSession
 {
-
-    /** @var string  */
+    /** @var string */
     public const SESSION_TOKEN_KEY = 'device_session_token';
 
     private const prefix = 'DST_';
@@ -32,18 +31,13 @@ class DeviceSession
     private $redis;
     /** @var SessionInterface */
     private $session;
-    /** @var Request  */
+    /** @var Request */
     private $request;
     /** @var string */
     private $deviceSessionToken;
 
     /**
      * DeviceSession constructor.
-     *
-     * @param EntityManagerInterface $em
-     * @param RedisClient $redis
-     * @param SessionInterface $session
-     * @param RequestStack $request
      */
     public function __construct(EntityManagerInterface $em, RedisClient $redis, SessionInterface $session, RequestStack $request)
     {
@@ -53,20 +47,13 @@ class DeviceSession
         $this->session = $session;
     }
 
-    /**
-     * @param string $deviceSessionToken
-     *
-     * @return bool
-     */
     public function deviceSessionExists(string $deviceSessionToken): bool
     {
         return false !== $this->redis->get($deviceSessionToken);
     }
 
     /**
-     * create device session when does'nt exist
-     *
-     * @param User $user
+     * create device session when does'nt exist.
      *
      * @throws \Exception
      */
@@ -93,8 +80,6 @@ class DeviceSession
     }
 
     /**
-     * @param int $reason
-     *
      * @throws \Doctrine\DBAL\DBALException
      */
     public function destroy(string $deviceSessionToken, int $reason): void
@@ -111,11 +96,6 @@ class DeviceSession
         $repConnAT->logoutDevice($deviceSessionToken, $reason);
     }
 
-    /**
-     * @param User $user
-     * @param Application $portal
-     *
-     */
     private function initRedis(User $user, Application $portal): void
     {
         $this->redis->set($this->deviceSessionToken, [
@@ -128,8 +108,6 @@ class DeviceSession
     }
 
     /**
-     * @return string
-     *
      * @throws \Exception
      */
     private function generateToken(): string
@@ -137,10 +115,6 @@ class DeviceSession
         return self::prefix.md5(random_bytes(64));
     }
 
-    /**
-     * @param User $user
-     * @param Application $app
-     */
     private function logConnection(User $user, Application $app): void
     {
         // log

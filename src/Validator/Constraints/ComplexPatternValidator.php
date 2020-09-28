@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Validator\Constraints;
 
@@ -8,15 +10,12 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
- * Class ComplexPatternValidator
- *
- * @package App\Validator\Constraints
+ * Class ComplexPatternValidator.
  */
 class ComplexPatternValidator extends ConstraintValidator
 {
     /**
      * @param mixed $value
-     * @param Constraint $constraint
      */
     public function validate($value, Constraint $constraint): void
     {

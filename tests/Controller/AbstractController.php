@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
@@ -10,9 +12,7 @@ use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
- * Class AbstractController
- *
- * @package App\Tests\Controller
+ * Class AbstractController.
  */
 abstract class AbstractController extends WebTestCase
 {
@@ -28,14 +28,11 @@ abstract class AbstractController extends WebTestCase
         $this->doctrine = $this->client->getContainer()->get('doctrine')->getManager();
     }
 
-    /**
-     * @param array $roles
-     */
     protected function login(array $roles): void
     {
         $session = $this->client->getContainer()->get('session');
         $securityContext = $this->client->getContainer()->get('security.token_storage');
-        $user = $this->doctrine->getRepository(User::class)->find(2);
+        $user = $this->doctrine->getRepository(User::class)->find(1);
         $firewallName = 'main';
         $token = new UsernamePasswordToken($user, null, $firewallName, $roles);
         $securityContext->setToken($token);
@@ -46,7 +43,6 @@ abstract class AbstractController extends WebTestCase
     }
 
     /**
-     * @param string $url
      * @param $crawler
      */
     protected function debug500(string $url, $crawler): void
