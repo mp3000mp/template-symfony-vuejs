@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+  mariadb:
+    image: mariadb:10.4
+    volumes:
+      - ./deployment/mariadb/db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "$MYSQL_ROOT_PASSWORD"
+      MYSQL_DATABASE: "$MYSQL_DATABASE"
+      MYSQL_USER: "$MYSQL_USER"
+      MYSQL_PASSWORD: "$MYSQL_PASSWORD"
+
+#  mariadb_test:
+#    image: mariadb:10.4
+#    volumes:
+#      - ./deployment/mariadb_test/db:/var/lib/mysql
+#    environment:
+#      MYSQL_ROOT_PASSWORD: secret
+#      MYSQL_DATABASE: db_test
+#      MYSQL_USER: user1
+#      MYSQL_PASSWORD: password1
+
+  frontend:
+    image: node:lts
+    user: "node"
+    working_dir: /home/node/app
+    ports:
+      - "80:8080"
+    environment:
+      - NODE_ENV=dev
+    volumes:
+      - ./frontend:/home/node/app
+    command: "npm run start"
+
+  backend:
+    build: ./deployment/backend
+    ports:
+      - "5000:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./deployment/php_apache/sites-enabled:/etc/apache2/sites-enabled
+    depends_on:
+      - mariadb
+
+  adminer:
+    image: adminer
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mariadb
+
+  maildev:
+    image: maildev/maildev
+    ports:
+      - "1080:80"
