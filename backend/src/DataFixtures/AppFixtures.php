@@ -14,7 +14,6 @@ use Doctrine\Persistence\ObjectManager;
 class AppFixtures extends Fixture implements DependentFixtureInterface
 {
     public const FIRST_USER = 'FIRST_USER';
-    public const APPTYPE_PORTAL = 'APPTYPE_PORTAL';
 
     public function load(ObjectManager $manager): void
     {
@@ -23,9 +22,6 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            TermsOfServiceFixtures::class,
-            ApplicationTypeFixtures::class,
-            ApplicationFixtures::class,
             UserFixtures::class,
         ];
     }

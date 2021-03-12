@@ -23,6 +23,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class PasswordController extends AbstractController
 {
+    
     /**
      * @Route("/reset-password", name="reset_password")
      *

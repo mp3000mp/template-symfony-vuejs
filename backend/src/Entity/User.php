@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -16,12 +15,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class User.
  *
- * @ApiResource(
- *     collectionOperations={"get", "post"},
- *     itemOperations={"get", "patch"},
- *     normalizationContext={"groups"={"api", "api.readonly"}},
- *     denormalizationContext={"groups"={"api"}}
- * )
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="entity.User.email.already_exists")
  */
@@ -35,12 +28,6 @@ class User implements UserInterface, \Serializable, EquatableInterface
      * @Groups("api")
      */
     private $id;
-
-    /**
-     * @var TermsOfServiceSignature[]
-     * @ORM\OneToMany(targetEntity="App\Entity\TermsOfServiceSignature", mappedBy="user")
-     */
-    private $terms_of_service_signatures;
 
     /**
      * @var string
@@ -95,30 +82,11 @@ class User implements UserInterface, \Serializable, EquatableInterface
     private $roles = [];
 
     /**
-     * @var string
-     * @ORM\Column(type="string", length=2)
-     * @Groups("api")
-     */
-    private $locale = 'en';
-
-    /**
-     * @var string|null
-     * @ORM\Column(type="string", length=128, nullable=true)
-     */
-    private $twoFactorSecret;
-
-    /**
      * @var bool
      * @ORM\Column(type="boolean")
      * @Groups("api.readonly")
      */
     private $isSuperAdmin = false;
-
-    /**
-     * @var Application[]
-     * @ORM\ManyToMany(targetEntity="App\Entity\Application", inversedBy="users")
-     */
-    private $applications;
 
     /**
      * @return mixed
@@ -139,16 +107,6 @@ class User implements UserInterface, \Serializable, EquatableInterface
     public function isEqualTo(UserInterface $user): bool
     {
         return $this->username === $user->getUsername();
-    }
-
-    public function getTwoFactorSecret(): ?string
-    {
-        return $this->twoFactorSecret;
-    }
-
-    public function setTwoFactorSecret(?string $twoFactorSecret): void
-    {
-        $this->twoFactorSecret = $twoFactorSecret;
     }
 
     /**
@@ -339,25 +297,7 @@ class User implements UserInterface, \Serializable, EquatableInterface
     public function eraseCredentials(): void
     {
     }
-
-    public function getLocale(): string
-    {
-        return $this->locale;
-    }
-
-    public function setLocale(string $locale): void
-    {
-        $this->locale = $locale;
-    }
-
-    /**
-     * @return TermsOfServiceSignature[]
-     */
-    public function getTermsOfServiceSignatures()
-    {
-        return $this->terms_of_service_signatures;
-    }
-
+    
     public function getIsSuperAdmin(): bool
     {
         return $this->isSuperAdmin;

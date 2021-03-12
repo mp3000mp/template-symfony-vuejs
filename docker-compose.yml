@@ -23,17 +23,17 @@ services:
 #      - ./deployment/mariadb_test/db:/var/lib/mysql
 #      - ./deployment/mariadb_test/conf:/etc/mysql/conf.d
 
+  redis:
+    image: redis:alpine
+
   frontend:
-    image: node:lts
-    user: "node"
-    working_dir: /home/node/app
+    build: ./deployment/frontend
     ports:
       - "80:8080"
     environment:
       - NODE_ENV=dev
     volumes:
       - ./frontend:/home/node/app
-    command: "npm run start"
 
   backend:
     build: ./deployment/backend
@@ -41,7 +41,7 @@ services:
       - "5000:80"
     volumes:
       - ./backend:/var/www/html
-      - ./deployment/php_apache/sites-enabled:/etc/apache2/sites-enabled
+      - ./deployment/backend/sites-enabled:/etc/apache2/sites-enabled
     depends_on:
       - mariadb
 

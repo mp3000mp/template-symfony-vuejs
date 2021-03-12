@@ -24,12 +24,12 @@ RUN pecl install redis-5.3.3 \
 RUN a2enmod rewrite
 
 # config apache
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
-    && echo 'alias ll="ls -la"' >> ~/.bashrc
-
-RUN composer install \
-    && service apache2 start
-
-# todo start apache2
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 WORKDIR /var/www/html
+
+# pourquoi il ne trouve pas composer.json ?
+RUN composer install
+
+# todo start apache2
+RUN service apache2 start

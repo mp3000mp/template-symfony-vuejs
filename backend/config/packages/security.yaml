@@ -17,43 +17,10 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        api:
-            pattern: ^/api
-            anonymous: lazy
-            stateless: true
-            provider: database_users
-            guard:
-                authenticator:
-                    - App\Security\ApiAuthenticator
-
-        main:
-            pattern: ^/
-            user_checker: App\Security\UserChecker
-            anonymous: lazy
-            provider: database_users
-            stateless: false
-            guard:
-                authenticator:
-                    - App\Security\MainAuthenticator
-            logout:
-                path: logout
-                target: login
-                success_handler: App\EventSubscriber\LogoutListener
-
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api,       roles: IS_AUTHENTICATED_ANONYMOUSLY }
-
-        - { path: ^/sso/get-token$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/logincheck, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/forgotten-password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/set-password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/language, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/tos, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: ROLE_USER }
+        - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
     role_hierarchy:
         ROLE_SUPER_ADMIN: ROLE_USER

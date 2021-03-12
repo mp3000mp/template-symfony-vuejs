@@ -1,5 +1,0 @@
-security:
-    connexion:
-        err:
-            account_disabled: Compte inactif
-            bad_credentials: Identifiants invalides
