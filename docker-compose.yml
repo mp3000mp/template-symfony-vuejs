@@ -3,23 +3,25 @@ version: '3'
 services:
   mariadb:
     image: mariadb:10.4
-    volumes:
-      - ./deployment/mariadb/db:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: "$MYSQL_ROOT_PASSWORD"
       MYSQL_DATABASE: "$MYSQL_DATABASE"
       MYSQL_USER: "$MYSQL_USER"
       MYSQL_PASSWORD: "$MYSQL_PASSWORD"
+    volumes:
+      - ./deployment/mariadb/db:/var/lib/mysql
+      - ./deployment/mariadb/conf:/etc/mysql/conf.d
 
 #  mariadb_test:
 #    image: mariadb:10.4
-#    volumes:
-#      - ./deployment/mariadb_test/db:/var/lib/mysql
 #    environment:
 #      MYSQL_ROOT_PASSWORD: secret
 #      MYSQL_DATABASE: db_test
 #      MYSQL_USER: user1
 #      MYSQL_PASSWORD: password1
+#    volume:
+#      - ./deployment/mariadb_test/db:/var/lib/mysql
+#      - ./deployment/mariadb_test/conf:/etc/mysql/conf.d
 
   frontend:
     image: node:lts

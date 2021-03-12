@@ -15,8 +15,9 @@ RUN curl -sSk https://getcomposer.org/installer | php -- --install-dir=/usr/loca
 RUN docker-php-ext-install pdo_mysql intl
 
 # start xdebug
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug \
+RUN pecl install redis-5.3.3 \
+    && pecl install xdebug-3.0.3 \
+    && docker-php-ext-enable redis xdebug \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.remote_host = host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
@@ -25,6 +26,9 @@ RUN a2enmod rewrite
 # config apache
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
     && echo 'alias ll="ls -la"' >> ~/.bashrc
+
+RUN composer install \
+    && service apache2 start
 
 # todo start apache2
 

@@ -1,4 +1,6 @@
 /.env
+/deployment/mariadb/db
+/deployment/mariadb_test/db
 
 # backend
 /backend/ic
@@ -23,7 +25,6 @@
 /backend/public/bundles
 
 # composer
-/backend/composer.lock
 /backend/vendor
 /backend/.php_cs.cache
 
