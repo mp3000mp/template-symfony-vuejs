@@ -29,7 +29,4 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 WORKDIR /var/www/html
 
 # pourquoi il ne trouve pas composer.json ?
-RUN composer install
-
-# todo start apache2
-RUN service apache2 start
+#RUN composer install

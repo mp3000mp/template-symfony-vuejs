@@ -4,4 +4,6 @@ RUN apt-get update -y
 
 WORKDIR /home/node/app
 
-CMD ["/bin/sh"]
+RUN npm install --quiet
+
+CMD ["npm", "run", "serve"]

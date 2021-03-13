@@ -1,6 +1,6 @@
 <template>
     <div v-show="!authenticated">
-        <h1>Salut auth</h1>
+        <h1>Salut auth 27</h1>
     </div>
 </template>
 
