@@ -1,3 +1,4 @@
+# deployment
 /.env
 /deployment/mariadb/db
 /deployment/mariadb_test/db
@@ -5,11 +6,12 @@
 # backend
 /backend/ic
 /backend/log
+/backend/vendor
+/backend/var
 
 ###> symfony/framework-bundle ###
 /backend/.env.local
 /backend/config/secrets/prod/prod.decrypt.private.php
-/backend/var
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
@@ -18,22 +20,22 @@
 /backend/phpunit.xml
 ###< symfony/phpunit-bridge ###
 
-/backend/node_modules
-/backend/npm-debug.log
-/backend/yarn-debug.log
-/backend/public/build
-/backend/public/bundles
-
-# composer
-/backend/vendor
-/backend/.php_cs.cache
-
 ###> friendsofphp/php-cs-fixer ###
 /backend/.php_cs
 /backend/.php_cs.cache
 ###< friendsofphp/php-cs-fixer ###
 
-# npm/yarn
+# frontend
 /frontend/node_modules
+/frontend/.env.local
+/frontend/.env.*.local
+/frontend/npm-debug.log*
+/frontend/dist
+
+# npm/yarn
 /frontend/npm-debug.log
 /frontend/yarn-debug.log
+
+# e2e test
+/frontend/tests/e2e/videos/
+/frontend/tests/e2e/screenshots/
