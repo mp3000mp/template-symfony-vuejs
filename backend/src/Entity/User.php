@@ -7,25 +7,23 @@ namespace App\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class User.
  *
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @UniqueEntity(fields="email", message="entity.User.email.already_exists")
+ * @UniqueEntity(fields="email", message="This email is not available")
+ * @UniqueEntity(fields="username", message="This username is not available")
  */
-class User implements UserInterface, \Serializable, EquatableInterface
+class User implements \Serializable, UserInterface
 {
     /**
      * @var int
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups("api")
      */
     private $id;
 
@@ -33,14 +31,13 @@ class User implements UserInterface, \Serializable, EquatableInterface
      * @var string
      * @ORM\Column(type="string", length=100, unique=true)
      * @Assert\Email(message = "entity.User.constraint.email.email")
-     * @Groups("api")
      */
     private $email;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=55)
-     * @Groups("api")
+     * @ORM\Column(type="string", length=55, unique=true)
+     * @Assert\Email(message = "entity.User.constraint.email.username")
      */
     private $username;
 
@@ -71,7 +68,6 @@ class User implements UserInterface, \Serializable, EquatableInterface
     /**
      * @var bool
      * @ORM\Column(type="boolean")
-     * @Groups("api.readonly")
      */
     private $isEnabled = false;
 
@@ -84,7 +80,6 @@ class User implements UserInterface, \Serializable, EquatableInterface
     /**
      * @var bool
      * @ORM\Column(type="boolean")
-     * @Groups("api.readonly")
      */
     private $isSuperAdmin = false;
 
@@ -94,11 +89,6 @@ class User implements UserInterface, \Serializable, EquatableInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    public function isEqualTo(UserInterface $user): bool
-    {
-        return $this->username === $user->getUsername();
     }
 
     /**
@@ -264,11 +254,11 @@ class User implements UserInterface, \Serializable, EquatableInterface
 
     /**
      * @param string $serialized
-     * {@inheritdoc}
+     *                           {@inheritdoc}
      */
     public function unserialize($serialized): array
     {
-        return list($this->id, $this->username, $this->email, $this->password, $this->isEnabled, 
+        return list($this->id, $this->username, $this->email, $this->password, $this->isEnabled,
             // $this->salt
             ) = unserialize($serialized, ['allowed_classes' => false]);
     }

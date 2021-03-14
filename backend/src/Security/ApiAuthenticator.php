@@ -52,6 +52,7 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
         $auth = $request->headers->get('authorization');
         $arr = explode(' ', $auth);
         $bearer = end($arr);
+
         return [
             'api_token' => $bearer,
         ];

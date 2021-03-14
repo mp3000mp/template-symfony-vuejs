@@ -1,17 +1,25 @@
 <template>
-    <div v-show="!authenticated">
-        <h1>Salut auth 27</h1>
+    <div v-show="isAuthenticating">
+        <h1>Auth en cours</h1>
     </div>
+    <h1 v-if="isAuthenticated">OUI</h1>
+    <h1 v-else>NON</h1>
+
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
+import { mapGetters, mapState } from 'vuex'
 
 export default defineComponent({
   data () {
     return {
-      authenticated: false
+
     }
+  },
+  computed: {
+    ...mapGetters('security', ['isAuthenticated']),
+    ...mapState('security', ['isAuthenticating'])
   }
 })
 </script>
