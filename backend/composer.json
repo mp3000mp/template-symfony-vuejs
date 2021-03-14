@@ -1,19 +1,35 @@
 {
+    "name": "mp3000mp/symfony-template",
+    "authors": [
+      {
+        "name": "mp3000mp",
+        "email": "moussadedijon@gmail.com"
+      }
+    ],
+    "description": "Base web template",
     "type": "project",
-    "license": "proprietary",
+    "license": "MIT",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-json": "*",
+        "ext-redis": "*",
+        "mp3000mp/redis-client": "^0.1.0",
         "symfony/console": "5.2.*",
         "symfony/dotenv": "5.2.*",
         "symfony/flex": "^1.3.1",
         "symfony/framework-bundle": "5.2.*",
+        "symfony/mailer": "5.2.*",
+        "symfony/twig-bundle": "5.2.*",
         "symfony/yaml": "5.2.*"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.18",
+        "phpstan/phpstan": "^0.12.81",
+        "symfony/phpunit-bridge": "^5.2"
     },
     "config": {
         "optimize-autoloader": true,
@@ -42,6 +58,18 @@
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
+        "ci": [
+            "@csf",
+            "@ps",
+            "@tuc",
+            "@pm"
+          ],
+          "cs": "php-cs-fixer fix --dry-run --allow-risky=yes",
+          "csf": "php-cs-fixer fix --allow-risky=yes",
+          "ps": "phpstan analyse -c phpstan.neon",
+          "tu": "./bin/phpunit --bootstrap ./tests/bootstrap.php --testdox ./tests/",
+          "tuc": "phpunit --bootstrap ./tests/bootstrap.php --testdox --whitelist ./src --coverage-html ./tests/_report/ ./tests/",
+          "pm": "phpmetrics --report-html=ic/metrics .",
         "post-install-cmd": [
             "@auto-scripts"
         ],
