@@ -8,6 +8,7 @@
 </template>
 
 <script lang="ts">
+import swal from 'sweetalert2'
 import { defineComponent } from '@vue/composition-api'
 import { mapGetters, mapState } from 'vuex'
 
@@ -20,6 +21,22 @@ export default defineComponent({
   computed: {
     ...mapGetters('security', ['isAuthenticated']),
     ...mapState('security', ['isAuthenticating'])
+  },
+  methods: {
+    refreshPopup: function () {
+      console.log(this.isAuthenticated)
+      if (!this.isAuthenticated) {
+        swal.fire('test')
+      }
+    }
+  },
+  mounted: function () {
+    this.refreshPopup()
+  },
+  watch: {
+    isAuthenticated: function () {
+      this.refreshPopup()
+    }
   }
 })
 </script>
