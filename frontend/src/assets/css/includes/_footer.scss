@@ -1,0 +1,10 @@
+footer {
+  background-color: darken($blueDark, 5%);
+  margin-top: 3rem;
+  padding: 2rem;
+  text-align: center;
+
+  #madeby{
+    color: $purple;
+  }
+}

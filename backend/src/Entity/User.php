@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Class User.
@@ -24,6 +25,7 @@ class User implements \Serializable, UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"admin"})
      */
     private $id;
 
@@ -38,6 +40,7 @@ class User implements \Serializable, UserInterface
      * @var string
      * @ORM\Column(type="string", length=55, unique=true)
      * @Assert\Email(message = "entity.User.constraint.email.username")
+     * @Groups({"admin"})
      */
     private $username;
 

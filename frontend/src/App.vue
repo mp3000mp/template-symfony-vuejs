@@ -5,27 +5,5 @@
     <router-link to="/about">About</router-link>
   </div>
   <router-view/>
+  <footer><font-aw icon="magic" /> Invoked from the magic world by <a id="madeby" href="https://github.com/mp3000mp">mp3000 <font-aw icon="hand-sparkles" /></a></footer>
 </template>
-
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-</style>

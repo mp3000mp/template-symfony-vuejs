@@ -20,6 +20,14 @@ import { AxiosResponse } from 'axios'
       .then((response: AxiosResponse) => {
         this.users = response.data
       })
+
+    /* this.$http.put('http://localhost:5000/api/users', {
+      email: 'poulet@mp3000.fr',
+      username: 'poulet'
+    })
+      .then((response: AxiosResponse) => {
+        console.log('oui')
+      }) */
   }
 })
 export default class Users extends Vue {}

@@ -1,0 +1,23 @@
+html {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: $blueDark;
+  color: $white;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: $blueLight;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
