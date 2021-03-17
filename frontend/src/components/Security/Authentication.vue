@@ -43,6 +43,6 @@ export default defineComponent({
 
 <style scoped lang="scss">
   h1 {
-    color: green;
+    color: #2ca02c;
   }
 </style>
