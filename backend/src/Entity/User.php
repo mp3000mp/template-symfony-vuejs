@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @UniqueEntity(fields="email", message="This email is not available")
  * @UniqueEntity(fields="username", message="This username is not available")
  */
-class User implements \Serializable, UserInterface
+class User implements UserInterface, \Serializable
 {
     /**
      * @var int
@@ -201,7 +201,7 @@ class User implements \Serializable, UserInterface
     }
 
     /**
-     * Returns the roles or permissions granted to the user for security.
+     * Returns the roles or permissions granted to the users for security.
      */
     public function getRoles(): array
     {

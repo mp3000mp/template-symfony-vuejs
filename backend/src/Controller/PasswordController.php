@@ -37,7 +37,7 @@ class PasswordController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // get user
+            // get users
             /** @var User $user */
             $user = $this->getUser();
 
@@ -84,7 +84,7 @@ class PasswordController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // get user
+            // get users
             $em = $this->getDoctrine()->getManager();
             $user = $em->getRepository(User::class)
                        ->findOneBy(['email' => $form->get('email')->getData()])
@@ -128,13 +128,13 @@ class PasswordController extends AbstractController
      */
     public function setPassword(Request $request, UserPasswordEncoderInterface $encoder, string $token)
     {
-        // get user from token
+        // get users from token
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository(User::class)
                    ->findOneBy(['reset_password_token' => $token])
         ;
 
-        // if not user, bad token
+        // if not users, bad token
         if (null === $user) {
             /** @var Session $session */
             $session = $request->getSession();
@@ -186,7 +186,7 @@ class PasswordController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // get user
+            // get users
             /** @var User $user */
             $user = $this->getUser();
 

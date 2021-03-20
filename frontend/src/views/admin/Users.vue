@@ -16,7 +16,11 @@ import { AxiosResponse } from 'axios'
     }
   },
   mounted () {
-    this.$http.get('http://localhost:5000/api/users')
+    this.$http.get('http://localhost:5000/api/users', {
+      headers: {
+        Authorization: 'Bearer tood'
+      }
+    })
       .then((response: AxiosResponse) => {
         this.users = response.data
       })

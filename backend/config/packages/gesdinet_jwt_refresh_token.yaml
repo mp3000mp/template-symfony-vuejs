@@ -1,0 +1,7 @@
+gesdinet_jwt_refresh_token:
+  firewall: refresh
+  single_use: true
+  token_parameter_name: refreshToken
+  ttl: 1800
+  user_identity_field: username
+  user_provider: security.user.provider.concrete.db_provider

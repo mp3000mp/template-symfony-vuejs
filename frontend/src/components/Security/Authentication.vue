@@ -1,42 +1,37 @@
 <template>
-    <div v-show="isAuthenticating">
-        <h1>Auth en cours</h1>
+    <div v-if="isAuthenticating">
+      <h1>Authenticating...</h1>
     </div>
-    <h1 v-if="isAuthenticated">OUI</h1>
-    <h1 v-else>NON</h1>
-
 </template>
 
 <script lang="ts">
-import swal from 'sweetalert2'
+// import swal from 'sweetalert2'
 import { defineComponent } from '@vue/composition-api'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 export default defineComponent({
-  data () {
-    return {
+  /* data () {
 
-    }
-  },
+  }, */
   computed: {
-    ...mapGetters('security', ['isAuthenticated']),
-    ...mapState('security', ['isAuthenticating'])
+    ...mapState('security', ['isLoading'])
   },
   methods: {
-    refreshPopup: function () {
-      console.log(this.isAuthenticated)
-      if (!this.isAuthenticated) {
-        swal.fire('test')
+    async connect () {
+      try {
+        const response = await this.$http.post('http://localhost:5000/api/logincheck', {
+          username: 'mp3000',
+          password: 'Test2000!'
+        })
+        const token = response.data.token
+        console.log(token)
+      } catch (err) {
+        console.log(err.response)
       }
     }
   },
   mounted: function () {
-    this.refreshPopup()
-  },
-  watch: {
-    isAuthenticated: function () {
-      this.refreshPopup()
-    }
+    this.connect()
   }
 })
 </script>
