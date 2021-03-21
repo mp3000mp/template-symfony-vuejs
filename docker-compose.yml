@@ -44,6 +44,7 @@ services:
     volumes:
       - ./backend:/var/www/html
       - ./deployment/backend/sites-enabled:/etc/apache2/sites-enabled
+# volume php config ?
     depends_on:
       - mariadb
 

@@ -14,6 +14,7 @@ let nbRetry = 0
  */
 function httpReq (method: Method, url: string, data: object = {}, headers: Headers = {}): Promise<AxiosResponse> {
   const endpoint = `${BASE_URL}${url}`
+
   return axios.request({
     data,
     headers,
@@ -47,12 +48,20 @@ axios.interceptors.response.use(function (response) {
   return response
 }, function (err) {
   // console.log(`res err: ${err.config.url}`)
-  if (err.response.status !== 401 || nbRetry > 0 || err.response.data.message === 'Invalid credentials.') {
+  // if axios error, we set data similar to response for action to be able to handle this
+  if (!err.response) {
+    err.response = {
+      data: {
+        message: err.message
+      }
+    }
+  }
+  if (err.response.status !== 401 || nbRetry > 0 || store.getters['security/getRefreshToken'] === null || err.response.data.message === 'Invalid credentials.') {
     console.log(err)
     return Promise.reject(err)
   }
   nbRetry++
-  return store.dispatch('security/refreshLogin', { username: 'mp3000', password: 'Test2000!' })
+  return store.dispatch('security/refreshLogin')
     .then(function () {
       return axios.request(err.config)
     })

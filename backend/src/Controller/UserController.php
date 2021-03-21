@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Service\Mailer\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,8 +33,11 @@ class UserController extends AbstractController
     /**
      * @Route("/api/users", name="users.index", methods={"GET"})
      */
-    public function index(SerializerInterface $serializer): Response
+    public function index(SerializerInterface $serializer, LoggerInterface $logger): Response
     {
+        $logger->info('test info');
+        $logger->error('test error');
+
         $users = $this->em->getRepository(User::class)->findAll();
 
         return new Response(

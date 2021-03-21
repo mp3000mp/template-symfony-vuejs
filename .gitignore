@@ -4,10 +4,10 @@
 /deployment/mariadb_test/db
 
 # backend
-/backend/ic
+/backend/ci
 /backend/log
-/backend/vendor
 /backend/var
+/backend/vendor
 
 ###> symfony/framework-bundle ###
 /backend/.env.local

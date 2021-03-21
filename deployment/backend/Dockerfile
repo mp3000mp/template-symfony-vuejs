@@ -19,7 +19,9 @@ RUN pecl install redis-5.3.3 \
     && pecl install xdebug-3.0.3 \
     && docker-php-ext-enable redis xdebug \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.remote_host = host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    && echo "xdebug.remote_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+# todo: attention pas de xdebug en prod
 
 RUN a2enmod rewrite
 
@@ -28,5 +30,5 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 WORKDIR /var/www/html
 
-# pourquoi il ne trouve pas composer.json ?
+# todo: pourquoi il ne trouve pas composer.json ?
 #RUN composer install

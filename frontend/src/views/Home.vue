@@ -1,17 +1,17 @@
 <template>
   <div class="home">
     <h2>Auth</h2>
-    <p id="11">Auth loading: {{ authLoading ? 'oui' : 'non' }}</p>
-    <p id="22">Is auth: {{ isAuth ? 'oui' : 'non' }}</p>
-    <p class="red">{{ authError || '' }}</p>
+    <p id="log_loading">Auth loading: {{ authLoading ? 'oui' : 'non' }}</p>
+    <p id="log_status">Is auth: {{ isAuth ? 'oui' : 'non' }}</p>
+    <p id="log_err" class="red">{{ authError || '' }}</p>
     <h2>Users</h2>
-    <p>User loading: {{ userLoading ? 'oui' : 'non' }}</p>
-    <p>User length: {{ users.length }}</p>
-    <p class="red">{{ userError || '' }}</p>
-    <button id="logg" @click="logg">Login</button>
+    <p id="user_loading">User loading: {{ userLoading ? 'oui' : 'non' }}</p>
+    <p id="user_status">User length: {{ users.length }}</p>
+    <p id="user_err" class="red">{{ userError || '' }}</p>
+    <button id="log_but" @click="logg">Login</button>
     <button @click="unlogg">Logout</button>
-    <button @click="findUsers">Get users</button>
-    <button @click="refresh">Refresh</button>
+    <button id="user_but" @click="findUsers">Get users</button>
+    <button id="refresh_but" @click="refresh">Refresh</button>
   </div>
 </template>
 
