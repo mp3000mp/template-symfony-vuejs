@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
 import AdminUsersPage from '../views/admin/Users.vue'
+import PasswordReset from '../views/security/PasswordReset.vue'
 
 // oui
 const routes: Array<RouteRecordRaw> = [
@@ -15,12 +16,9 @@ const routes: Array<RouteRecordRaw> = [
     component: AdminUsersPage
   },
   {
-    path: '/about',
+    path: '/password/reset/:token',
     name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: PasswordReset
   }
 ]
 

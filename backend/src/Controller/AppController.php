@@ -7,20 +7,20 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Service\Mailer\MailerService;
 use Mp3000mp\RedisClient\RedisClient;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class AppController.
- */
 class AppController extends AbstractController
 {
     /**
      * @Route("/", name="home", methods={"GET"})
      */
-    public function home(MailerService $mailer, RedisClient $redis): Response
+    public function home(MailerService $mailer, RedisClient $redis, LoggerInterface $logger): Response
     {
+        $logger->debug('Home called');
+
         // test mail
         $mailer->sendEmail('test', ['msg' => 'This is a test'], 'Test subject', ['test@mp3000.fr']);
 

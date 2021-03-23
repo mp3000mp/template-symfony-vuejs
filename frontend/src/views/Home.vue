@@ -18,7 +18,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component'
 import HelloWorld from '@/components/HelloWorld.vue'
-import { mapActions, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 @Options({
   components: {

@@ -5,212 +5,121 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\Type\ForgottenPasswordType;
-use App\Form\Type\ResetPasswordType;
-use App\Form\Type\SetPasswordType;
 use App\Service\Mailer\MailerService;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-/**
- * Class AppController.
- */
 class PasswordController extends AbstractController
 {
-    /**
-     * @Route("/reset-password", name="reset_password")
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws \Exception
-     */
-    public function resetPassword(Request $request, UserPasswordEncoderInterface $encoder)
-    {
-        // create form
-        $form = $this->createForm(ResetPasswordType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // get users
-            /** @var User $user */
-            $user = $this->getUser();
-
-            // check password
-            if ($encoder->isPasswordValid($user, $form->get('password_current')->getData())) {
-                // change password
-                $newPassword = $form->get('password_new')->getData();
-                $user->setPasswordUpdatedAt(new \DateTime());
-                $user->setResetPasswordAt(null);
-                $user->setResetPasswordToken(null);
-                $user->setPassword($encoder->encodePassword($user, $newPassword));
-
-                // persist
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($user);
-                $em->flush();
-
-                // redirect
-                $this->addFlash('success', 'security.reset_password_success');
-
-                return $this->redirectToRoute('home');
-            } else {
-                $form->get('password_current')->addError(new FormError('security.connexion.err.bad_password'));
-            }
-        }
-
-        // view
-        return $this->render('security/reset_password.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
 
     /**
-     * @Route("/forgotten-password", name="forgotten_password")
+     * Send reset password email
      *
-     * @return RedirectResponse|Response
-     *
-     * @throws \Exception
+     * @Route("/api/password/forgotten", name="password_forgotten", methods={"POST"})
      */
-    public function forgottenPassword(Request $request, MailerService $mailerService)
+    public function forgottenPassword(Request $request, MailerService $mailer, LoggerInterface $logger): Response
     {
-        // create form
-        $form = $this->createForm(ForgottenPasswordType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // get users
-            $em = $this->getDoctrine()->getManager();
-            $user = $em->getRepository(User::class)
-                       ->findOneBy(['email' => $form->get('email')->getData()])
-            ;
-
-            if (null !== $user) {
-                // set reset token
-                $user->setResetPasswordAt(new \DateTime());
-                $user->setResetPasswordToken(md5(random_bytes(64)));
-
-                // send mail
-                $mailerService->sendEmail('forgotten_password', [
-                    'token' => $user->getResetPasswordToken(),
-                ], 'security.forgotten_password', [], [$user->getEmail()]);
-
-                // persist
-                $em->persist($user);
-                $em->flush();
-            }
-
-            // redirect login
-            /** @var Session $session */
-            $session = $request->getSession();
-            $session->getFlashBag()->add('info', 'security.forgotten_password.msg.success');
-
-            return $this->redirectToRoute('login');
-        }
-
-        // view
-        return $this->render('security/forgotten_password.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/set-password/{token}", name="set_password")
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws \Exception
-     */
-    public function setPassword(Request $request, UserPasswordEncoderInterface $encoder, string $token)
-    {
-        // get users from token
+        $json = json_decode($request->getContent(), true);
         $em = $this->getDoctrine()->getManager();
+
+        // get users
         $user = $em->getRepository(User::class)
-                   ->findOneBy(['reset_password_token' => $token])
+            ->findOneBy(['email' => $json['email'] ?? null])
         ;
 
-        // if not users, bad token
-        if (null === $user) {
-            /** @var Session $session */
-            $session = $request->getSession();
-            $session->getFlashBag()->add('warning', 'security.set_password.bad_token');
+        if($user !== null){
+            $logger->debug(sprintf('Forgotten password requested by %s', $user->getEmail()));
+            // set reset token
+            $user->setResetPasswordAt(new \DateTime());
+            $user->setResetPasswordToken(md5(random_bytes(64)));
 
-            return $this->redirectToRoute('login');
-        }
-
-        // create form
-        $form = $this->createForm(SetPasswordType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // change password
-            $newPassword = $form->get('password_new')->getData();
-            $user->setPasswordUpdatedAt(new \DateTime());
-            $user->setResetPasswordAt(null);
-            $user->setResetPasswordToken(null);
-            $user->setPassword($encoder->encodePassword($user, $newPassword));
+            // send mail
+            $mailer->sendEmail('forgotten_password', [
+                'reset_url'   => $this->getParameter('FRONT_URL').'/password/reset/'.$user->getResetPasswordToken(),
+            ], 'Forgotten password', [$user->getEmail()]);
 
             // persist
-            $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
-
-            // redirect
-            $this->addFlash('success', 'security.set_password_success');
-
-            return $this->redirectToRoute('home');
         }
 
-        // view
-        return $this->render('security/set_password.html.twig', [
-            'form' => $form->createView(),
+        return $this->json([
+            'message' => 'If this account exists, an email has been sent.'
         ]);
     }
 
     /**
-     * @Route("/expired-password", name="expired_password")
+     * Test if reset token ok
+     *
+     * @Route("/api/password/reset/{token}", name="password_reset_check", methods={"GET"}, requirements={"token"="\w+"})
      */
-
-    /**
-     * @throws \Exception
-     */
-    public function expiredPassword(Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function resetPasswordUser(Request $request, string $token): Response
     {
-        // create form
-        $form = $this->createForm(SetPasswordType::class);
-        $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // get users
-            /** @var User $user */
-            $user = $this->getUser();
+        // get users
+        $user = $em->getRepository(User::class)
+            ->findOneBy(['reset_password_token' => $token])
+        ;
 
-            // change password
-            $newPassword = $form->get('password_new')->getData();
-            $user->setPasswordUpdatedAt(new \DateTime());
-            $user->setResetPasswordAt(null);
-            $user->setResetPasswordToken(null);
-            $user->setPassword($encoder->encodePassword($user, $newPassword));
-
-            // persist
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-
-            // redirect
-            $this->addFlash('success', 'security.set_password_success');
-
-            return $this->redirectToRoute('home');
+        if($user === null) {
+            return $this->json([
+                'message' => 'This token has expired.'
+            ], 404);
         }
 
-        // view
-        return $this->render('security/expired_password.html.twig', [
-            'form' => $form->createView(),
+        return $this->json([
+            'message' => 'ok',
+        ]);
+    }
+
+    /**
+     * Reset password
+     *
+     * @Route("/api/password/reset", name="password_reset", methods={"POST"})
+     */
+    public function resetPassword(Request $request, UserPasswordEncoderInterface $encoder): Response
+    {
+        $json = json_decode($request->getContent(), true);
+        $em = $this->getDoctrine()->getManager();
+
+        // get users
+        $user = $em->getRepository(User::class)
+            ->findOneBy(['reset_password_token' => $json['token'] ?? null])
+        ;
+
+        if($user === null) {
+            return $this->json([
+                'message' => 'This token has expired.'
+            ], 404);
+        }
+
+        // todo password constraints
+
+        // test password validity
+        if(strlen(($json['password'] ?? '' )) < 9) {
+            return $this->json([
+                'message' => 'This password is not strong enough.'
+            ], 400);
+        }
+
+        // change password
+        $user->setPasswordUpdatedAt(new \DateTime());
+        $user->setResetPasswordAt(null);
+        $user->setResetPasswordToken(null);
+        $user->setPassword($encoder->encodePassword($user, $json['password']));
+
+        // persist
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($user);
+        $em->flush();
+
+        return $this->json([
+            'message' => 'The password has been reset successfully',
         ]);
     }
 }

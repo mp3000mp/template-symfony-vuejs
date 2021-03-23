@@ -6,7 +6,7 @@ interface Headers {
 }
 
 const BASE_URL = 'http://localhost:5000'
-const noNeedsAuthUrls = ['/api/logincheck', '/api/token/refresh']
+const noNeedsAuthUrls = ['/api/logincheck', '/api/token/refresh', '/api/password/forgotten', '/api/password/reset']
 let nbRetry = 0
 
 /**
@@ -26,7 +26,7 @@ function httpReq (method: Method, url: string, data: object = {}, headers: Heade
 /**
  * add bearer if needed
  */
-axios.interceptors.request.use(function (config) {
+axios.interceptors.request.use(config => {
   // console.log(`req: ${config.url}`)
   if (typeof config.url !== 'undefined') {
     if (noNeedsAuthUrls.indexOf(config.url.replace(BASE_URL, '')) === -1) {
@@ -34,7 +34,7 @@ axios.interceptors.request.use(function (config) {
     }
   }
   return config
-}, function (err) {
+}, err => {
   console.log(err)
   return Promise.reject(err)
 })
@@ -42,11 +42,11 @@ axios.interceptors.request.use(function (config) {
 /**
  * retry if not connected or expired
  */
-axios.interceptors.response.use(function (response) {
+axios.interceptors.response.use(response => {
   // console.log(`res ok: ${response.config.url}`)
   nbRetry = 0
   return response
-}, function (err) {
+}, err => {
   // console.log(`res err: ${err.config.url}`)
   // if axios error, we set data similar to response for action to be able to handle this
   if (!err.response) {
@@ -62,10 +62,10 @@ axios.interceptors.response.use(function (response) {
   }
   nbRetry++
   return store.dispatch('security/refreshLogin')
-    .then(function () {
+    .then(() => {
       return axios.request(err.config)
     })
-    .catch(function (err2) {
+    .catch(err2 => {
       return Promise.reject(err2)
     })
 })
