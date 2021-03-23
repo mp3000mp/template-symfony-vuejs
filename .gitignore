@@ -32,7 +32,8 @@
 /frontend/.env.*.local
 /frontend/npm-debug.log*
 /frontend/dist
-/frontend/coverage
+/frontend/.nyc_output
+/frontend/ci
 
 # npm/yarn
 /frontend/npm-debug.log

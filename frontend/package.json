@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve --port 8081",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "test:cov": "vue-cli-service test:unit --coverage=true",
+    "test:ucov": "vue-cli-service test:unit --coverage=true",
     "test:e2e": "vue-cli-service test:e2e --headless",
     "test:e2eui": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
@@ -62,5 +62,8 @@
   },
   "resolutions": {
     "cypress": "^6.8.0"
+  },
+  "nyc": {
+    "report-dir": "ci/coverage/e2e"
   }
 }

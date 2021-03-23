@@ -84,7 +84,7 @@
           "csf": "php-cs-fixer fix --allow-risky=yes",
           "ps": "phpstan analyse -c phpstan.neon",
           "tu": "./bin/phpunit --bootstrap ./tests/bootstrap.php --testdox ./tests/",
-          "tuc": "./bin/phpunit --bootstrap ./tests/bootstrap.php --testdox --whitelist ./src --coverage-html ./ci/_report/ ./tests/",
+          "tuc": "./bin/phpunit --bootstrap ./tests/bootstrap.php --testdox --whitelist ./src --coverage-html ci/coverage/unit ./tests/",
           "pm": "phpmetrics --report-html=ic/metrics .",
         "post-install-cmd": [
             "@auto-scripts"
