@@ -134,15 +134,15 @@ describe('Security', () => {
       },
       delay: 200
     })
-    let usersCall = 0
-    cy.intercept('GET', 'http://localhost:5000/api/users', req => {
+    const usersCall = 0
+    /* cy.intercept('GET', 'http://localhost:5000/api/users', req => {
       req.reply(res => {
-        usersCall++
-        if (usersCall === 1) {
+        if (usersCall === 0) {
+          usersCall++
           res.send({
             statusCode: 401,
             body: {
-              message: 'Token has expired'
+              message: 'Expired JWT Token'
             },
             delay: 50
           })
@@ -157,7 +157,7 @@ describe('Security', () => {
           })
         }
       })
-    })
+    }) */
     // get refresh token
     cy.get('#log_but').click()
     cy.wait(100)
@@ -180,7 +180,7 @@ describe('Security', () => {
       expect($p).to.not.contain('token')
     })
 
-    cy.wait(500)
+    cy.wait(300)
     cy.get('#user_loading').should($p => {
       expect($p).to.contain('non')
     })
@@ -211,7 +211,7 @@ describe('Security', () => {
     cy.intercept('GET', 'http://localhost:5000/api/users', {
       statusCode: 401,
       body: {
-        message: 'Token has expired'
+        message: 'Expired JWT Token'
       },
       delay: 50
     })
@@ -256,7 +256,7 @@ describe('Security', () => {
     cy.intercept('GET', 'http://localhost:5000/api/users', {
       statusCode: 401,
       body: {
-        message: 'Token has expired'
+        message: 'Expired JWT Token'
       },
       delay: 50
     })

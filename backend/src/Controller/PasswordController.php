@@ -15,9 +15,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class PasswordController extends AbstractController
 {
-
     /**
-     * Send reset password email
+     * Send reset password email.
      *
      * @Route("/api/password/forgotten", name="password_forgotten", methods={"POST"})
      */
@@ -31,7 +30,7 @@ class PasswordController extends AbstractController
             ->findOneBy(['email' => $json['email'] ?? null])
         ;
 
-        if($user !== null){
+        if (null !== $user) {
             $logger->debug(sprintf('Forgotten password requested by %s', $user->getEmail()));
             // set reset token
             $user->setResetPasswordAt(new \DateTime());
@@ -39,7 +38,7 @@ class PasswordController extends AbstractController
 
             // send mail
             $mailer->sendEmail('forgotten_password', [
-                'reset_url'   => $this->getParameter('FRONT_URL').'/password/reset/'.$user->getResetPasswordToken(),
+                'reset_url' => $this->getParameter('FRONT_URL').'/password/reset/'.$user->getResetPasswordToken(),
             ], 'Forgotten password', [$user->getEmail()]);
 
             // persist
@@ -48,12 +47,12 @@ class PasswordController extends AbstractController
         }
 
         return $this->json([
-            'message' => 'If this account exists, an email has been sent.'
+            'message' => 'If this account exists, an email has been sent.',
         ]);
     }
 
     /**
-     * Test if reset token ok
+     * Test if reset token ok.
      *
      * @Route("/api/password/reset/{token}", name="password_reset_check", methods={"GET"}, requirements={"token"="\w+"})
      */
@@ -66,9 +65,9 @@ class PasswordController extends AbstractController
             ->findOneBy(['reset_password_token' => $token])
         ;
 
-        if($user === null) {
+        if (null === $user) {
             return $this->json([
-                'message' => 'This token has expired.'
+                'message' => 'This token has expired.',
             ], 404);
         }
 
@@ -78,7 +77,7 @@ class PasswordController extends AbstractController
     }
 
     /**
-     * Reset password
+     * Reset password.
      *
      * @Route("/api/password/reset", name="password_reset", methods={"POST"})
      */
@@ -92,18 +91,18 @@ class PasswordController extends AbstractController
             ->findOneBy(['reset_password_token' => $json['token'] ?? null])
         ;
 
-        if($user === null) {
+        if (null === $user) {
             return $this->json([
-                'message' => 'This token has expired.'
+                'message' => 'This token has expired.',
             ], 404);
         }
 
         // todo password constraints
 
         // test password validity
-        if(strlen(($json['password'] ?? '' )) < 9) {
+        if (strlen(($json['password'] ?? '')) < 9) {
             return $this->json([
-                'message' => 'This password is not strong enough.'
+                'message' => 'This password is not strong enough.',
             ], 400);
         }
 

@@ -56,18 +56,18 @@ axios.interceptors.response.use(response => {
       }
     }
   }
-  if (err.response.status !== 401 || nbRetry > 0 || store.getters['security/getRefreshToken'] === null || err.response.data.message === 'Invalid credentials.') {
-    console.log(err)
-    return Promise.reject(err)
+  if (err.response.status === 401 && err.response.data.message === 'Expired JWT Token' && nbRetry === 0) {
+    nbRetry++
+    return store.dispatch('security/refreshLogin')
+      .then(() => {
+        return axios.request(err.config)
+      })
+      .catch(err2 => {
+        return Promise.reject(err2)
+      })
   }
-  nbRetry++
-  return store.dispatch('security/refreshLogin')
-    .then(() => {
-      return axios.request(err.config)
-    })
-    .catch(err2 => {
-      return Promise.reject(err2)
-    })
+  console.log(err)
+  return Promise.reject(err)
 })
 
 export { httpReq }

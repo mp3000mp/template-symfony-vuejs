@@ -9,10 +9,6 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class JsonResponseHelper
 {
-
-    /**
-     * @var SerializerInterface
-     */
     private SerializerInterface $serialiser;
 
     public function __construct(SerializerInterface $serializer)
@@ -21,7 +17,7 @@ class JsonResponseHelper
     }
 
     /**
-     * @param mixed $entity
+     * @param mixed    $entity
      * @param string[] $serializationGroups
      */
     public function createResponse($entity, array $serializationGroups, int $status): Response

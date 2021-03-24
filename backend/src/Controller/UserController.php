@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Helper\Response\JsonResponseHelper;
-use App\Service\Mailer\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,15 +15,11 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class UserController extends AbstractController
 {
-
     /**
      * @var EntityManagerInterface
      */
     private $em;
 
-    /**
-     * @var JsonResponseHelper
-     */
     private JsonResponseHelper $responseHelper;
 
     public function __construct(EntityManagerInterface $em, JsonResponseHelper $responseHelper)
