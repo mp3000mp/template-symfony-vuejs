@@ -37,3 +37,6 @@ npm run lint:style
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Devtool
+[Firefox compatible vuejs 3 plugin](https://github.com/vuejs/vue-devtools/releases/tag/v6.0.0-beta.7)

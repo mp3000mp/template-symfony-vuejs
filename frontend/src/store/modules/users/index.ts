@@ -1,12 +1,9 @@
 import { actions } from './actions'
 import { mutations } from './mutations'
+import { state } from './state'
 
 export default {
-  state: {
-    errorMsg: null,
-    isLoading: false,
-    users: []
-  },
+  state,
   actions,
   mutations,
   namespaced: true

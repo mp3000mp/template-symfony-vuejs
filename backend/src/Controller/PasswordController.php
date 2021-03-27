@@ -47,16 +47,16 @@ class PasswordController extends AbstractController
         }
 
         return $this->json([
-            'message' => 'If this account exists, an email has been sent.',
+            'message' => sprintf('If this account exists, an email has been sent to %s', $json['email']),
         ]);
     }
 
     /**
      * Test if reset token ok.
      *
-     * @Route("/api/password/reset/{token}", name="password_reset_check", methods={"GET"}, requirements={"token"="\w+"})
+     * @Route("/api/password/forgotten/{token}", name="password_reset_check", methods={"GET"}, requirements={"token"="\w+"})
      */
-    public function resetPasswordUser(Request $request, string $token): Response
+    public function resetPasswordUser(string $token): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -72,23 +72,23 @@ class PasswordController extends AbstractController
         }
 
         return $this->json([
-            'message' => 'ok',
+            'message' => 'Token is valid',
         ]);
     }
 
     /**
      * Reset password.
      *
-     * @Route("/api/password/reset", name="password_reset", methods={"POST"})
+     * @Route("/api/password/forgotten/{token}", name="password_reset", methods={"POST"},  requirements={"token"="\w+"})
      */
-    public function resetPassword(Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function resetPassword(Request $request, string $token, UserPasswordEncoderInterface $encoder): Response
     {
         $json = json_decode($request->getContent(), true);
         $em = $this->getDoctrine()->getManager();
 
         // get users
         $user = $em->getRepository(User::class)
-            ->findOneBy(['reset_password_token' => $json['token'] ?? null])
+            ->findOneBy(['reset_password_token' => $token])
         ;
 
         if (null === $user) {

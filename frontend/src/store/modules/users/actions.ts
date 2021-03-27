@@ -1,19 +1,16 @@
 import { httpReq } from '@/helpers/api'
 import { ActionContext } from 'vuex'
+import { UserState } from '@/store/modules/users/types'
+import { RootState } from '@/store/types'
 
 export const actions = {
-  all ({ commit }: ActionContext<any, any>) {
-    commit('setIsLoading', true)
-    httpReq('GET', '/api/users')
+  getAll ({ commit, state }: ActionContext<UserState, RootState>) {
+    httpReq(state.actionRequest.getAll)
       .then(response => {
-        commit('setErrorMsg', null)
         commit('setUsers', response.data)
       })
-      .catch(err => {
-        commit('setErrorMsg', err.response.data.message)
-      })
-      .finally(() => {
-        commit('setIsLoading', false)
+      .catch(() => {
+        commit('setUsers')
       })
   }
 }

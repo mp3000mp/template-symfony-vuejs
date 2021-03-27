@@ -1,15 +1,10 @@
 import { actions } from './actions'
 import { getters } from './getters'
 import { mutations } from './mutations'
+import { state } from './state'
 
 export default {
-  state: {
-    apiToken: localStorage.getItem('apiToken'),
-    errorMsg: null,
-    isAuthenticated: false,
-    isLoading: false,
-    refreshToken: localStorage.getItem('refreshToken')
-  },
+  state,
   actions,
   getters,
   mutations,

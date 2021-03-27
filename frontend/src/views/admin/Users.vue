@@ -10,6 +10,7 @@ import { Options, Vue } from 'vue-class-component'
 import { AxiosResponse } from 'axios'
 
 @Options({
+  name: 'AdminUserPage',
   data () {
     return {
       users: []

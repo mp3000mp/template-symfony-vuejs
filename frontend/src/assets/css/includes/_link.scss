@@ -1,0 +1,33 @@
+a {
+  border-bottom: 1px;
+  transition: 350ms color ease-in-out;
+  position: relative;
+
+  &:before,
+  &:after {
+    content: '';
+    opacity: 0;
+    position: absolute;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    transition: all 350ms ease-in-out;
+    background-color: $link-hover-color;
+  }
+
+  &:before {
+    left: 50%;
+  }
+
+  &:after {
+    right: 50%;
+  }
+
+  &:hover {
+    &:before,
+    &:after {
+      opacity: 1;
+      width: 50%;
+    }
+  }
+}

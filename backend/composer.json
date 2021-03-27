@@ -81,7 +81,7 @@
             "@tuc",
             "@pm"
           ],
-          "cs": "php-cs-fixer fix --dry-run --allow-risky=yes",
+          "cs": "php-cs-fixer fix -v --dry-run --allow-risky=yes",
           "csf": "php-cs-fixer fix --allow-risky=yes",
           "ps": "phpstan analyse -c phpstan.neon",
           "tu": "./bin/phpunit --bootstrap ./tests/bootstrap.php --testdox ./tests/",

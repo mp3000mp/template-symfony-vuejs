@@ -1,7 +1,12 @@
-export interface SecurityState {
-  apiToken: string|null;
-  errorMsg: string|null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  refreshToken: string|null;
+import { AbstractState } from '@/store/types'
+
+export class Me {
+  roles: string[] = ['ROLE_ANONYMOUS'];
+  username = 'Anonymous';
+}
+
+export class SecurityState extends AbstractState {
+  apiToken: string|null = null;
+  me: Me = new Me();
+  refreshToken: string|null = null;
 }

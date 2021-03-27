@@ -1,41 +1,10 @@
-$purple3: #52035d;
-$purple5: #7b008c;
-$purple4: #680176;
-$purple2: #370c3d;
-$purple1: #210e23;
+// vars
+@import './includes/vars';
 
-$blue3: #0a3b76;
-$blue5: #014aa2;
-$blue4: #06448f;
-$blue2: #113054;
-$blue1: #182637;
+@import 'includes/bootstrap';
 
-$green3: #016f08;
-$green5: #00a70b;
-$green4: #008d09;
-$green2: #0e4a12;
-$green1: #112a12;
-
-$yellow3: #788a02;
-$yellow5: #b5cf00;
-$yellow4: #99af00;
-$yellow2: #525b11;
-$yellow1: #303415;
-
-$orange3: #b46e00;
-$orange5: #f79700;
-$orange4: #da8500;
-$orange2: #805511;
-$orange1: #544021;
-
-$red3: #8d0502;
-$red5: #d50500;
-$red4: #b40500;
-$red2: #5e1311;
-$red1: #361615;
-
-$white: #afb1e0;
-
-@import './includes/structure';
-@import './includes/header';
+// custom
 @import './includes/footer';
+@import './includes/header';
+@import './includes/link';
+@import './includes/structure';

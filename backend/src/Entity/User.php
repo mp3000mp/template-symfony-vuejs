@@ -21,183 +21,65 @@ use Symfony\Component\Validator\Constraints as Assert;
 class User implements UserInterface, \Serializable
 {
     /**
-     * @var int
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      * @Groups({"admin"})
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=100, unique=true)
      * @Assert\Email(message = "entity.User.constraint.email.email")
      */
-    private $email;
+    private string $email;
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=55, unique=true)
      * @Assert\Email(message = "entity.User.constraint.email.username")
-     * @Groups({"admin"})
+     * @Groups({"admin", "me"})
      */
-    private $username;
+    private string $username;
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $password;
+    private string $password;
 
     /**
-     * @var DateTime|null
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $password_updated_at;
+    private ?DateTime $password_updated_at;
 
     /**
-     * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $reset_password_token;
+    private ?string $reset_password_token;
 
     /**
-     * @var DateTime|null
      * @ORM\Column(type="datetime", length=255, nullable=true)
      */
-    private $reset_password_at;
+    private ?DateTime $reset_password_at;
 
     /**
-     * @var bool
      * @ORM\Column(type="boolean")
      */
-    private $isEnabled = false;
+    private bool $isEnabled = false;
 
     /**
-     * @var array
      * @ORM\Column(type="json", nullable=false)
+     * @Groups({"me"})
      */
-    private $roles = [];
+    private array$roles = [];
 
     /**
-     * @var bool
      * @ORM\Column(type="boolean")
      */
-    private $isSuperAdmin = false;
+    private bool $isSuperAdmin = false;
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param mixed $email
-     */
-    public function setEmail($email): void
-    {
-        $this->email = $email;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    /**
-     * @param mixed $username
-     */
-    public function setUsername($username): void
-    {
-        $this->username = $username;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    /**
-     * @param mixed $password
-     */
-    public function setPassword($password): void
-    {
-        $this->password = $password;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPasswordUpdatedAt()
-    {
-        return $this->password_updated_at;
-    }
-
-    /**
-     * @param mixed $password_updated_at
-     */
-    public function setPasswordUpdatedAt($password_updated_at): void
-    {
-        $this->password_updated_at = $password_updated_at;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getResetPasswordToken()
-    {
-        return $this->reset_password_token;
-    }
-
-    /**
-     * @param mixed $reset_password_token
-     */
-    public function setResetPasswordToken($reset_password_token): void
-    {
-        $this->reset_password_token = $reset_password_token;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getResetPasswordAt()
-    {
-        return $this->reset_password_at;
-    }
-
-    /**
-     * @param mixed $reset_password_at
-     */
-    public function setResetPasswordAt($reset_password_at): void
-    {
-        $this->reset_password_at = $reset_password_at;
-    }
-
-    public function getIsEnabled(): bool
-    {
-        return $this->isEnabled;
-    }
-
-    public function setIsEnabled(bool $isEnabled): void
-    {
-        $this->isEnabled = $isEnabled;
     }
 
     /**
@@ -214,9 +96,6 @@ class User implements UserInterface, \Serializable
         return $roles;
     }
 
-    /**
-     * @return User
-     */
     public function setRoles(array $roles): self
     {
         if (!in_array('ROLE_USER', $roles, true)) {
@@ -227,9 +106,6 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function addRole(string $role): self
     {
         if (!in_array($role, $this->roles, true)) {
@@ -283,7 +159,77 @@ class User implements UserInterface, \Serializable
     {
     }
 
-    public function getIsSuperAdmin(): bool
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): void
+    {
+        $this->username = $username;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
+    }
+
+    public function getPasswordUpdatedAt(): ?DateTime
+    {
+        return $this->password_updated_at;
+    }
+
+    public function setPasswordUpdatedAt(?DateTime $password_updated_at): void
+    {
+        $this->password_updated_at = $password_updated_at;
+    }
+
+    public function getResetPasswordToken(): ?string
+    {
+        return $this->reset_password_token;
+    }
+
+    public function setResetPasswordToken(?string $reset_password_token): void
+    {
+        $this->reset_password_token = $reset_password_token;
+    }
+
+    public function getResetPasswordAt(): ?DateTime
+    {
+        return $this->reset_password_at;
+    }
+
+    public function setResetPasswordAt(?DateTime $reset_password_at): void
+    {
+        $this->reset_password_at = $reset_password_at;
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->isEnabled;
+    }
+
+    public function setIsEnabled(bool $isEnabled): void
+    {
+        $this->isEnabled = $isEnabled;
+    }
+
+    public function isSuperAdmin(): bool
     {
         return $this->isSuperAdmin;
     }

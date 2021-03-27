@@ -1,24 +1,5 @@
-html {
-  padding: 0;
-  margin: 0;
-}
-
 body {
-  padding: 0;
-  margin: 0;
-  background-color: $blue1;
-  color: $white;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  color: $yellow4;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-    color: $yellow5;
-  }
 }

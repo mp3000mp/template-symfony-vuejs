@@ -13,10 +13,9 @@ use Twig\Environment;
  */
 class MailerService
 {
-    /** @var MailerInterface */
-    private $mailer;
-    /** @var Environment */
-    private $renderer;
+    private MailerInterface $mailer;
+
+    private Environment $renderer;
 
     public function __construct(MailerInterface $mailer, Environment $renderer)
     {

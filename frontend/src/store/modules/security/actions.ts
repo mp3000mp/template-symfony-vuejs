@@ -1,49 +1,64 @@
 import { httpReq } from '@/helpers/api'
 import { ActionContext } from 'vuex'
+import { SecurityState } from './types'
+import { RootState } from '@/store/types'
+
+interface LoginPayload {
+  username: string;
+  password: string;
+}
+interface ForgottenPasswordResetPayload {
+  token: string;
+  password: string;
+}
 
 export const actions = {
-  login ({ commit }: ActionContext<any, any>) {
-    commit('setIsLoading', true)
-    return httpReq('POST', '/api/logincheck', { username: 'mp3000', password: 'Test2000!' })
+  forgottenPasswordCheckToken ({ state }: ActionContext<SecurityState, RootState>, token: string) {
+    return httpReq(state.actionRequest.forgottenPasswordCheckToken, { urlParams: { token: token } })
+  },
+  forgottenPasswordSend ({ state }: ActionContext<SecurityState, RootState>, email: string) {
+    return httpReq(state.actionRequest.forgottenPasswordSend, { data: { email: email } })
+  },
+  forgottenPasswordReset ({ state }: ActionContext<SecurityState, RootState>, data: ForgottenPasswordResetPayload) {
+    return httpReq(state.actionRequest.forgottenPasswordReset, { urlParams: { token: data.token }, data: { password: data.password } })
+  },
+  login ({ commit, state, dispatch }: ActionContext<SecurityState, RootState>, data: LoginPayload) {
+    return httpReq(state.actionRequest.login, { data })
       .then(response => {
-        commit('setErrorMsg', null)
         commit('setApiToken', response.data.token)
         commit('setRefreshToken', response.data.refreshToken)
-        commit('setIsAuthenticated', true)
+        dispatch('getMe')
       })
-      .catch(err => {
-        commit('setErrorMsg', err.response.data.message)
+      .catch(() => {
+        commit('resetMe')
         commit('setApiToken', null)
         commit('setRefreshToken', null)
-        commit('setIsAuthenticated', false)
-      })
-      .finally(() => {
-        commit('setIsLoading', false)
       })
   },
-  refreshLogin ({ commit, getters }: ActionContext<any, any>) {
-    commit('setIsLoading', true)
-    return httpReq('POST', '/api/token/refresh', { refreshToken: getters.getRefreshToken })
-      .then(response => {
-        commit('setErrorMsg', null)
-        commit('setApiToken', response.data.token)
-        commit('setRefreshToken', response.data.refreshToken)
-        commit('setIsAuthenticated', true)
-      })
-      .catch(err => {
-        commit('setErrorMsg', err.response.data.message)
-        commit('setApiToken', null)
-        commit('setRefreshToken', null)
-        commit('setIsAuthenticated', false)
-      })
-      .finally(() => {
-        commit('setIsLoading', false)
-      })
-  },
-  logout ({ commit }: ActionContext<any, any>) {
-    // todo send to server ?
+  logout ({ commit }: ActionContext<SecurityState, RootState>) {
+    commit('resetMe')
     commit('setApiToken', null)
     commit('setRefreshToken', null)
-    commit('setIsAuthenticated', false)
+  },
+  getMe ({ commit, state }: ActionContext<SecurityState, RootState>) {
+    httpReq(state.actionRequest.getMe)
+      .then(response => {
+        commit('setMe', response.data)
+      })
+      .catch(() => {
+        commit('resetMe')
+      })
+  },
+  refreshLogin ({ commit, state, getters }: ActionContext<SecurityState, RootState>) {
+    return httpReq(state.actionRequest.refreshToken, { data: { refreshToken: getters.getRefreshToken } })
+      .then(response => {
+        commit('setApiToken', response.data.token)
+        commit('setRefreshToken', response.data.refreshToken)
+      })
+      .catch(() => {
+        commit('resetMe')
+        commit('setApiToken', null)
+        commit('setRefreshToken', null)
+      })
   }
 }

@@ -1,62 +1,58 @@
 <template>
   <div>
     <span class="err">{{ tokenError || '' }}</span>
-    <div v-if="isTokenValid">
+    <div v-if="actionRequest.forgottenPasswordCheckToken.status === 200">
       <label for="pwd">
         New password:
         <input type="password" name="pwd" id="pwd" v-model="password" v-on:keyup.enter="reset" />
       </label>
       <button @click.prevent="reset">Send</button>
     </div>
+    <span
+      class="err"
+      v-if="actionRequest.forgottenPasswordCheckToken.status !== 200"
+    >
+      {{ actionRequest.forgottenPasswordCheckToken.message }}
+    </span>
     <span :class="{
-      err: !isResetSuccess,
-      success: isResetSuccess
+      err: actionRequest.forgottenPasswordReset.status !== 200,
+      success: actionRequest.forgottenPasswordReset.status === 200
     }">
-      {{ passwordMsg || '' }}
+      {{ actionRequest.forgottenPasswordReset.message }}
     </span>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component'
-import { httpReq } from '@/helpers/api'
+import { mapState } from 'vuex'
+import { AxiosResponse } from 'axios'
 
 @Options({
+  name: 'SecurityPasswordReset',
   data () {
     return {
-      isResetSuccess: false,
-      isTokenValid: false,
-      password: '',
-      passwordMsg: null,
-      tokenError: null
+      password: ''
     }
+  },
+  computed: {
+    ...mapState('security', ['actionRequest'])
   },
   methods: {
     checkToken () {
-      httpReq('GET', `/api/password/reset/${this.$route.params.token}`)
-        .then(() => {
-          this.isTokenValid = true
-        })
-        .catch(err => {
-          this.isTokenValid = false
-          this.tokenError = err.response.data.message
-        })
+      this.$store.dispatch('security/forgottenPasswordCheckToken', this.$route.params.token)
     },
     reset () {
-      httpReq('POST', '/api/password/reset', {
+      this.$store.dispatch('security/forgottenPasswordReset', {
         token: this.$route.params.token,
         password: this.password
       })
-        .then(() => {
-          this.passwordMsg = 'Password has been reset.'
-          this.isResetSuccess = true
-          setTimeout(() => {
-            this.$router.push({ path: '/' })
-          }, 2000)
-        })
-        .catch(err => {
-          this.isResetSuccess = false
-          this.passwordMsg = err.response.data.message
+        .then((res: AxiosResponse) => {
+          if (res.status === 200) {
+            setTimeout(() => {
+              this.$router.push({ path: '/' })
+            }, 2000)
+          }
         })
     }
   },
@@ -64,7 +60,7 @@ import { httpReq } from '@/helpers/api'
     this.checkToken()
   }
 })
-export default class Home extends Vue {}
+export default class SecurityPasswordReset extends Vue {}
 </script>
 
 <style lang="scss" scoped>

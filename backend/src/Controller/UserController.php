@@ -15,10 +15,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class UserController extends AbstractController
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    private EntityManagerInterface $em;
 
     private JsonResponseHelper $responseHelper;
 
@@ -26,6 +23,14 @@ class UserController extends AbstractController
     {
         $this->em = $em;
         $this->responseHelper = $responseHelper;
+    }
+
+    /**
+     * @Route("/api/me", name="users.me", methods={"GET"})
+     */
+    public function me(): Response
+    {
+        return $this->responseHelper->createResponse($this->getUser(), ['me'], 200);
     }
 
     /**
