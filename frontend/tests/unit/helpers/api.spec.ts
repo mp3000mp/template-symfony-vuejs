@@ -1,5 +1,5 @@
 import axios from 'axios'
-import api from '@/helpers/api'
+import api from '@/helpers/apiRegistry'
 
 jest.mock('axios', () => {
   return {
@@ -10,7 +10,7 @@ jest.mock('axios', () => {
   }
 })
 
-describe('api.ts', () => {
+describe('apiRegistry.ts', () => {
   // todo: not really usefull
   it('should get 200 status', async () => {
     axios.request = jest.fn().mockResolvedValue({ oui: 'oui' })

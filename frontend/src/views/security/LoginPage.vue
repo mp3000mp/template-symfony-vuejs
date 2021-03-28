@@ -15,9 +15,9 @@
       <input required="required" id="email" type="email" placeholder="email@example.com" v-model="forgottenPasswordSend.email" />
       <input type="submit" value="Send forgotten password email" />
       <span :class="{
-        err: !forgottenPasswordSend.status,
-        success: forgottenPasswordSend.status
-      }">{{ forgottenPasswordSend.message }}</span>
+        err: securityRequests.forgottenPasswordSend.isError,
+        success: !securityRequests.forgottenPasswordSend.isError
+      }">{{ securityRequests.forgottenPasswordSend.message }}</span>
     </form>
   </div>
   <p>todo design</p>
@@ -33,9 +33,7 @@ import { mapState } from 'vuex'
     return {
       forgottenPasswordSend: {
         email: '',
-        message: '',
-        show: false,
-        status: true
+        show: false
       },
       password: '',
       username: ''

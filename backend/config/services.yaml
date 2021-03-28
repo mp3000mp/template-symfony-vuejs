@@ -34,3 +34,7 @@ services:
     # please note that last definitions always *replace* previous ones
     Mp3000mp\RedisClient\RedisClient:
         arguments: ['%env(REDIS_HOST)%', '%env(REDIS_PORT)%', '%env(REDIS_AUTH)%']
+
+    App\Purger\AppPurgerFactory:
+        tags:
+            - { name: 'doctrine.fixtures.purger_factory', alias: 'app_purger' }

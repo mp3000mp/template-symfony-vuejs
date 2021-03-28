@@ -22,18 +22,44 @@ class UserFixtures extends Fixture
     {
         $password = 'Test2000!';
 
+        // user
         $user = new User();
         $encodedPassword = $this->encoder->encodePassword($user, $password);
-        $user->setEmail('mperret@mp3000.fr');
-        $user->setUsername('mp3000');
+        $user->setEmail('user@mp3000.fr');
+        $user->setUsername('user');
         $user->setPassword($encodedPassword);
         $user->setPasswordUpdatedAt(new \DateTime());
         $user->setRoles(['ROLE_USER']);
         $user->setIsEnabled(true);
 
         $manager->persist($user);
-        $manager->flush();
+        $this->addReference(AppFixtures::USER_USER, $user);
 
-        $this->addReference(AppFixtures::FIRST_USER, $user);
+        // admin
+        $user = new User();
+        $encodedPassword = $this->encoder->encodePassword($user, $password);
+        $user->setEmail('admin@mp3000.fr');
+        $user->setUsername('admin');
+        $user->setPassword($encodedPassword);
+        $user->setPasswordUpdatedAt(new \DateTime());
+        $user->setRoles(['ROLE_ADMIN']);
+        $user->setIsEnabled(true);
+
+        $manager->persist($user);
+        $this->addReference(AppFixtures::USER_ADMIN, $user);
+
+        // disabled
+        $user = new User();
+        $encodedPassword = $this->encoder->encodePassword($user, $password);
+        $user->setEmail('disabled@mp3000.fr');
+        $user->setUsername('disabled');
+        $user->setPassword($encodedPassword);
+        $user->setPasswordUpdatedAt(new \DateTime());
+        $user->setRoles(['ROLE_USER']);
+        $user->setIsEnabled(false);
+
+        $manager->persist($user);
+
+        $manager->flush();
     }
 }

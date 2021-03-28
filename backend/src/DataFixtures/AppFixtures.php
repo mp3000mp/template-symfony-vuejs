@@ -13,7 +13,8 @@ use Doctrine\Persistence\ObjectManager;
  */
 class AppFixtures extends Fixture implements DependentFixtureInterface
 {
-    public const FIRST_USER = 'FIRST_USER';
+    public const USER_ADMIN = 'USER_ADMIN';
+    public const USER_USER = 'USER_USER';
 
     public function load(ObjectManager $manager): void
     {

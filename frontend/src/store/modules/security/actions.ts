@@ -1,4 +1,4 @@
-import { httpReq } from '@/helpers/api'
+import apiRegistry from '@/helpers/apiRegistry'
 import { ActionContext } from 'vuex'
 import { SecurityState } from './types'
 import { RootState } from '@/store/types'
@@ -10,55 +10,65 @@ interface LoginPayload {
 interface ForgottenPasswordResetPayload {
   token: string;
   password: string;
+  passwordConfirm: string;
+}
+interface ResetPasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+  newPassword2: string;
 }
 
 export const actions = {
-  forgottenPasswordCheckToken ({ state }: ActionContext<SecurityState, RootState>, token: string) {
-    return httpReq(state.actionRequest.forgottenPasswordCheckToken, { urlParams: { token: token } })
+  async forgottenPasswordCheckToken ({ state }: ActionContext<SecurityState, RootState>, token: string) {
+    return await apiRegistry.get().httpReq(state.actionRequest.forgottenPasswordCheckToken, { urlParams: { token: token } })
   },
-  forgottenPasswordSend ({ state }: ActionContext<SecurityState, RootState>, email: string) {
-    return httpReq(state.actionRequest.forgottenPasswordSend, { data: { email: email } })
+  async forgottenPasswordSend ({ state }: ActionContext<SecurityState, RootState>, email: string) {
+    return await apiRegistry.get().httpReq(state.actionRequest.forgottenPasswordSend, { data: { email: email } })
   },
-  forgottenPasswordReset ({ state }: ActionContext<SecurityState, RootState>, data: ForgottenPasswordResetPayload) {
-    return httpReq(state.actionRequest.forgottenPasswordReset, { urlParams: { token: data.token }, data: { password: data.password } })
+  async forgottenPasswordReset ({ state }: ActionContext<SecurityState, RootState>, data: ForgottenPasswordResetPayload) {
+    return await apiRegistry.get().httpReq(state.actionRequest.forgottenPasswordReset, { urlParams: { token: data.token }, data: { password: data.password, passwordConfirm: data.passwordConfirm } })
   },
-  login ({ commit, state, dispatch }: ActionContext<SecurityState, RootState>, data: LoginPayload) {
-    return httpReq(state.actionRequest.login, { data })
-      .then(response => {
-        commit('setApiToken', response.data.token)
-        commit('setRefreshToken', response.data.refreshToken)
-        dispatch('getMe')
-      })
-      .catch(() => {
-        commit('resetMe')
-        commit('setApiToken', null)
-        commit('setRefreshToken', null)
-      })
+  async login ({ commit, state, dispatch }: ActionContext<SecurityState, RootState>, data: LoginPayload) {
+    try {
+      const response = await apiRegistry.get().httpReq(state.actionRequest.login, { data })
+      commit('setApiToken', response.data.token)
+      commit('setRefreshToken', response.data.refreshToken)
+      dispatch('getMe')
+    } catch (err) {
+      commit('resetMe')
+      commit('setApiToken', null)
+      commit('setRefreshToken', null)
+    }
   },
   logout ({ commit }: ActionContext<SecurityState, RootState>) {
     commit('resetMe')
     commit('setApiToken', null)
     commit('setRefreshToken', null)
   },
-  getMe ({ commit, state }: ActionContext<SecurityState, RootState>) {
-    httpReq(state.actionRequest.getMe)
-      .then(response => {
-        commit('setMe', response.data)
-      })
-      .catch(() => {
-        commit('resetMe')
-      })
+  async getMe ({ commit, state }: ActionContext<SecurityState, RootState>) {
+    try {
+      const response = await apiRegistry.get().httpReq(state.actionRequest.getMe)
+      commit('setMe', response.data)
+    } catch (err) {
+      commit('resetMe')
+    }
   },
-  refreshLogin ({ commit, state, getters }: ActionContext<SecurityState, RootState>) {
-    return httpReq(state.actionRequest.refreshToken, { data: { refreshToken: getters.getRefreshToken } })
-      .then(response => {
-        commit('setApiToken', response.data.token)
-        commit('setRefreshToken', response.data.refreshToken)
-      })
-      .catch(() => {
-        commit('resetMe')
-        commit('setApiToken', null)
-        commit('setRefreshToken', null)
-      })
+  async refreshLogin ({ commit, state, getters }: ActionContext<SecurityState, RootState>) {
+    try {
+      const response = await apiRegistry.get().httpReq(state.actionRequest.refreshToken, { data: { refreshToken: getters.getRefreshToken } })
+      commit('setApiToken', response.data.token)
+      commit('setRefreshToken', response.data.refreshToken)
+    } catch (err) {
+      commit('resetMe')
+      commit('setApiToken', null)
+      commit('setRefreshToken', null)
+    }
+  },
+  async resetPassword ({ commit, state, getters }: ActionContext<SecurityState, RootState>, data: ResetPasswordPayload) {
+    try {
+      await apiRegistry.get().httpReq(state.actionRequest.resetPassword, { data })
+    } catch (e) {
+
+    }
   }
 }

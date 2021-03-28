@@ -18,9 +18,9 @@ class PasswordController extends AbstractController
     /**
      * Send reset password email.
      *
-     * @Route("/api/password/forgotten", name="password_forgotten", methods={"POST"})
+     * @Route("/api/password/forgotten", name="password_forgotten_send", methods={"POST"})
      */
-    public function forgottenPassword(Request $request, MailerService $mailer, LoggerInterface $logger): Response
+    public function forgottenPasswordSend(Request $request, MailerService $mailer, LoggerInterface $logger): Response
     {
         $json = json_decode($request->getContent(), true);
         $em = $this->getDoctrine()->getManager();
@@ -30,7 +30,7 @@ class PasswordController extends AbstractController
             ->findOneBy(['email' => $json['email'] ?? null])
         ;
 
-        if (null !== $user) {
+        if (null !== $user && $user->isEnabled()) {
             $logger->debug(sprintf('Forgotten password requested by %s', $user->getEmail()));
             // set reset token
             $user->setResetPasswordAt(new \DateTime());
@@ -54,9 +54,9 @@ class PasswordController extends AbstractController
     /**
      * Test if reset token ok.
      *
-     * @Route("/api/password/forgotten/{token}", name="password_reset_check", methods={"GET"}, requirements={"token"="\w+"})
+     * @Route("/api/password/forgotten/{token}", name="password_forgotten_check", methods={"GET"}, requirements={"token"="\w+"})
      */
-    public function resetPasswordUser(string $token): Response
+    public function forgottenPasswordCheck(string $token): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -79,9 +79,9 @@ class PasswordController extends AbstractController
     /**
      * Reset password.
      *
-     * @Route("/api/password/forgotten/{token}", name="password_reset", methods={"POST"},  requirements={"token"="\w+"})
+     * @Route("/api/password/forgotten/{token}", name="password_forgotten_reset", methods={"POST"},  requirements={"token"="\w+"})
      */
-    public function resetPassword(Request $request, string $token, UserPasswordEncoderInterface $encoder): Response
+    public function forgottenPasswordReset(Request $request, string $token, UserPasswordEncoderInterface $encoder): Response
     {
         $json = json_decode($request->getContent(), true);
         $em = $this->getDoctrine()->getManager();
@@ -95,6 +95,13 @@ class PasswordController extends AbstractController
             return $this->json([
                 'message' => 'This token has expired.',
             ], 404);
+        }
+
+        // check newPassword confirmation
+        if($json['password'] !== $json['passwordConfirm']){
+            return $this->json([
+                'message' => 'Password confirmation is different.',
+            ], 400);
         }
 
         // todo password constraints
@@ -111,6 +118,58 @@ class PasswordController extends AbstractController
         $user->setResetPasswordAt(null);
         $user->setResetPasswordToken(null);
         $user->setPassword($encoder->encodePassword($user, $json['password']));
+
+        // persist
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($user);
+        $em->flush();
+
+        return $this->json([
+            'message' => 'The password has been reset successfully',
+        ]);
+    }
+
+    /**
+     * Reset password.
+     *
+     * @Route("/api/password/reset", name="password_reset", methods={"POST"})
+     */
+    public function resetPassword(Request $request, UserPasswordEncoderInterface $encoder): Response
+    {
+        $json = json_decode($request->getContent(), true);
+        $em = $this->getDoctrine()->getManager();
+
+        // get users
+        $user = $this->getUser();
+
+        // check currentPassword
+        if(!$encoder->isPasswordValid($user, $json['currentPassword'])){
+            return $this->json([
+                'message' => 'Authentication failed.',
+            ], 401);
+        }
+
+        // check newPassword confirmation
+        if($json['newPassword'] !== $json['newPassword2']){
+            return $this->json([
+                'message' => 'Password confirmation is different.',
+            ], 400);
+        }
+
+        // todo password constraints
+
+        // test password validity
+        if (strlen(($json['newPassword'] ?? '')) < 9) {
+            return $this->json([
+                'message' => 'This password is not strong enough.',
+            ], 400);
+        }
+
+        // change password
+        $user->setPasswordUpdatedAt(new \DateTime());
+        $user->setResetPasswordAt(null);
+        $user->setResetPasswordToken(null);
+        $user->setPassword($encoder->encodePassword($user, $json['newPassword']));
 
         // persist
         $em = $this->getDoctrine()->getManager();

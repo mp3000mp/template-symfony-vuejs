@@ -15,11 +15,12 @@ state.apiToken = localStorage.getItem('apiToken')
 state.me = initMe()
 state.refreshToken = localStorage.getItem('refreshToken')
 state.actionRequest = {
-  forgottenPasswordSend: new StoreRequest('POST', '/api/password/forgotten', false),
-  getMe: new StoreRequest('GET', '/api/me'),
   forgottenPasswordCheckToken: new StoreRequest('GET', '/api/password/forgotten/{token}', false),
   forgottenPasswordReset: new StoreRequest('POST', '/api/password/forgotten/{token}', false),
+  forgottenPasswordSend: new StoreRequest('POST', '/api/password/forgotten', false),
+  getMe: new StoreRequest('GET', '/api/me'),
   login: new StoreRequest('POST', '/api/logincheck', false),
-  refreshToken: new StoreRequest('POST', '/api/token/refresh', false)
+  refreshToken: new StoreRequest('POST', '/api/token/refresh', false),
+  resetPassword: new StoreRequest('POST', '/api/password/reset', true)
 }
 export { state }

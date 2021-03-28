@@ -3,6 +3,7 @@ security:
     encoders:
         App\Entity\User:
             algorithm: auto
+
     providers:
         users_in_memory: { memory: null }
 
@@ -16,18 +17,18 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        refresh:
+        refresh_token:
             pattern:  ^/api/token/refresh
             stateless: true
             anonymous: true
 
-        password:
-            pattern:  ^/api/password
+        password_forgotten:
+            pattern:  ^/api/password/forgotten
             stateless: true
             anonymous: true
 
         login:
-            pattern:  ^/api/login
+            pattern:  ^/api/logincheck
             stateless: true
             anonymous: true
             provider: db_provider
@@ -56,5 +57,4 @@ security:
         - { path: ^/api/token/refresh,      roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/logincheck,         roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/password/forgotten, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/password/reset,     roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api,                    roles: IS_AUTHENTICATED_FULLY }

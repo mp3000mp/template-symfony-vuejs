@@ -1,12 +1,15 @@
 <template>
-  <div>
-    <span class="err">{{ tokenError || '' }}</span>
+  <form @submit.prevent="reset">
     <div v-if="actionRequest.forgottenPasswordCheckToken.status === 200">
       <label for="pwd">
         New password:
-        <input type="password" name="pwd" id="pwd" v-model="password" v-on:keyup.enter="reset" />
+        <input type="password" name="pwd" id="pwd" v-model="password" />
       </label>
-      <button @click.prevent="reset">Send</button>
+      <label for="pwd_confirm">
+        Password confirmation:
+        <input type="password" name="pwd_confirm" id="pwd_confirm" v-model="passwordConfirm" />
+      </label>
+      <input type="submit" value="send" />
     </div>
     <span
       class="err"
@@ -20,7 +23,7 @@
     }">
       {{ actionRequest.forgottenPasswordReset.message }}
     </span>
-  </div>
+  </form>
 </template>
 
 <script lang="ts">
@@ -29,10 +32,11 @@ import { mapState } from 'vuex'
 import { AxiosResponse } from 'axios'
 
 @Options({
-  name: 'SecurityPasswordReset',
+  name: 'SecurityForgottenPasswordReset',
   data () {
     return {
-      password: ''
+      password: '',
+      passwordConfirm: ''
     }
   },
   computed: {
@@ -42,18 +46,19 @@ import { AxiosResponse } from 'axios'
     checkToken () {
       this.$store.dispatch('security/forgottenPasswordCheckToken', this.$route.params.token)
     },
-    reset () {
-      this.$store.dispatch('security/forgottenPasswordReset', {
+    async reset () {
+      await this.$store.dispatch('security/forgottenPasswordReset', {
         token: this.$route.params.token,
-        password: this.password
+        password: this.password,
+        passwordConfirm: this.passwordConfirm
       })
-        .then((res: AxiosResponse) => {
-          if (res.status === 200) {
-            setTimeout(() => {
-              this.$router.push({ path: '/' })
-            }, 2000)
-          }
-        })
+      this.password = ''
+      this.passwordConfirm = ''
+      if (!this.actionRequest.forgottenPasswordReset.isError) {
+        setTimeout(() => {
+          this.$router.push({ path: '/login' })
+        }, 2000)
+      }
     }
   },
   mounted () {

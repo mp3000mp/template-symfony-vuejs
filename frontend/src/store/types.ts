@@ -3,10 +3,12 @@ type Method = 'GET' | 'POST' | 'DELETE' | 'PUT' | 'PATCH'
 export class StoreRequest {
   auth = true;
   callCount = 0;
-  status: number|null = null;
+  isError = false;
+  loading = false;
   message = '';
   method: Method = 'GET';
-  loading = false;
+  status: number|null = null;
+
   url: string;
 
   constructor (method: Method, url: string, auth = true) {
@@ -15,15 +17,24 @@ export class StoreRequest {
     this.url = url
   }
 
-  start () {
+  private reset () {
+    this.status = 0
+    this.message = ''
+    this.loading = false
+    this.isError = false
+  }
+
+  public start () {
+    this.reset()
     this.callCount++
     this.loading = true
   }
 
-  end (status: number, message: string) {
+  public end (status: number, message: string) {
     this.loading = false
     this.status = status
     this.message = message
+    this.isError = status < 200 || status >= 300
   }
 }
 
@@ -33,6 +44,4 @@ export abstract class AbstractState {
   } = {};
 }
 
-export class RootState extends AbstractState {
-
-}
+export class RootState extends AbstractState {}

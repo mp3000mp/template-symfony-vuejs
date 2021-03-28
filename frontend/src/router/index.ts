@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
 import AdminUsersPage from '../views/admin/Users.vue'
-import PasswordReset from '../views/security/PasswordReset.vue'
+import PasswordReset from '../views/security/ForgottenPasswordReset.vue'
 import AccountPage from '@/views/account/AccountPage.vue'
 import LoginPage from '@/views/security/LoginPage.vue'
 
