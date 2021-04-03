@@ -1,0 +1,10 @@
+{% extends 'email/base.html.twig' %}
+
+{% block body %}
+    <p>
+        Welcome to mp3000.
+    </p>
+    <p>
+        To set your password, please click on the following link: <a href="{{ reset_url }}">{{ reset_url }}</a>
+    </p>
+{% endblock %}

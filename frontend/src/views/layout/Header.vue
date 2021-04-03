@@ -1,35 +1,6 @@
-<template>
-  <ul class="nav justify-content-center">
-    <li
-      class="nav-item"
-      v-for="(item, idx) in menuItems"
-      :key="idx"
-    >
-      <router-link
-        v-if="me.roles.includes(item.role)"
-        :to="item.to"
-        class="nav-link"
-        :class="{active: false}"
-      >
-        {{ item.label }}
-      </router-link>
-    </li>
-    <li
-      class="nav-item"
-    v-if="isAuth"
-    >
-      <a
-        class="nav-link"
-        href="/logout"
-        @click.prevent="logout"
-      >Logout</a>
-    </li>
-  </ul>
-</template>
-
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component'
-import { menuItems } from './data/menuItems'
+import { menuItems, MenuItem } from './data/menuItems'
 import { mapGetters, mapState } from 'vuex'
 
 @Options({
@@ -40,6 +11,11 @@ import { mapGetters, mapState } from 'vuex'
     }
   },
   computed: {
+    allowedMenuItems () {
+      return this.menuItems.filter((item: MenuItem) => {
+        return this.me.roles.includes(item.role)
+      })
+    },
     ...mapState('security', ['me']),
     ...mapGetters('security', {
       isAuth: 'getIsAuth'
@@ -54,6 +30,34 @@ import { mapGetters, mapState } from 'vuex'
 })
 export default class LayoutHeader extends Vue {}
 </script>
+
+<template>
+  <ul class="nav justify-content-center">
+    <li
+      class="nav-item"
+      v-for="(item, idx) in allowedMenuItems"
+      :key="idx"
+    >
+      <router-link
+        :to="item.to"
+        class="nav-link"
+        :class="{active: false}"
+      >
+        {{ item.label }}
+      </router-link>
+    </li>
+    <li
+      class="nav-item"
+      v-if="isAuth"
+    >
+      <a
+        class="nav-link"
+        href="/logout"
+        @click.prevent="logout"
+      >Logout</a>
+    </li>
+  </ul>
+</template>
 
 <style lang="scss">
   /* todo trouver pourquoi non trouver dans bootstrap ? */

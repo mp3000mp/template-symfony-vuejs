@@ -30,20 +30,20 @@ class PasswordController extends AbstractController
             ->findOneBy(['email' => $json['email'] ?? null])
         ;
 
-        if (null !== $user && $user->isEnabled()) {
+        if (null !== $user && $user->getIsEnabled()) {
             $logger->debug(sprintf('Forgotten password requested by %s', $user->getEmail()));
             // set reset token
             $user->setResetPasswordAt(new \DateTime());
-            $user->setResetPasswordToken(md5(random_bytes(64)));
-
-            // send mail
-            $mailer->sendEmail('forgotten_password', [
-                'reset_url' => $this->getParameter('FRONT_URL').'/password/reset/'.$user->getResetPasswordToken(),
-            ], 'Forgotten password', [$user->getEmail()]);
+            $user->generateResetPasswordToken();
 
             // persist
             $em->persist($user);
             $em->flush();
+
+            // send mail
+            $mailer->sendEmail('forgotten_password', [
+                'reset_url' => $this->getParameter('FRONT_URL').'/password/forgotten/'.$user->getResetPasswordToken(),
+            ], 'Forgotten password', [$user->getEmail()]);
         }
 
         return $this->json([
@@ -54,6 +54,7 @@ class PasswordController extends AbstractController
     /**
      * Test if reset token ok.
      *
+     * @Route("/api/password/init/{token}", name="password_init_check", methods={"GET"},  requirements={"token"="\w+"})
      * @Route("/api/password/forgotten/{token}", name="password_forgotten_check", methods={"GET"}, requirements={"token"="\w+"})
      */
     public function forgottenPasswordCheck(string $token): Response
@@ -65,7 +66,7 @@ class PasswordController extends AbstractController
             ->findOneBy(['reset_password_token' => $token])
         ;
 
-        if (null === $user) {
+        if (null === $user || !$user->getIsEnabled()) {
             return $this->json([
                 'message' => 'This token has expired.',
             ], 404);
@@ -79,6 +80,7 @@ class PasswordController extends AbstractController
     /**
      * Reset password.
      *
+     * @Route("/api/password/init/{token}", name="password_init_reset", methods={"POST"},  requirements={"token"="\w+"})
      * @Route("/api/password/forgotten/{token}", name="password_forgotten_reset", methods={"POST"},  requirements={"token"="\w+"})
      */
     public function forgottenPasswordReset(Request $request, string $token, UserPasswordEncoderInterface $encoder): Response
@@ -98,7 +100,7 @@ class PasswordController extends AbstractController
         }
 
         // check newPassword confirmation
-        if($json['password'] !== $json['passwordConfirm']){
+        if ($json['password'] !== $json['passwordConfirm']) {
             return $this->json([
                 'message' => 'Password confirmation is different.',
             ], 400);
@@ -143,14 +145,14 @@ class PasswordController extends AbstractController
         $user = $this->getUser();
 
         // check currentPassword
-        if(!$encoder->isPasswordValid($user, $json['currentPassword'])){
+        if (!$encoder->isPasswordValid($user, $json['currentPassword'])) {
             return $this->json([
                 'message' => 'Authentication failed.',
             ], 401);
         }
 
         // check newPassword confirmation
-        if($json['newPassword'] !== $json['newPassword2']){
+        if ($json['newPassword'] !== $json['newPassword2']) {
             return $this->json([
                 'message' => 'Password confirmation is different.',
             ], 400);

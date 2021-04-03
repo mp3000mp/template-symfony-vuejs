@@ -1,11 +1,15 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
-import AdminUsersPage from '../views/admin/Users.vue'
+import AdminUsersPage from '../views/admin/UsersPage.vue'
 import PasswordReset from '../views/security/ForgottenPasswordReset.vue'
 import AccountPage from '@/views/account/AccountPage.vue'
 import LoginPage from '@/views/security/LoginPage.vue'
+import { state as securityState } from '@/store/modules/security/state'
 
-// oui
+function checkPermission (role: string) {
+  return securityState.me.roles.includes(role)
+}
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -15,12 +19,26 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/admin/users',
     name: 'AdminUsers',
-    component: AdminUsersPage
+    component: AdminUsersPage,
+    beforeEnter: (to, from, next) => {
+      if (checkPermission('ROLE_ADMIN')) {
+        next()
+      } else {
+        next({ name: 'Home' })
+      }
+    }
   },
   {
     path: '/login',
     name: 'Login',
-    component: LoginPage
+    component: LoginPage,
+    beforeEnter: (to, from, next) => {
+      if (checkPermission('ROLE_ANONYMOUS')) {
+        next()
+      } else {
+        next({ name: 'Home' })
+      }
+    }
   },
   {
     path: '/account',
@@ -28,9 +46,28 @@ const routes: Array<RouteRecordRaw> = [
     component: AccountPage
   },
   {
-    path: '/password/reset/:token',
-    name: 'About',
-    component: PasswordReset
+    path: '/password/forgotten/:token',
+    name: 'ForgottenPassword',
+    component: PasswordReset,
+    beforeEnter: (to, from, next) => {
+      if (checkPermission('ROLE_ANONYMOUS')) {
+        next()
+      } else {
+        next({ name: 'Home' })
+      }
+    }
+  },
+  {
+    path: '/password/init/:token',
+    name: 'InitPassword',
+    component: PasswordReset,
+    beforeEnter: (to, from, next) => {
+      if (checkPermission('ROLE_ANONYMOUS')) {
+        next()
+      } else {
+        next({ name: 'Home' })
+      }
+    }
   }
 ]
 

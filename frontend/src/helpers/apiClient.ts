@@ -13,8 +13,19 @@ interface ApiRequestConfig {
 }
 
 export class ApiClient {
+  baseUrl: string;
   private axios: AxiosInstance;
   private nbRefreshTokenRetry = 0;
+
+  constructor (baseURL: string) {
+    this.baseUrl = baseURL
+    this.axios = axios.create({
+      baseURL,
+      headers: {
+        'content-type': 'application/json'
+      }
+    })
+  }
 
   private static generateUrl (url: string, urlParams: {[key: string]: string}): string {
     const regex = /{(.+?)}/g
@@ -27,17 +38,18 @@ export class ApiClient {
     return url
   }
 
-  private static getJwtToken (): string {
-    return `Bearer ${store.getters['security/getToken']}`
+  public static generateErrorMessage (err: any): string {
+    if (err.response) {
+      return err.response.data.message ||
+        err.response.data.detail ||
+        `Unexpected error ${err.response.status}: ${err.response.statusText}`
+      // return msg.replaceAll('\n', '<br />')
+    }
+    return 'unexpected err'
   }
 
-  constructor (baseURL: string) {
-    this.axios = axios.create({
-      baseURL,
-      headers: {
-        'content-type': 'application/json'
-      }
-    })
+  private static getJwtToken (): string {
+    return `Bearer ${store.getters['security/getToken']}`
   }
 
   /**
@@ -59,10 +71,7 @@ export class ApiClient {
     try {
       const response = await this.axios.request(config)
 
-      if (!(response.config.url || '').includes('/api/token/refresh')) {
-        this.nbRefreshTokenRetry = 0
-      }
-
+      this.nbRefreshTokenRetry = 0
       console.log(`req ok: ${config.url}`)
       request.end(response.status, response.data.message || '')
       return response
@@ -78,21 +87,22 @@ export class ApiClient {
             config.headers.Authorization = ApiClient.getJwtToken()
             const response = await this.axios.request(config)
 
+            this.nbRefreshTokenRetry = 0
             console.log(`req ok: ${config.url}`)
             request.end(response.status, response.data.message || '')
             return response
           } catch (refreshErr) {
-            if (err.response) {
-              console.log(`req ${err.response.status}: ${config.url}`)
+            if (refreshErr.response) {
+              console.log(`req ${refreshErr.response.status}: ${config.url}`)
             } else {
               console.log(`refresh token failed: ${config.url}`)
-              console.log(err)
+              console.log(refreshErr)
             }
-            request.end(err.response.status, err.response.data.message || `Unexpected error ${err.response.status}: ${err.response.statusText}`)
-            throw err
+            request.end(refreshErr.response.status, ApiClient.generateErrorMessage(refreshErr))
+            throw refreshErr
           }
         }
-        request.end(err.response.status, err.response.data.message || `Unexpected error ${err.response.status}: ${err.response.statusText}`)
+        request.end(err.response.status, ApiClient.generateErrorMessage(err))
       } else {
         console.log(`unexpected err: ${config.url}`)
         console.log(err)

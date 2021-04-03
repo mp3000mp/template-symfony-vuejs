@@ -8,7 +8,9 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class AppPurgerFactory implements PurgerFactory
 {
-    public function createForEntityManager(?string $emName, EntityManagerInterface $em, array $excluded = [], bool $purgeWithTruncate = false) : PurgerInterface
+    // todo on en a besoin ?
+
+    public function createForEntityManager(?string $emName, EntityManagerInterface $em, array $excluded = [], bool $purgeWithTruncate = false): PurgerInterface
     {
         return new AppPurger($em);
     }

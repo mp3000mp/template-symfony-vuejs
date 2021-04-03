@@ -1,9 +1,11 @@
-import { AbstractState, StoreRequest } from '@/store/types'
+import { AbstractState } from '@/store/types'
 
 export interface User {
   id: number;
-  username: string;
   email: string;
+  isEnabled: boolean;
+  roles: string[];
+  username: string;
 }
 
 export class UserState extends AbstractState {

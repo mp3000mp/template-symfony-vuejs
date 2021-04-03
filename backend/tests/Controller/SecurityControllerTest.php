@@ -4,7 +4,6 @@ namespace App\Tests\Controller;
 
 class SecurityControllerTest extends AbstractControllerTest
 {
-
     public function testLoginOk(): void
     {
         $client = static::createClient();
@@ -59,7 +58,6 @@ class SecurityControllerTest extends AbstractControllerTest
         $jsonResponse = $this->getResponseJson($client->getResponse());
         $this->assertArrayHasKey('token', $jsonResponse);
         $this->assertArrayHasKey('refreshToken', $jsonResponse);
-
     }
 
     public function testRefreshTokenBadToken(): void

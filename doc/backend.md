@@ -2,7 +2,7 @@
 
 todo
 
-## generate RSA key
+## Generate RSA key
 
 ```
 mkdir -p backend/config/jwt
@@ -13,4 +13,19 @@ Type the value of your `JWT_PASSPHRASE` environment variable.
 openssl rsa -pubout -in private.pem > public.pem
 ```
 
+## Init dummy data
 
+```
+# fixtures 
+php bin/console doctrine:fixtures:load --group=dev
+```
+or
+```
+php bin/console doctrine:fixtures:load --group=test
+```
+
+## Testing
+
+```
+composer tu
+```

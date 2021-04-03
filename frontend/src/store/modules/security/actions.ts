@@ -2,6 +2,7 @@ import apiRegistry from '@/helpers/apiRegistry'
 import { ActionContext } from 'vuex'
 import { SecurityState } from './types'
 import { RootState } from '@/store/types'
+import { ApiClient } from '@/helpers/apiClient'
 
 interface LoginPayload {
   username: string;
@@ -20,13 +21,25 @@ interface ResetPasswordPayload {
 
 export const actions = {
   async forgottenPasswordCheckToken ({ state }: ActionContext<SecurityState, RootState>, token: string) {
-    return await apiRegistry.get().httpReq(state.actionRequest.forgottenPasswordCheckToken, { urlParams: { token: token } })
+    try {
+      await apiRegistry.get().httpReq(state.actionRequest.forgottenPasswordCheckToken, { urlParams: { token: token } })
+    } catch (err) {
+      return Promise.reject(ApiClient.generateErrorMessage(err))
+    }
   },
   async forgottenPasswordSend ({ state }: ActionContext<SecurityState, RootState>, email: string) {
-    return await apiRegistry.get().httpReq(state.actionRequest.forgottenPasswordSend, { data: { email: email } })
+    try {
+      await apiRegistry.get().httpReq(state.actionRequest.forgottenPasswordSend, { data: { email: email } })
+    } catch (err) {
+      return Promise.reject(ApiClient.generateErrorMessage(err))
+    }
   },
   async forgottenPasswordReset ({ state }: ActionContext<SecurityState, RootState>, data: ForgottenPasswordResetPayload) {
-    return await apiRegistry.get().httpReq(state.actionRequest.forgottenPasswordReset, { urlParams: { token: data.token }, data: { password: data.password, passwordConfirm: data.passwordConfirm } })
+    try {
+      await apiRegistry.get().httpReq(state.actionRequest.forgottenPasswordReset, { urlParams: { token: data.token }, data: { password: data.password, passwordConfirm: data.passwordConfirm } })
+    } catch (err) {
+      return Promise.reject(ApiClient.generateErrorMessage(err))
+    }
   },
   async login ({ commit, state, dispatch }: ActionContext<SecurityState, RootState>, data: LoginPayload) {
     try {
@@ -64,11 +77,11 @@ export const actions = {
       commit('setRefreshToken', null)
     }
   },
-  async resetPassword ({ commit, state, getters }: ActionContext<SecurityState, RootState>, data: ResetPasswordPayload) {
+  async resetPassword ({ state }: ActionContext<SecurityState, RootState>, data: ResetPasswordPayload) {
     try {
       await apiRegistry.get().httpReq(state.actionRequest.resetPassword, { data })
-    } catch (e) {
-
+    } catch (err) {
+      return Promise.reject(ApiClient.generateErrorMessage(err))
     }
   }
 }

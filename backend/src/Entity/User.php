@@ -29,14 +29,16 @@ class User implements UserInterface, \Serializable
     private int $id;
 
     /**
+     * @Assert\Email()
+     * @Assert\NotBlank()
      * @ORM\Column(type="string", length=100, unique=true)
-     * @Assert\Email(message = "entity.User.constraint.email.email")
+     * @Groups({"admin"})
      */
     private string $email;
 
     /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="string", length=55, unique=true)
-     * @Assert\Email(message = "entity.User.constraint.email.username")
      * @Groups({"admin", "me"})
      */
     private string $username;
@@ -63,14 +65,15 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"admin"})
      */
     private bool $isEnabled = false;
 
     /**
      * @ORM\Column(type="json", nullable=false)
-     * @Groups({"me"})
+     * @Groups({"me", "admin"})
      */
-    private array$roles = [];
+    private array $roles = [];
 
     /**
      * @ORM\Column(type="boolean")
@@ -209,6 +212,11 @@ class User implements UserInterface, \Serializable
         $this->reset_password_token = $reset_password_token;
     }
 
+    public function generateResetPasswordToken(): void
+    {
+        $this->reset_password_token = md5(random_bytes(64));
+    }
+
     public function getResetPasswordAt(): ?DateTime
     {
         return $this->reset_password_at;
@@ -219,7 +227,7 @@ class User implements UserInterface, \Serializable
         $this->reset_password_at = $reset_password_at;
     }
 
-    public function isEnabled(): bool
+    public function getIsEnabled(): bool
     {
         return $this->isEnabled;
     }
@@ -229,7 +237,7 @@ class User implements UserInterface, \Serializable
         $this->isEnabled = $isEnabled;
     }
 
-    public function isSuperAdmin(): bool
+    public function getIsSuperAdmin(): bool
     {
         return $this->isSuperAdmin;
     }

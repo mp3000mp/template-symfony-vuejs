@@ -1,7 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faHandSparkles, faMagic } from '@fortawesome/free-solid-svg-icons'
+import { faHandSparkles, faMagic, faUserCheck, faUserTimes } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import './registerServiceWorker'
 import router from './router'
@@ -16,7 +17,7 @@ import './assets/css/app.scss'
 const BASE_URL = 'http://localhost:5000'
 apiRegistry.set('default', BASE_URL)
 
-library.add(faHandSparkles, faMagic)
+library.add(faHandSparkles, faMagic, faUserCheck, faUserTimes, faTrashAlt, faEdit)
 
 createApp(App)
   .component('font-aw', FontAwesomeIcon)

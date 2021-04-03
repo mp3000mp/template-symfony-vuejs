@@ -1,0 +1,23 @@
+{
+  "title": "user_create",
+  "description": "User creation request data",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string"
+    },
+    "isEnabled": {
+      "type": "boolean"
+    },
+    "roles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "username": {
+      "type": "string"
+    }
+  },
+  "required": ["email", "username"]
+}

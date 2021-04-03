@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractControllerTest extends WebTestCase
 {
-
     private $userByRole = [
         'ROLE_USER' => 'user',
         'ROLE_ADMIN' => 'admin',
@@ -19,7 +18,6 @@ abstract class AbstractControllerTest extends WebTestCase
 
     protected function setUp(): void
     {
-
         /*$loader = new Loader();
         $loader->addFixture(new AppFixtures());
 
