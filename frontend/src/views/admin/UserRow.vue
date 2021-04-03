@@ -45,8 +45,8 @@ import { mapState } from 'vuex'
     async disableUser () {
       try {
         await this.$store.dispatch('users/disableUser', this.user.id)
-      } catch (response) {
-        alert(response.data.message)
+      } catch (err) {
+        alert(err)
       }
     },
     enableUser () {
