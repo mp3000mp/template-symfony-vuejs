@@ -8,7 +8,7 @@ class SecurityControllerTest extends AbstractControllerTest
     {
         $client = static::createClient();
 
-        $client->request('POST', '/api/logincheck', [], [], [], json_encode([
+        $client->request('POST', '/api/logincheck', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'username' => 'user',
             'password' => 'Test2000!',
         ]));
@@ -20,7 +20,7 @@ class SecurityControllerTest extends AbstractControllerTest
     {
         $client = static::createClient();
 
-        $client->request('POST', '/api/logincheck', [], [], [], json_encode([
+        $client->request('POST', '/api/logincheck', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'username' => 'user',
             'password' => 'badPassword',
         ]));
@@ -34,7 +34,7 @@ class SecurityControllerTest extends AbstractControllerTest
     {
         $client = static::createClient();
 
-        $client->request('POST', '/api/logincheck', [], [], [], json_encode([
+        $client->request('POST', '/api/logincheck', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'username' => 'disabled',
             'password' => 'Test2000!',
         ]));

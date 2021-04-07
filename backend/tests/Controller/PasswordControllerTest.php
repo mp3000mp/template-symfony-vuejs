@@ -145,8 +145,6 @@ class PasswordControllerTest extends AbstractControllerTest
         $client = static::createClient();
         $this->loginUser($client);
 
-        // todo logged ?
-
         $client->request('POST', '/api/password/reset', [], [], [], json_encode([
             'currentPassword' => 'Test2000!',
             'newPassword' => 'Test3000!',
@@ -160,8 +158,6 @@ class PasswordControllerTest extends AbstractControllerTest
     {
         $client = static::createClient();
         $this->loginUser($client);
-
-        // todo logged ?
 
         $client->request('POST', '/api/password/reset', [], [], [], json_encode([
             'currentPassword' => 'Test2000!',
@@ -179,8 +175,6 @@ class PasswordControllerTest extends AbstractControllerTest
         $client = static::createClient();
         $this->loginUser($client);
 
-        // todo logged ?
-
         $client->request('POST', '/api/password/reset', [], [], [], json_encode([
             'currentPassword' => 'badPassword',
             'newPassword' => 'Test3000!',
@@ -196,8 +190,6 @@ class PasswordControllerTest extends AbstractControllerTest
     {
         $client = static::createClient();
         $this->loginUser($client);
-
-        // todo logged ?
 
         $client->request('POST', '/api/password/reset', [], [], [], json_encode([
             'currentPassword' => 'Test2000!',

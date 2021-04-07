@@ -34,7 +34,20 @@ abstract class AbstractControllerTest extends WebTestCase
     {
         $userRepository = static::$container->get(UserRepository::class);
         $testUser = $userRepository->findOneBy(['username' => $this->userByRole[$role]]);
-        $client->loginUser($testUser);
+        $client->request(
+            'POST',
+            '/api/logincheck',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'username' => $testUser->getUsername(),
+                'password' => 'Test2000!',
+            ])
+        );
+        $data = json_decode($client->getResponse()->getContent(), true);
+        
+        $client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $data['token']));
     }
 
     protected function getResponseJson(Response $response): array
