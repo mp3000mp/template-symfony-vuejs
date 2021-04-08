@@ -13,6 +13,7 @@
 /backend/.env.local
 /backend/config/secrets/prod/prod.decrypt.private.php
 /backend/config/jwt/*.pem
+!/backend/config/jwt/test/*.pem
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
