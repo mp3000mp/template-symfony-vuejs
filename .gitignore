@@ -1,7 +1,9 @@
 # deployment
 /.env
 /deployment/mariadb/db
+/deployment/mariadb/log
 /deployment/mariadb_test/db
+/deployment/mariadb_test/log
 
 # backend
 /backend/ci
@@ -35,6 +37,7 @@
 /frontend/dist
 /frontend/.nyc_output
 /frontend/ci
+/frontend/log
 
 # npm/yarn
 /frontend/npm-debug.log
