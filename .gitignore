@@ -34,6 +34,7 @@
 /frontend/dist
 /frontend/.nyc_output
 /frontend/ci
+/frontend/src/variables.json
 
 # npm/yarn
 /frontend/npm-debug.log
