@@ -109,7 +109,6 @@ class UserControllerTest extends AbstractControllerTest
     {
         $this->loginUser($this->client, 'ROLE_ADMIN');
 
-        // disabled
         $this->client->request('PUT', '/api/users', [], [], [], json_encode([
             'badProperty' => 'test@mp3000.fr',
             'isEnabled' => false,
@@ -215,6 +214,24 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertStringContainsString('[email=', $jsonResponse['detail']);
     }
 
+    public function testUpdateDisableSelf(): void
+    {
+        $this->loginUser($this->client, 'ROLE_ADMIN');
+
+        $id = $this->getUserId('admin');
+        $this->client->request('POST', "/api/users/$id", [], [], [], json_encode([
+            'email' => 'admin@mp3000.fr',
+            'isEnabled' => false,
+            'roles' => ['ROLE_ADMIN'],
+            'username' => 'admin',
+        ]));
+
+        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+        $jsonResponse = $this->getResponseJson($this->client->getResponse());
+
+        $this->assertStringContainsString('yourself', $jsonResponse['message']);
+    }
+
     public function testEnableOk(): void
     {
         $this->loginUser($this->client, 'ROLE_ADMIN');
@@ -254,6 +271,19 @@ class UserControllerTest extends AbstractControllerTest
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
         $this->assertEquals(false, $jsonResponse['isEnabled']);
+    }
+
+    public function testDisableAlready(): void
+    {
+        $this->loginUser($this->client, 'ROLE_ADMIN');
+
+        $id = $this->getUserId('disabled');
+        $this->client->request('POST', "/api/users/$id/disable");
+
+        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+        $jsonResponse = $this->getResponseJson($this->client->getResponse());
+
+        $this->assertStringContainsString('already', $jsonResponse['message']);
     }
 
     public function testDisableSelf(): void

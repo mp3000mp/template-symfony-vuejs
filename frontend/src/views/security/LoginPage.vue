@@ -17,19 +17,15 @@ import { mapState } from 'vuex'
   computed: {
     ...mapState('security', {
       securityRequests: 'actionRequest'
-    })
+    }),
+    ...mapState('security', ['me'])
   },
   methods: {
-    login () {
-      this.$store.dispatch('security/login', {
+    async login () {
+      await this.$store.dispatch('security/login', {
         username: this.username,
         password: this.password
       })
-        .then(() => {
-          if (this.securityRequests.login.status === 200) {
-            this.$router.push({ path: '/' })
-          }
-        })
     },
     sendForgottenPasswordEmail () {
       this.$store.dispatch('security/forgottenPasswordSend', this.forgottenPasswordSend.email)
@@ -42,6 +38,11 @@ import { mapState } from 'vuex'
           this.forgottenPasswordSend.status = false
           this.forgottenPasswordSend.message = err.message || err.response.data.message
         })
+    }
+  },
+  watch: {
+    me () {
+      this.$router.push({ path: '/' })
     }
   }
 })
