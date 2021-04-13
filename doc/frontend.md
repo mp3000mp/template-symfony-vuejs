@@ -6,6 +6,12 @@ yarn install
 ```
 **Note**: it is important to use yarn package.json resolutions is not supported by npm and we need that in order to use cypress v6 instead of v3. This will not be necessary when upgrade to cli-plugin-e2e-cypress v5 will be done.
 
+
+### Configuration
+
+Create variable.json file from variable.example.json
+
+
 ### Compiles and hot-reloads for development
 ```
 npm run serve
