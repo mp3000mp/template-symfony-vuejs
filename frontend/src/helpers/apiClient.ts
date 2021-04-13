@@ -66,18 +66,18 @@ export class ApiClient {
       config.headers.Authorization = ApiClient.getJwtToken()
     }
 
-    console.log(`req start: ${config.url}`)
+    console.log(`req start: ${config.method} ${config.url}`)
     request.start()
     try {
       const response = await this.axios.request(config)
 
       this.nbRefreshTokenRetry = 0
-      console.log(`req ok: ${config.url}`)
+      console.log(`req ok: ${config.method} ${config.url}`)
       request.end(response.status, response.data.message || '')
       return response
     } catch (err) {
       if (err.response) {
-        console.log(`req ${err.response.status}: ${config.url}`)
+        console.log(`req ${err.response.status}: ${config.method} ${config.url}`)
 
         // tru refresh token
         if (err.response.status === 401 && err.response.data.message === 'Expired JWT Token' && this.nbRefreshTokenRetry === 0) {
@@ -88,14 +88,14 @@ export class ApiClient {
             const response = await this.axios.request(config)
 
             this.nbRefreshTokenRetry = 0
-            console.log(`req ok: ${config.url}`)
+            console.log(`req ok: ${config.method} ${config.url}`)
             request.end(response.status, response.data.message || '')
             return response
           } catch (refreshErr) {
             if (refreshErr.response) {
-              console.log(`req ${refreshErr.response.status}: ${config.url}`)
+              console.log(`req ${refreshErr.response.status}: ${config.method} ${config.url}`)
             } else {
-              console.log(`refresh token failed: ${config.url}`)
+              console.log(`refresh token failed: ${config.method} ${config.url}`)
               console.log(refreshErr)
             }
             request.end(refreshErr.response.status, ApiClient.generateErrorMessage(refreshErr))
@@ -104,7 +104,7 @@ export class ApiClient {
         }
         request.end(err.response.status, ApiClient.generateErrorMessage(err))
       } else {
-        console.log(`unexpected err: ${config.url}`)
+        console.log(`unexpected err: ${config.method} ${config.url}`)
         console.log(err)
         request.end(500, 'Unexpected request error')
       }

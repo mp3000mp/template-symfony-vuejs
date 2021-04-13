@@ -63,9 +63,9 @@ class UserController extends AbstractController
      */
     public function create(Request $request, MailerService $mailer): Response
     {
-        $user = $this->requestHelper->handleRequest($request->getContent(), 'user_all',User::class);
+        $user = $this->requestHelper->handleRequest($request->getContent(), 'user_all', User::class);
 
-        if($user->getIsEnabled()){
+        if ($user->getIsEnabled()) {
             // set reset token
             $user->setResetPasswordAt(new \DateTime());
             $user->generateResetPasswordToken();
@@ -74,10 +74,10 @@ class UserController extends AbstractController
         $this->em->persist($user);
         $this->em->flush();
 
-        if($user->getIsEnabled()) {
+        if ($user->getIsEnabled()) {
             // send mail
             $mailer->sendEmail('welcome', [
-                'reset_url' => $this->getParameter('FRONT_URL') . '/password/init/' . $user->getResetPasswordToken(),
+                'reset_url' => $this->getParameter('FRONT_URL').'/password/init/'.$user->getResetPasswordToken(),
             ], 'Welcome to mp3000', [$user->getEmail()]);
         }
 
@@ -99,7 +99,7 @@ class UserController extends AbstractController
             ], 400);
         }
 
-        if(!$wasEnabled && $user->getIsEnabled()){
+        if (!$wasEnabled && $user->getIsEnabled()) {
             // set reset token
             $user->setResetPasswordAt(new \DateTime());
             $user->generateResetPasswordToken();
@@ -108,10 +108,10 @@ class UserController extends AbstractController
         $this->em->persist($user);
         $this->em->flush();
 
-        if(!$wasEnabled && $user->getIsEnabled()){
+        if (!$wasEnabled && $user->getIsEnabled()) {
             // send mail
             $mailer->sendEmail('welcome', [
-                'reset_url' => $this->getParameter('FRONT_URL') . '/password/init/' . $user->getResetPasswordToken(),
+                'reset_url' => $this->getParameter('FRONT_URL').'/password/init/'.$user->getResetPasswordToken(),
             ], 'Welcome to mp3000', [$user->getEmail()]);
         }
 
@@ -179,6 +179,12 @@ class UserController extends AbstractController
      */
     public function remove(User $user): Response
     {
+        if ($user->getIsEnabled()) {
+            return $this->json([
+                'message' => 'You cannot delete an enabled user.',
+            ], 400);
+        }
+
         $this->em->remove($user);
         $this->em->flush();
 

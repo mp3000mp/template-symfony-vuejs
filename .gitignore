@@ -1,7 +1,9 @@
 # deployment
 /.env
 /deployment/mariadb/db
+/deployment/mariadb/log
 /deployment/mariadb_test/db
+/deployment/mariadb_test/log
 
 # backend
 /backend/ci
@@ -13,6 +15,7 @@
 /backend/.env.local
 /backend/config/secrets/prod/prod.decrypt.private.php
 /backend/config/jwt/*.pem
+!/backend/config/jwt/test/*.pem
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
@@ -35,6 +38,7 @@
 /frontend/.nyc_output
 /frontend/ci
 /frontend/src/variables.json
+/frontend/log
 
 # npm/yarn
 /frontend/npm-debug.log

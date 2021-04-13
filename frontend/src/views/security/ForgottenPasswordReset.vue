@@ -1,7 +1,6 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component'
 import { mapState } from 'vuex'
-import { AxiosResponse } from 'axios'
 
 @Options({
   name: 'SecurityForgottenPasswordReset',
@@ -12,27 +11,42 @@ import { AxiosResponse } from 'axios'
       passwordConfirm: ''
     }
   },
+  props: {
+    init: { type: Boolean, required: true }
+  },
   computed: {
-    ...mapState('security', ['actionRequest'])
+    ...mapState('security', ['actionRequest']),
+    checkTokenIsError () {
+      return this.init ? this.actionRequest.initPasswordCheckToken.status !== 200 : this.actionRequest.forgottenPasswordCheckToken.status !== 200
+    },
+    checkTokenMessage () {
+      return this.init ? this.actionRequest.initPasswordCheckToken.message : this.actionRequest.forgottenPasswordCheckToken.message
+    },
+    resetIsError () {
+      return this.init ? this.actionRequest.initPasswordReset.status !== 200 : this.actionRequest.forgottenPasswordReset.status !== 200
+    },
+    resetMessage () {
+      return this.init ? this.actionRequest.initPasswordReset.message : this.actionRequest.forgottenPasswordReset.message
+    }
   },
   methods: {
     checkToken () {
-      this.$store.dispatch('security/forgottenPasswordCheckToken', this.$route.params.token)
+      const action = this.init ? 'security/initPasswordCheckToken' : 'security/forgottenPasswordCheckToken'
+      this.$store.dispatch(action, this.$route.params.token)
     },
     async reset () {
-      await this.$store.dispatch('security/forgottenPasswordReset', {
+      const action = this.init ? 'security/initPasswordReset' : 'security/forgottenPasswordReset'
+      await this.$store.dispatch(action, {
         token: this.$route.params.token,
         password: this.password,
         passwordConfirm: this.passwordConfirm
       })
       this.password = ''
       this.passwordConfirm = ''
-      if (!this.actionRequest.forgottenPasswordReset.isError) {
-        this.displayForm = false
-        setTimeout(() => {
-          this.$router.push({ path: '/login' })
-        }, 2000)
-      }
+      this.displayForm = false
+      setTimeout(() => {
+        this.$router.push({ path: '/login' })
+      }, 2000)
     }
   },
   mounted () {
@@ -44,7 +58,7 @@ export default class SecurityPasswordReset extends Vue {}
 
 <template>
   <form @submit.prevent="reset">
-    <div v-if="displayForm && actionRequest.forgottenPasswordCheckToken.status === 200">
+    <div v-if="displayForm && !checkTokenIsError">
       <label for="pwd">
         New password:
         <input type="password" name="pwd" id="pwd" v-model="password" />
@@ -57,15 +71,15 @@ export default class SecurityPasswordReset extends Vue {}
     </div>
     <span
       class="err"
-      v-if="actionRequest.forgottenPasswordCheckToken.status !== 200"
+      v-if="checkTokenIsError"
     >
-      {{ actionRequest.forgottenPasswordCheckToken.message }}
+      {{ checkTokenMessage }}
     </span>
     <span :class="{
-      err: actionRequest.forgottenPasswordReset.status !== 200,
-      success: actionRequest.forgottenPasswordReset.status === 200
+      err: resetIsError,
+      success: !resetIsError
     }">
-      {{ actionRequest.forgottenPasswordReset.message }}
+      {{ resetMessage }}
     </span>
   </form>
 </template>

@@ -73,7 +73,7 @@ class PasswordController extends AbstractController
         }
 
         return $this->json([
-            'message' => 'Token is valid',
+            'message' => 'Token is valid.',
         ]);
     }
 
@@ -127,7 +127,7 @@ class PasswordController extends AbstractController
         $em->flush();
 
         return $this->json([
-            'message' => 'The password has been reset successfully',
+            'message' => 'The password has been reset successfully.',
         ]);
     }
 

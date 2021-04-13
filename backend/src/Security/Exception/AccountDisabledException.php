@@ -10,6 +10,6 @@ class AccountDisabledException extends AccountStatusException
 {
     public function getMessageKey()
     {
-        return 'security.connexion.err.account_disabled';
+        return 'Your accound is disabled.';
     }
 }

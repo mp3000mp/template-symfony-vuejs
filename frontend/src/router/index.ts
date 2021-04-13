@@ -14,7 +14,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    beforeEnter: (to, from, next) => {
+      if (checkPermission('ROLE_USER')) {
+        next()
+      }
+      next({ name: 'Login' })
+    }
   },
   {
     path: '/admin/users',
@@ -23,9 +29,8 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: (to, from, next) => {
       if (checkPermission('ROLE_ADMIN')) {
         next()
-      } else {
-        next({ name: 'Home' })
       }
+      next({ name: 'Home' })
     }
   },
   {
@@ -35,38 +40,47 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: (to, from, next) => {
       if (checkPermission('ROLE_ANONYMOUS')) {
         next()
-      } else {
-        next({ name: 'Home' })
       }
+      next({ name: 'Home' })
     }
   },
   {
     path: '/account',
     name: 'Account',
-    component: AccountPage
+    component: AccountPage,
+    beforeEnter: (to, from, next) => {
+      if (checkPermission('ROLE_USER')) {
+        next()
+      }
+      next({ name: 'Login' })
+    }
   },
   {
     path: '/password/forgotten/:token',
     name: 'ForgottenPassword',
     component: PasswordReset,
+    props: {
+      init: false
+    },
     beforeEnter: (to, from, next) => {
       if (checkPermission('ROLE_ANONYMOUS')) {
         next()
-      } else {
-        next({ name: 'Home' })
       }
+      next({ name: 'Home' })
     }
   },
   {
     path: '/password/init/:token',
     name: 'InitPassword',
     component: PasswordReset,
+    props: {
+      init: true
+    },
     beforeEnter: (to, from, next) => {
       if (checkPermission('ROLE_ANONYMOUS')) {
         next()
-      } else {
-        next({ name: 'Home' })
       }
+      next({ name: 'Home' })
     }
   }
 ]

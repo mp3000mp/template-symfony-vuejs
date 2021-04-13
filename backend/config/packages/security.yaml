@@ -23,7 +23,7 @@ security:
             anonymous: true
 
         password_forgotten:
-            pattern:  ^/api/password/forgotten
+            pattern:  ^/api/password/(init|forgotten)
             stateless: true
             anonymous: true
 
@@ -32,6 +32,7 @@ security:
             stateless: true
             anonymous: true
             provider: db_provider
+            user_checker: App\Security\UserChecker
             json_login:
                 check_path:               /api/logincheck
                 success_handler:          lexik_jwt_authentication.handler.authentication_success
@@ -56,6 +57,7 @@ security:
     access_control:
         - { path: ^/api/token/refresh,      roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/logincheck,         roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/password/init,     roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/password/forgotten, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/api/admin,              roles: ROLE_ADMIN }
         - { path: ^/api,                    roles: IS_AUTHENTICATED_FULLY }

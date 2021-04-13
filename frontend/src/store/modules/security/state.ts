@@ -5,9 +5,8 @@ function initMe (): Me {
   const json = localStorage.getItem('me')
   if (json === null) {
     return new Me()
-  } else {
-    return JSON.parse(json)
   }
+  return JSON.parse(json)
 }
 
 const state = new SecurityState()
@@ -19,6 +18,8 @@ state.actionRequest = {
   forgottenPasswordReset: new StoreRequest('POST', '/api/password/forgotten/{token}', false),
   forgottenPasswordSend: new StoreRequest('POST', '/api/password/forgotten', false),
   getMe: new StoreRequest('GET', '/api/me'),
+  initPasswordCheckToken: new StoreRequest('GET', '/api/password/init/{token}', false),
+  initPasswordReset: new StoreRequest('POST', '/api/password/init/{token}', false),
   login: new StoreRequest('POST', '/api/logincheck', false),
   refreshToken: new StoreRequest('POST', '/api/token/refresh', false),
   resetPassword: new StoreRequest('POST', '/api/password/reset', true)

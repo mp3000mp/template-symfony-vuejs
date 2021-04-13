@@ -19,6 +19,7 @@ class AppController extends AbstractController
      */
     public function home(MailerService $mailer, RedisClient $redis, LoggerInterface $logger): Response
     {
+        $this->getDoctrine()->getRepository(User::class)->doError();
         $logger->debug('Home called');
 
         // test mail

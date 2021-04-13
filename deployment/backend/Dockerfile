@@ -23,10 +23,9 @@ RUN pecl install redis-5.3.3 \
     && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 # todo: attention pas de xdebug en prod
 
-RUN a2enmod rewrite
-
 # config apache
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+RUN a2enmod rewrite \
+    && echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 WORKDIR /var/www/html
 
