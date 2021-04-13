@@ -7,15 +7,14 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import './registerServiceWorker'
 import router from './router'
 import store from './store'
+import variables from './variables.json'
 
 import apiRegistry from './helpers/apiRegistry'
 
 import './assets/css/app.scss'
 // import { Tooltip, Toast, Popover } from 'bootstrap'
 
-// todo variable d'environnement
-const BASE_URL = 'http://localhost:5000'
-apiRegistry.set('default', BASE_URL)
+apiRegistry.set('default', variables.URL)
 
 library.add(faHandSparkles, faMagic, faUserCheck, faUserTimes, faTrashAlt, faEdit)
 

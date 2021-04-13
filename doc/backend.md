@@ -10,7 +10,7 @@ openssl genrsa -aes256 4096 > backend/config/jwt/private.pem
 ```
 Type the value of your `JWT_PASSPHRASE` environment variable.
 ```
-openssl rsa -pubout -in private.pem > public.pem
+ openssl rsa -pubout -in backend/config/jwt/private.pem > backend/config/jwt/public.pem
 ```
 
 ## Init dummy data
