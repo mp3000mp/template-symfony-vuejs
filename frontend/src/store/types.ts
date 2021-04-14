@@ -1,3 +1,6 @@
+import { SecurityState } from '@/store/modules/security/types'
+import { UserState } from '@/store/modules/users/types'
+
 type Method = 'GET' | 'POST' | 'DELETE' | 'PUT' | 'PATCH'
 
 export class StoreRequest {
@@ -44,4 +47,7 @@ export abstract class AbstractState {
   } = {};
 }
 
-export class RootState extends AbstractState {}
+export interface RootState {
+  security: SecurityState;
+  users: UserState;
+}

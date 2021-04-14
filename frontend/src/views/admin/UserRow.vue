@@ -1,87 +1,84 @@
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component'
-import { mapState } from 'vuex'
+import { defineComponent, ref, reactive, onMounted } from 'vue'
+import { useStore } from '@/store'
 
-@Options({
+export default defineComponent({
   name: 'AdminUserRowPage',
   props: {
     user: { type: Object, required: true }
   },
-  data () {
-    return {
-      isUpdating: false,
-      profile: 'user',
-      tmpUser: {
-        id: null,
-        email: '',
-        username: ''
-      }
-    }
-  },
-  mounted () {
-    this.initTmpUser()
-  },
-  computed: {
-    ...mapState('users', {
-      userRequests: 'actionRequest'
-    }),
-    roles () {
-      if (this.profile === 'user') {
+  setup (props) {
+    const store = useStore()
+
+    const isUpdating = ref(false)
+    const profile = ref('user')
+    const tmpUser = reactive({
+      id: null,
+      email: '',
+      roles: ['ROLE_ANONYMOUS'],
+      username: ''
+    })
+
+    function getRoles (): string[] {
+      if (profile.value === 'user') {
         return ['ROLE_USER']
       } else {
         return ['ROLE_USER', 'ROLE_ADMIN']
       }
     }
-  },
-  methods: {
-    closeForm () {
-      this.isUpdating = false
-    },
-    deleteUser () {
-      if (confirm('Do you confirm you want to delete this user ?')) {
-        this.$store.dispatch('users/deleteUser', this.user.id)
-      }
-    },
-    async disableUser () {
-      try {
-        await this.$store.dispatch('users/disableUser', this.user.id)
-      } catch (err) {
-        alert(err)
-      }
-    },
-    enableUser () {
-      this.$store.dispatch('users/enableUser', this.user.id)
-    },
-    initForm () {
-      this.initTmpUser()
-      this.isUpdating = true
-    },
-    initProfile () {
-      if (this.user.roles.length === 1) {
-        this.profile = 'user'
+    function initProfile () {
+      if (props.user.roles.length === 1) {
+        profile.value = 'user'
       } else {
-        this.profile = 'admin'
+        profile.value = 'admin'
       }
-    },
-    initTmpUser () {
-      this.tmpUser.id = this.user.id
-      this.tmpUser.email = this.user.email
-      this.tmpUser.roles = this.user.roles
-      this.tmpUser.username = this.user.username
-      this.initProfile()
-    },
-    async updateUser () {
-      this.tmpUser.roles = this.roles
+    }
+    function initTmpUser () {
+      tmpUser.id = props.user.id
+      tmpUser.email = props.user.email
+      tmpUser.roles = props.user.roles
+      tmpUser.username = props.user.username
+      initProfile()
+    }
+    function closeForm () {
+      isUpdating.value = false
+    }
+    function deleteUser () {
+      if (confirm('Do you confirm you want to delete this user ?')) {
+        store.dispatch('users/deleteUser', props.user.id)
+      }
+    }
+    async function disableUser () {
       try {
-        await this.$store.dispatch('users/updateUser', this.tmpUser)
-        this.closeForm()
+        await store.dispatch('users/disableUser', props.user.id)
       } catch (err) {
         alert(err)
       }
     }
+    function enableUser () {
+      store.dispatch('users/enableUser', props.user.id)
+    }
+    function initForm () {
+      initTmpUser()
+      isUpdating.value = true
+    }
+    async function updateUser () {
+      tmpUser.roles = getRoles()
+      try {
+        await store.dispatch('users/updateUser', tmpUser)
+        closeForm()
+      } catch (err) {
+        alert(err)
+      }
+    }
+
+    onMounted(() => {
+      initTmpUser()
+    })
+
+    return { isUpdating, updateUser, tmpUser, closeForm, enableUser, disableUser, deleteUser, initForm, profile }
   }
 })
-export default class AdminUserRowPage extends Vue {}
 </script>
 
 <template>

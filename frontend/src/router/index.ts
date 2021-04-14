@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import Home from '../views/Home.vue'
-import AdminUsersPage from '../views/admin/UsersPage.vue'
-import PasswordReset from '../views/security/ForgottenPasswordReset.vue'
+import Home from '@/views/Home.vue'
+import AdminUsersPage from '@/views/admin/UsersPage.vue'
+import PasswordReset from '@/views/security/ForgottenPasswordReset.vue'
 import AccountPage from '@/views/account/AccountPage.vue'
 import LoginPage from '@/views/security/LoginPage.vue'
 import { state as securityState } from '@/store/modules/security/state'
@@ -18,8 +18,9 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: (to, from, next) => {
       if (checkPermission('ROLE_USER')) {
         next()
+      } else {
+        next({ name: 'Login' })
       }
-      next({ name: 'Login' })
     }
   },
   {
@@ -29,8 +30,9 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: (to, from, next) => {
       if (checkPermission('ROLE_ADMIN')) {
         next()
+      } else {
+        next({ name: 'Home' })
       }
-      next({ name: 'Home' })
     }
   },
   {
@@ -40,8 +42,9 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: (to, from, next) => {
       if (checkPermission('ROLE_ANONYMOUS')) {
         next()
+      } else {
+        next({ name: 'Home' })
       }
-      next({ name: 'Home' })
     }
   },
   {
@@ -51,8 +54,9 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: (to, from, next) => {
       if (checkPermission('ROLE_USER')) {
         next()
+      } else {
+        next({ name: 'Login' })
       }
-      next({ name: 'Login' })
     }
   },
   {
@@ -65,8 +69,9 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: (to, from, next) => {
       if (checkPermission('ROLE_ANONYMOUS')) {
         next()
+      } else {
+        next({ name: 'Home' })
       }
-      next({ name: 'Home' })
     }
   },
   {
@@ -79,8 +84,9 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: (to, from, next) => {
       if (checkPermission('ROLE_ANONYMOUS')) {
         next()
+      } else {
+        next({ name: 'Home' })
       }
-      next({ name: 'Home' })
     }
   }
 ]

@@ -1,52 +1,52 @@
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component'
-import { mapState } from 'vuex'
+import { defineComponent, ref, reactive, computed, watch } from 'vue'
+import { useStore } from '@/store'
+import { useRouter } from 'vue-router'
 
-@Options({
+export default defineComponent({
   name: 'LoginPage',
-  data () {
-    return {
-      forgottenPasswordSend: {
-        email: '',
-        show: false
-      },
-      password: '',
-      username: ''
-    }
-  },
-  computed: {
-    ...mapState('security', {
-      securityRequests: 'actionRequest'
-    }),
-    ...mapState('security', ['me'])
-  },
-  methods: {
-    async login () {
-      await this.$store.dispatch('security/login', {
-        username: this.username,
-        password: this.password
+  setup () {
+    const store = useStore()
+    const router = useRouter()
+
+    const forgottenPasswordSend = reactive({
+      email: '',
+      message: '',
+      show: false,
+      status: true
+    })
+    const password = ref('')
+    const username = ref('')
+
+    const me = computed(() => store.state.security.me)
+    const securityRequests = computed(() => store.state.security.actionRequest)
+
+    async function login () {
+      await store.dispatch('security/login', {
+        username: username.value,
+        password: password.value
       })
-    },
-    sendForgottenPasswordEmail () {
-      this.$store.dispatch('security/forgottenPasswordSend', this.forgottenPasswordSend.email)
+    }
+    function sendForgottenPasswordEmail () {
+      store.dispatch('security/forgottenPasswordSend', forgottenPasswordSend.email)
         .then((res: any) => {
-          this.forgottenPasswordSend.status = true
-          this.forgottenPasswordSend.message = res.data.message
-          this.forgottenPasswordSend.email = ''
+          forgottenPasswordSend.status = true
+          forgottenPasswordSend.message = res.data.message
+          forgottenPasswordSend.email = ''
         })
         .catch((err: any) => {
-          this.forgottenPasswordSend.status = false
-          this.forgottenPasswordSend.message = err.message || err.response.data.message
+          forgottenPasswordSend.status = false
+          forgottenPasswordSend.message = err.message || err.response.data.message
         })
     }
-  },
-  watch: {
-    me () {
-      this.$router.push({ path: '/' })
-    }
+
+    watch(me, () => {
+      router.push({ path: '/' })
+    })
+
+    return { login, password, username, forgottenPasswordSend, securityRequests, sendForgottenPasswordEmail }
   }
 })
-export default class AccountPage extends Vue {}
 </script>
 
 <template>

@@ -1,56 +1,51 @@
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component'
-import { mapState } from 'vuex'
 import { HTMLElementEvent } from '@/utils/types'
 import AdminUserRow from '@/views/admin/UserRow.vue'
+import { onMounted, computed, defineComponent, reactive } from 'vue'
+import { useStore } from '@/store'
 
-@Options({
+export default defineComponent({
   name: 'AdminUserPage',
   components: {
     AdminUserRow
   },
-  data () {
-    return {
-      newUser: {
-        email: '',
-        isEnabled: true,
-        roles: ['ROLE_USER'],
-        username: ''
-      }
+  setup () {
+    const store = useStore()
+
+    const newUser = reactive({
+      email: '',
+      isEnabled: true,
+      roles: ['ROLE_USER'],
+      username: ''
+    })
+
+    const userRequests = computed(() => store.state.users.actionRequest)
+    const users = computed(() => store.state.users.users)
+
+    function addUser () {
+      store.dispatch('users/addUser', newUser)
     }
-  },
-  computed: {
-    ...mapState('users', {
-      userRequests: 'actionRequest'
-    }),
-    ...mapState('users', ['users'])
-  },
-  mounted () {
-    this.getAllUsers()
-  },
-  methods: {
-    addUser () {
-      this.$store.dispatch('users/addUser', this.newUser)
-    },
-    getAllUsers () {
-      this.$store.dispatch('users/getAll')
-      for (let i = 0; i < this.users.length; i++) {
-        // Vue.set(this.users[i], 'isUpdating', false)
-      }
-    },
-    setRoles (event: HTMLElementEvent<HTMLSelectElement>) {
+    function getAllUsers () {
+      store.dispatch('users/getAll')
+    }
+    function setRoles (event: HTMLElementEvent<HTMLSelectElement>) {
       if (event.target.value === 'admin') {
-        this.newUser.roles.push('ROLE_ADMIN')
+        newUser.roles.push('ROLE_ADMIN')
       } else {
-        const i = this.newUser.roles.indexOf('ROLE_ADMIN')
+        const i = newUser.roles.indexOf('ROLE_ADMIN')
         if (i > -1) {
-          this.newUser.roles.splice(i, 1)
+          newUser.roles.splice(i, 1)
         }
       }
     }
+
+    onMounted(() => {
+      getAllUsers()
+    })
+
+    return { userRequests, users, addUser, newUser, setRoles }
   }
 })
-export default class AdminUserPage extends Vue {}
 </script>
 
 <template>

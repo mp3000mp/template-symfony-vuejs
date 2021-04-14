@@ -1,35 +1,39 @@
 import { shallowMount } from '@vue/test-utils'
-import Vuex, { createStore } from 'vuex'
 import Header from '@/views/layout/Header.vue'
 
+jest.mock('vue-router', () => ({
+  useRouter: jest.fn()
+}))
 const stubs = {
   RouterLink: true
 }
 
-function mockStore (roles: string[]) {
-  return createStore({
-    modules: {
-      security: {
-        namespaced: true,
-        getters: {
-          getIsAuth: jest.fn(() => !roles.includes('ROLE_ANONYMOUS'))
-        },
+let mockRoles: string[] = []
+jest.mock('@/store', () => {
+  return {
+    useStore: jest.fn(() => {
+      return {
         state: {
-          me: {
-            username: 'test',
-            roles: roles
+          security: {
+            me: {
+              username: 'test',
+              roles: mockRoles
+            }
           }
+        },
+        getters: {
+          'security/getIsAuth': !mockRoles.includes('ROLE_ANONYMOUS')
         }
       }
-    }
-  })
-}
+    })
+  }
+})
 
 describe('header.vue', () => {
   it('role anonym', () => {
+    mockRoles = ['ROLE_ANONYMOUS']
     const wrapper = shallowMount(Header, {
       global: {
-        plugins: [mockStore(['ROLE_ANONYMOUS'])],
         stubs
       }
     })
@@ -38,9 +42,9 @@ describe('header.vue', () => {
   })
 
   it('role user', () => {
+    mockRoles = ['ROLE_USER']
     const wrapper = shallowMount(Header, {
       global: {
-        plugins: [mockStore(['ROLE_USER'])],
         stubs
       }
     })
@@ -49,9 +53,9 @@ describe('header.vue', () => {
   })
 
   it('role admin', () => {
+    mockRoles = ['ROLE_USER', 'ROLE_ADMIN']
     const wrapper = shallowMount(Header, {
       global: {
-        plugins: [mockStore(['ROLE_USER', 'ROLE_ADMIN'])],
         stubs
       }
     })

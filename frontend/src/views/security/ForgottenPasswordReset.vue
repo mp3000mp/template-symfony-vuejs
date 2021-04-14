@@ -1,59 +1,62 @@
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component'
-import { mapState } from 'vuex'
+import { onMounted, defineComponent, ref, computed } from 'vue'
+import { useStore } from '@/store'
+import { useRoute, useRouter } from 'vue-router'
 
-@Options({
+export default defineComponent({
   name: 'SecurityForgottenPasswordReset',
-  data () {
-    return {
-      displayForm: true,
-      password: '',
-      passwordConfirm: ''
-    }
-  },
   props: {
     init: { type: Boolean, required: true }
   },
-  computed: {
-    ...mapState('security', ['actionRequest']),
-    checkTokenIsError () {
-      return this.init ? this.actionRequest.initPasswordCheckToken.status !== 200 : this.actionRequest.forgottenPasswordCheckToken.status !== 200
-    },
-    checkTokenMessage () {
-      return this.init ? this.actionRequest.initPasswordCheckToken.message : this.actionRequest.forgottenPasswordCheckToken.message
-    },
-    resetIsError () {
-      return this.init ? this.actionRequest.initPasswordReset.status !== 200 : this.actionRequest.forgottenPasswordReset.status !== 200
-    },
-    resetMessage () {
-      return this.init ? this.actionRequest.initPasswordReset.message : this.actionRequest.forgottenPasswordReset.message
+  setup (props) {
+    const store = useStore()
+    const router = useRouter()
+    const route = useRoute()
+
+    const displayForm = ref(true)
+    const password = ref('')
+    const passwordConfirm = ref('')
+
+    const securityRequests = computed(() => store.state.security.actionRequest)
+    const checkTokenIsError = computed(() => {
+      return props.init ? securityRequests.value.initPasswordCheckToken.status !== 200 : securityRequests.value.forgottenPasswordCheckToken.status !== 200
+    })
+    const checkTokenMessage = computed(() => {
+      return props.init ? securityRequests.value.initPasswordCheckToken.message : securityRequests.value.forgottenPasswordCheckToken.message
+    })
+    const resetIsError = computed(() => {
+      return props.init ? securityRequests.value.initPasswordReset.status !== 200 : securityRequests.value.forgottenPasswordReset.status !== 200
+    })
+    const resetMessage = computed(() => {
+      return props.init ? securityRequests.value.initPasswordReset.message : securityRequests.value.forgottenPasswordReset.message
+    })
+
+    function checkToken () {
+      const action = props.init ? 'security/initPasswordCheckToken' : 'security/forgottenPasswordCheckToken'
+      store.dispatch(action, route.params.token)
     }
-  },
-  methods: {
-    checkToken () {
-      const action = this.init ? 'security/initPasswordCheckToken' : 'security/forgottenPasswordCheckToken'
-      this.$store.dispatch(action, this.$route.params.token)
-    },
-    async reset () {
-      const action = this.init ? 'security/initPasswordReset' : 'security/forgottenPasswordReset'
-      await this.$store.dispatch(action, {
-        token: this.$route.params.token,
-        password: this.password,
-        passwordConfirm: this.passwordConfirm
+    async function reset () {
+      const action = props.init ? 'security/initPasswordReset' : 'security/forgottenPasswordReset'
+      await store.dispatch(action, {
+        token: route.params.token,
+        password: password.value,
+        passwordConfirm: passwordConfirm.value
       })
-      this.password = ''
-      this.passwordConfirm = ''
-      this.displayForm = false
+      password.value = ''
+      passwordConfirm.value = ''
+      displayForm.value = false
       setTimeout(() => {
-        this.$router.push({ path: '/login' })
+        router.push({ path: '/login' })
       }, 2000)
     }
-  },
-  mounted () {
-    this.checkToken()
+
+    onMounted(() => {
+      checkToken()
+    })
+
+    return { reset, displayForm, checkTokenIsError, password, passwordConfirm, checkTokenMessage, resetIsError, resetMessage }
   }
 })
-export default class SecurityPasswordReset extends Vue {}
 </script>
 
 <template>
