@@ -10,24 +10,12 @@ use App\Helper\Response\JsonResponseHelper;
 use App\Service\Mailer\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
-    private EntityManagerInterface $em;
-
-    private JsonRequestHelper $requestHelper;
-    private JsonResponseHelper $responseHelper;
-
-    public function __construct(EntityManagerInterface $em, JsonRequestHelper $requestHelper, JsonResponseHelper $responseHelper)
-    {
-        $this->em = $em;
-        $this->responseHelper = $responseHelper;
-        $this->requestHelper = $requestHelper;
-    }
 
     /**
      * @Route("/api/me", name="users.me", methods={"GET"})

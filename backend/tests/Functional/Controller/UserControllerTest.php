@@ -119,7 +119,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
-        $this->assertEquals('Invalid request content.', $jsonResponse['detail']);
+        $this->assertEquals('Invalid request content.', $jsonResponse['message']);
     }
 
     public function testCreateDuplicate(): void
@@ -136,9 +136,9 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
-        $this->assertStringContainsString('Entity does not validate.', $jsonResponse['detail']);
-        $this->assertStringContainsString('[username=', $jsonResponse['detail']);
-        $this->assertStringContainsString('[email=', $jsonResponse['detail']);
+        $this->assertStringContainsString('Entity does not validate.', $jsonResponse['message']);
+        $this->assertStringContainsString('[username=', $jsonResponse['message']);
+        $this->assertStringContainsString('[email=', $jsonResponse['message']);
     }
 
     public function testUpdateOk(): void
@@ -191,7 +191,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
-        $this->assertEquals('Invalid request content.', $jsonResponse['detail']);
+        $this->assertEquals('Invalid request content.', $jsonResponse['message']);
     }
 
     public function testUpdateDuplicate(): void
@@ -209,9 +209,9 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
-        $this->assertStringContainsString('Entity does not validate.', $jsonResponse['detail']);
-        $this->assertStringContainsString('[username=', $jsonResponse['detail']);
-        $this->assertStringContainsString('[email=', $jsonResponse['detail']);
+        $this->assertStringContainsString('Entity does not validate.', $jsonResponse['message']);
+        $this->assertStringContainsString('[username=', $jsonResponse['message']);
+        $this->assertStringContainsString('[email=', $jsonResponse['message']);
     }
 
     public function testUpdateDisableSelf(): void
@@ -229,7 +229,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
-        $this->assertStringContainsString('yourself', $jsonResponse['message']);
+        $this->assertEquals('You cannot disable yourself.', $jsonResponse['message']);
     }
 
     public function testEnableOk(): void
@@ -256,7 +256,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
-        $this->assertStringContainsString('already', $jsonResponse['message']);
+        $this->assertEquals('This user is already enabled.', $jsonResponse['message']);
         $this->assertEmailCount(0);
     }
 
@@ -283,7 +283,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
-        $this->assertStringContainsString('already', $jsonResponse['message']);
+        $this->assertEquals('This user is already disabled.', $jsonResponse['message']);
     }
 
     public function testDisableSelf(): void
@@ -296,9 +296,9 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
-        $this->assertStringContainsString('yourself', $jsonResponse['message']);
+        $this->assertEquals('You cannot disable yourself.', $jsonResponse['message']);
 
-        $this->client->request('POST', '/api/users/1', [], [], [], json_encode([
+        $this->client->request('POST', "/api/users/$id", [], [], [], json_encode([
             'email' => 'admin@mp3000.fr',
             'isEnabled' => false,
             'roles' => ['ROLE_USER'],
@@ -308,7 +308,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
-        $this->assertStringContainsString('yourself', $jsonResponse['message']);
+        $this->assertEquals('You cannot disable yourself.', $jsonResponse['message']);
     }
 
     public function testDelete200(): void
@@ -331,6 +331,6 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
-        $this->assertStringContainsString('enabled', $jsonResponse['message']);
+        $this->assertEquals('You cannot delete an enabled user.', $jsonResponse['message']);
     }
 }

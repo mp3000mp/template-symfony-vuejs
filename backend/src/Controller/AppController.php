@@ -8,7 +8,6 @@ use App\Entity\User;
 use App\Service\Mailer\MailerService;
 use Mp3000mp\RedisClient\RedisClient;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
