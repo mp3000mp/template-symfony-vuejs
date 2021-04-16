@@ -6,7 +6,6 @@ use App\Entity\User;
 
 class UserControllerTest extends AbstractControllerTest
 {
-
     private function getUserId(string $username): int
     {
         return $this->em->getRepository(User::class)->findOneBy(['username' => $username])->getId();
@@ -49,7 +48,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals('user', $jsonResponse['username']);
     }
 
-    public function testRoles():void
+    public function testRoles(): void
     {
         $this->loginUser($this->client);
 

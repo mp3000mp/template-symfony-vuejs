@@ -11,7 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstr
 
 abstract class AbstractController extends SymfonyAbstractController
 {
-
     protected EntityManagerInterface $em;
     protected JsonRequestHelper $requestHelper;
     protected JsonResponseHelper $responseHelper;

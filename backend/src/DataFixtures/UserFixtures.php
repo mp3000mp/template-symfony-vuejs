@@ -18,7 +18,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface, ContainerAw
 
     private $container;
 
-    public function setContainer(ContainerInterface $container = null)
+    public function setContainer(ContainerInterface $container = null): void
     {
         $this->container = $container;
     }
