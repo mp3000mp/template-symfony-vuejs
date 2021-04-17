@@ -7,7 +7,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Service\Mailer\MailerService;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -73,7 +72,7 @@ class PasswordController extends AbstractController
         }
 
         return $this->json([
-            'message' => 'Token is valid',
+            'message' => 'Token is valid.',
         ]);
     }
 
@@ -127,7 +126,7 @@ class PasswordController extends AbstractController
         $em->flush();
 
         return $this->json([
-            'message' => 'The password has been reset successfully',
+            'message' => 'The password has been reset successfully.',
         ]);
     }
 

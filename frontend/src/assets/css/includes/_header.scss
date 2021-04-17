@@ -1,17 +1,11 @@
 header {
-  background-color: $orange-700;
+  background-color: #001b3d;
   padding: 1rem;
 
   a {
-    color: $blue-600;
-
     &:before,
     &:after {
-      background-color: $blue-500;
-    }
-
-    &:hover {
-      color: $blue-500;
+      background-color: $link-hover-color;
     }
   }
 }

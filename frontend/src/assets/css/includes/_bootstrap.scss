@@ -1,6 +1,6 @@
 // override vars
 
-$white:    #afb1e0;
+$white:    #ffeac2;
 // $gray-100: #f8f9fa;
 // $gray-200: #e9ecef;
 // $gray-300: #dee2e6;
@@ -10,15 +10,15 @@ $white:    #afb1e0;
 // $gray-700: #495057;
 // $gray-800: #343a40;
 // $gray-900: #212529;
-$black:   #210e23;
-$blue:    #014aa2;
-$indigo:  #7b008c;
+$black:   #000914;
+$blue:    #006ef5;
+// $indigo:  #7b008c;
 // $purple:  #6f42c1;
 // $pink:    #d63384;
-$red:     #b40500;
-$orange:  #da8500;
-$yellow:  #b5cf00;
-$green:   #00a70b;
+// $red:     #b40500;
+$orange:  #ffa90a;
+// $yellow:  #b5cf00;
+// $green:   #00a70b;
 // $teal:    #20c997;
 // $cyan:    #0dcaf0;
 // $primary:       $blue;
@@ -30,7 +30,7 @@ $green:   #00a70b;
 // $light:         $white;
 // $dark:          $black;
 
-$body-color:       $white;
+$body-color:       #ffeac2;
 
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
@@ -39,11 +39,11 @@ $body-color:       $white;
 
 
 // use vars computed by bootstrap
-$body-bg:          $blue-900;
+$body-bg:          #001229;
 
-$link-color:       $yellow-600;
+$link-color:       #cc8800;
 $link-decoration:  none;
-$link-hover-color: $yellow-500;
+$link-hover-color: #ffa90a;
 
 
 

@@ -13,13 +13,13 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component'
+import { defineComponent } from 'vue'
 import LayoutHeader from '@/views/layout/Header.vue'
 
-@Options({
+export default defineComponent({
+  name: 'App',
   components: {
     LayoutHeader
   }
 })
-export default class App extends Vue {}
 </script>

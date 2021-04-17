@@ -1,50 +1,67 @@
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component'
-import { mapState } from 'vuex'
-import { AxiosResponse } from 'axios'
+import { onMounted, defineComponent, ref, computed } from 'vue'
+import { useStore } from '@/store'
+import { useRoute, useRouter } from 'vue-router'
 
-@Options({
+export default defineComponent({
   name: 'SecurityForgottenPasswordReset',
-  data () {
-    return {
-      displayForm: true,
-      password: '',
-      passwordConfirm: ''
+  props: {
+    init: { type: Boolean, required: true }
+  },
+  setup (props) {
+    const store = useStore()
+    const router = useRouter()
+    const route = useRoute()
+
+    const displayForm = ref(true)
+    const password = ref('')
+    const passwordConfirm = ref('')
+
+    const securityRequests = computed(() => store.state.security.actionRequest)
+    const checkTokenIsError = computed(() => {
+      return props.init ? securityRequests.value.initPasswordCheckToken.status !== 200 : securityRequests.value.forgottenPasswordCheckToken.status !== 200
+    })
+    const checkTokenMessage = computed(() => {
+      return props.init ? securityRequests.value.initPasswordCheckToken.message : securityRequests.value.forgottenPasswordCheckToken.message
+    })
+    const resetIsError = computed(() => {
+      return props.init ? securityRequests.value.initPasswordReset.status !== 200 : securityRequests.value.forgottenPasswordReset.status !== 200
+    })
+    const resetMessage = computed(() => {
+      return props.init ? securityRequests.value.initPasswordReset.message : securityRequests.value.forgottenPasswordReset.message
+    })
+
+    function checkToken () {
+      const action = props.init ? 'security/initPasswordCheckToken' : 'security/forgottenPasswordCheckToken'
+      store.dispatch(action, route.params.token)
     }
-  },
-  computed: {
-    ...mapState('security', ['actionRequest'])
-  },
-  methods: {
-    checkToken () {
-      this.$store.dispatch('security/forgottenPasswordCheckToken', this.$route.params.token)
-    },
-    async reset () {
-      await this.$store.dispatch('security/forgottenPasswordReset', {
-        token: this.$route.params.token,
-        password: this.password,
-        passwordConfirm: this.passwordConfirm
+    async function reset () {
+      const action = props.init ? 'security/initPasswordReset' : 'security/forgottenPasswordReset'
+      await store.dispatch(action, {
+        token: route.params.token,
+        password: password.value,
+        passwordConfirm: passwordConfirm.value
       })
-      this.password = ''
-      this.passwordConfirm = ''
-      if (!this.actionRequest.forgottenPasswordReset.isError) {
-        this.displayForm = false
-        setTimeout(() => {
-          this.$router.push({ path: '/login' })
-        }, 2000)
-      }
+      password.value = ''
+      passwordConfirm.value = ''
+      displayForm.value = false
+      setTimeout(() => {
+        router.push({ path: '/login' })
+      }, 2000)
     }
-  },
-  mounted () {
-    this.checkToken()
+
+    onMounted(() => {
+      checkToken()
+    })
+
+    return { reset, displayForm, checkTokenIsError, password, passwordConfirm, checkTokenMessage, resetIsError, resetMessage }
   }
 })
-export default class SecurityPasswordReset extends Vue {}
 </script>
 
 <template>
   <form @submit.prevent="reset">
-    <div v-if="displayForm && actionRequest.forgottenPasswordCheckToken.status === 200">
+    <div v-if="displayForm && !checkTokenIsError">
       <label for="pwd">
         New password:
         <input type="password" name="pwd" id="pwd" v-model="password" />
@@ -57,15 +74,15 @@ export default class SecurityPasswordReset extends Vue {}
     </div>
     <span
       class="err"
-      v-if="actionRequest.forgottenPasswordCheckToken.status !== 200"
+      v-if="checkTokenIsError"
     >
-      {{ actionRequest.forgottenPasswordCheckToken.message }}
+      {{ checkTokenMessage }}
     </span>
     <span :class="{
-      err: actionRequest.forgottenPasswordReset.status !== 200,
-      success: actionRequest.forgottenPasswordReset.status === 200
+      err: resetIsError,
+      success: !resetIsError
     }">
-      {{ actionRequest.forgottenPasswordReset.message }}
+      {{ resetMessage }}
     </span>
   </form>
 </template>

@@ -24,7 +24,7 @@ export const actions = {
     try {
       await apiRegistry.get().httpReq(state.actionRequest.forgottenPasswordCheckToken, { urlParams: { token: token } })
     } catch (err) {
-      return Promise.reject(ApiClient.generateErrorMessage(err))
+      // return Promise.reject(ApiClient.generateErrorMessage(err))
     }
   },
   async forgottenPasswordSend ({ state }: ActionContext<SecurityState, RootState>, email: string) {
@@ -37,6 +37,20 @@ export const actions = {
   async forgottenPasswordReset ({ state }: ActionContext<SecurityState, RootState>, data: ForgottenPasswordResetPayload) {
     try {
       await apiRegistry.get().httpReq(state.actionRequest.forgottenPasswordReset, { urlParams: { token: data.token }, data: { password: data.password, passwordConfirm: data.passwordConfirm } })
+    } catch (err) {
+      return Promise.reject(ApiClient.generateErrorMessage(err))
+    }
+  },
+  async initPasswordCheckToken ({ state }: ActionContext<SecurityState, RootState>, token: string) {
+    try {
+      await apiRegistry.get().httpReq(state.actionRequest.initPasswordCheckToken, { urlParams: { token: token } })
+    } catch (err) {
+      // return Promise.reject(ApiClient.generateErrorMessage(err))
+    }
+  },
+  async initPasswordReset ({ state }: ActionContext<SecurityState, RootState>, data: ForgottenPasswordResetPayload) {
+    try {
+      await apiRegistry.get().httpReq(state.actionRequest.initPasswordReset, { urlParams: { token: data.token }, data: { password: data.password, passwordConfirm: data.passwordConfirm } })
     } catch (err) {
       return Promise.reject(ApiClient.generateErrorMessage(err))
     }

@@ -1,13 +1,18 @@
-import { createStore } from 'vuex'
-import { state } from './state'
+import { createStore, Store } from 'vuex'
+import { RootState } from './types'
 
 import security from './modules/security/index'
 import users from './modules/users/index'
 
-export default createStore({
-  state,
+const store = createStore({
   modules: {
     security,
     users
   }
 })
+
+export function useStore (): Store<RootState> {
+  return store
+}
+
+export default store

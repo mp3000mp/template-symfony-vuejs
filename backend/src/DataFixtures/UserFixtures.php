@@ -8,15 +8,19 @@ use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UserFixtures extends Fixture implements FixtureGroupInterface
+class UserFixtures extends Fixture implements FixtureGroupInterface, ContainerAwareInterface
 {
     private UserPasswordEncoderInterface $encoder;
 
-    public function __construct(UserPasswordEncoderInterface $encoder)
+    private $container;
+
+    public function setContainer(ContainerInterface $container = null): void
     {
-        $this->encoder = $encoder;
+        $this->container = $container;
     }
 
     public static function getGroups(): array
@@ -26,6 +30,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
 
     public function load(ObjectManager $manager): void
     {
+        $this->encoder = $this->container->get('security.password_encoder');
         $password = 'Test2000!';
 
         // user

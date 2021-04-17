@@ -1,23 +1,65 @@
 import { shallowMount } from '@vue/test-utils'
-import Vuex, { createStore } from 'vuex'
 import Header from '@/views/layout/Header.vue'
 
-// todo
+jest.mock('vue-router', () => ({
+  useRouter: jest.fn()
+}))
+const stubs = {
+  RouterLink: true
+}
 
-const store = createStore({
-  state: {
-
+let mockRoles: string[] = []
+jest.mock('@/store', () => {
+  return {
+    useStore: jest.fn(() => {
+      return {
+        state: {
+          security: {
+            me: {
+              username: 'test',
+              roles: mockRoles
+            }
+          }
+        },
+        getters: {
+          'security/getIsAuth': !mockRoles.includes('ROLE_ANONYMOUS')
+        }
+      }
+    })
   }
 })
 
 describe('header.vue', () => {
-  it('role user', () => {
+  it('role anonym', () => {
+    mockRoles = ['ROLE_ANONYMOUS']
     const wrapper = shallowMount(Header, {
-      store
+      global: {
+        stubs
+      }
     })
+    const menuItems = wrapper.findAll('.nav-link')
+    expect(menuItems).toHaveLength(1)
+  })
+
+  it('role user', () => {
+    mockRoles = ['ROLE_USER']
+    const wrapper = shallowMount(Header, {
+      global: {
+        stubs
+      }
+    })
+    const menuItems = wrapper.findAll('.nav-link')
+    expect(menuItems).toHaveLength(3)
   })
 
   it('role admin', () => {
-    const wrapper = shallowMount(Header, { store })
+    mockRoles = ['ROLE_USER', 'ROLE_ADMIN']
+    const wrapper = shallowMount(Header, {
+      global: {
+        stubs
+      }
+    })
+    const menuItems = wrapper.findAll('.nav-link')
+    expect(menuItems).toHaveLength(4)
   })
 })

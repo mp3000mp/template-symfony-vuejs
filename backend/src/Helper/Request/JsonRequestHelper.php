@@ -55,12 +55,12 @@ class JsonRequestHelper
 
         // entity validation
         $context = [];
-        if($entity !== null){
+        if (null !== $entity) {
             $context[AbstractNormalizer::OBJECT_TO_POPULATE] = $entity;
         }
         $objData = $this->serialiser->deserialize($rawData, $class, 'json', $context);
         $errors = $this->validator->validate($objData);
-        if(count($errors)){
+        if (count($errors)) {
             $err = "Entity does not validate. Violations:\n";
             foreach ($errors as $error) {
                 $err .= sprintf("[%s=%s] %s\n", $error->getPropertyPath(), $error->getInvalidValue(), $error->getMessage());

@@ -1,34 +1,31 @@
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component'
 import { menuItems, MenuItem } from './data/menuItems'
-import { mapGetters, mapState } from 'vuex'
+import { computed, defineComponent } from 'vue'
+import { useStore } from '@/store'
+import { useRouter } from 'vue-router'
 
-@Options({
+export default defineComponent({
   name: 'Header',
-  data () {
-    return {
-      menuItems
-    }
-  },
-  computed: {
-    allowedMenuItems () {
-      return this.menuItems.filter((item: MenuItem) => {
-        return this.me.roles.includes(item.role)
+  setup () {
+    const store = useStore()
+    const router = useRouter()
+
+    const me = computed(() => store.state.security.me)
+    const isAuth = computed(() => store.getters['security/getIsAuth'])
+    const allowedMenuItems = computed(() => {
+      return menuItems.filter((item: MenuItem) => {
+        return me.value.roles.includes(item.role)
       })
-    },
-    ...mapState('security', ['me']),
-    ...mapGetters('security', {
-      isAuth: 'getIsAuth'
     })
-  },
-  methods: {
-    logout () {
-      this.$store.dispatch('security/logout')
-      this.$router.push({ path: '/login' })
+
+    function logout () {
+      store.dispatch('security/logout')
+      router.push({ path: '/login' })
     }
+
+    return { allowedMenuItems, me, isAuth, logout }
   }
 })
-export default class LayoutHeader extends Vue {}
 </script>
 
 <template>

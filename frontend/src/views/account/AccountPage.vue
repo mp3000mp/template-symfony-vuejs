@@ -1,42 +1,39 @@
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component'
-import { mapState } from 'vuex'
+import { defineComponent, computed, reactive, ref } from 'vue'
+import { useStore } from '@/store'
 
-@Options({
+export default defineComponent({
   name: 'AccountPage',
-  data () {
-    return {
-      resetPassword: {
-        currentPassword: '',
-        newPassword: '',
-        newPassword2: '',
-        show: false
-      }
-    }
-  },
-  computed: {
-    ...mapState('security', ['me']),
-    ...mapState('security', {
-      securityRequests: 'actionRequest'
+  setup () {
+    const store = useStore()
+
+    const resetPassword = reactive({
+      currentPassword: '',
+      newPassword: '',
+      newPassword2: '',
+      show: false
     })
-  },
-  methods: {
-    async submitResetPassword () {
-      await this.$store.dispatch('security/resetPassword', {
-        currentPassword: this.resetPassword.currentPassword,
-        newPassword: this.resetPassword.newPassword,
-        newPassword2: this.resetPassword.newPassword2
+
+    const me = computed(() => store.state.security.me)
+    const securityRequests = computed(() => store.state.security.actionRequest)
+
+    async function submitResetPassword () {
+      await store.dispatch('security/resetPassword', {
+        currentPassword: resetPassword.currentPassword,
+        newPassword: resetPassword.newPassword,
+        newPassword2: resetPassword.newPassword2
       })
-      this.resetPassword.currentPassword = ''
-      this.resetPassword.newPassword = ''
-      this.resetPassword.newPassword2 = ''
-      if (!this.securityRequests.resetPassword.isError) {
-        this.resetPassword.show = false
+      resetPassword.currentPassword = ''
+      resetPassword.newPassword = ''
+      resetPassword.newPassword2 = ''
+      if (!securityRequests.value.resetPassword.isError) {
+        resetPassword.show = false
       }
     }
+
+    return { resetPassword, me, securityRequests, submitResetPassword }
   }
 })
-export default class AccountPage extends Vue {}
 </script>
 
 <template>

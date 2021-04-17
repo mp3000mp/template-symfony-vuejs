@@ -8,7 +8,6 @@ use App\Entity\User;
 use App\Service\Mailer\MailerService;
 use Mp3000mp\RedisClient\RedisClient;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -19,6 +18,7 @@ class AppController extends AbstractController
      */
     public function home(MailerService $mailer, RedisClient $redis, LoggerInterface $logger): Response
     {
+        $this->getDoctrine()->getRepository(User::class)->doError();
         $logger->debug('Home called');
 
         // test mail
