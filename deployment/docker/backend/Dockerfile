@@ -11,11 +11,9 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
 # install composer
 RUN curl -sSk https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# install php ext
-RUN docker-php-ext-install pdo_mysql intl
-
-# start xdebug
-RUN pecl install redis-5.3.3 \
+# install ext
+RUN docker-php-ext-install pdo_mysql intl \
+    && pecl install redis-5.3.3 \
     && pecl install xdebug-3.0.3 \
     && docker-php-ext-enable redis xdebug \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
@@ -23,11 +21,14 @@ RUN pecl install redis-5.3.3 \
     && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 # todo: attention pas de xdebug en prod
 
+RUN mkdir -p /var/www/html/var /var/www/html/var/log /var/www/html/var/cache \
+    && chown -R $(id -u):$(id -g) /var/www/html/var \
+    && chmod -R 777 /var/www/html/var
+# todo 777...
+
 # config apache
 RUN a2enmod rewrite \
-    && echo "ServerName localhost" >> /etc/apache2/apache2.conf
+    && echo "ServerName localhost" >> /etc/apache2/apache2.conf \
+    && echo 'alias ll="ls -la"' >> ~/.bashrc
 
 WORKDIR /var/www/html
-
-# todo: pourquoi il ne trouve pas composer.json ?
-#RUN composer install

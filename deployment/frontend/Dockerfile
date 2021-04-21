@@ -1,9 +1,0 @@
-FROM node:14.16.0
-
-RUN apt-get update -y
-
-WORKDIR /home/node/app
-
-RUN npm install --quiet
-
-CMD ["npm", "run", "serve"]

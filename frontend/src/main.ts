@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import './registerServiceWorker'
 import router from './router'
 import store from './store'
-import variables from './variables.json'
+import variables from '../config/variables.json'
 
 import apiRegistry from './helpers/apiRegistry'
 
