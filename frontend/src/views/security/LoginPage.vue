@@ -55,9 +55,9 @@ export default defineComponent({
     <h1>Login</h1>
     <form @submit.prevent="login" class="d-flex flex-column"id="login-form">
       <label for="username" class="form-label"></label>
-      <input required="required" class="form-control my-2s input" id="username" type="text" placeholder="Username" v-model="username" />
+      <input required="required" class="form-control my-2s" id="username" type="text" placeholder="Username" v-model="username" />
       <label for="password" class="form-label"></label>
-      <input required="required" class="form-control mb-2 input" id="password" type="password" placeholder="Password" v-model="password" />
+      <input required="required" class="form-control mb-2" id="password" type="password" placeholder="Password" v-model="password" />
       <input class="btn-lg login" type="submit" value="login" />
       <span class="err">{{ securityRequests.login.message }}</span>
     </form>
