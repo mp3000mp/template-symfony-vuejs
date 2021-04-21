@@ -51,18 +51,18 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="container text-center">
+  <div class="container text-center" id="form">
     <h1>Login</h1>
-    <form @submit.prevent="login" id="login-form">
-      <label for="username"></label>
-      <input required="required" id="username" type="text" placeholder="Username" v-model="username" />
-      <label for="password"></label>
-      <input required="required" id="password" type="password" placeholder="Password" v-model="password" />
-      <input type="submit" value="login" />
+    <form @submit.prevent="login" class="d-flex flex-column"id="login-form">
+      <label for="username" class="form-label"></label>
+      <input required="required" class="form-control my-2s input" id="username" type="text" placeholder="Username" v-model="username" />
+      <label for="password" class="form-label"></label>
+      <input required="required" class="form-control mb-2 input" id="password" type="password" placeholder="Password" v-model="password" />
+      <input class="btn-lg login" type="submit" value="login" />
       <span class="err">{{ securityRequests.login.message }}</span>
     </form>
-    <button @click="forgottenPasswordSend.show = true" data-cy="forgottenPasswordButton">Forgotten password</button>
-    <form v-if="forgottenPasswordSend.show" @submit.prevent="sendForgottenPasswordEmail" id="forgotten-password-form">
+    <button @click="forgottenPasswordSend.show = true" class="btn btn-link"data-cy="forgottenPasswordButton">Forgotten password</button>
+    <form v-if="forgottenPasswordSend.show" @submit.prevent="sendForgottenPasswordEmail"id="forgotten-password-form">
       <label for="email"></label>
       <input required="required" id="email" type="email" placeholder="email@example.com" v-model="forgottenPasswordSend.email" />
       <input type="submit" value="Send forgotten password email" />
@@ -72,10 +72,12 @@ export default defineComponent({
       }">{{ securityRequests.forgottenPasswordSend.message }}</span>
     </form>
   </div>
-  <p>todo design</p>
+  <p class="ms-3">todo design</p>
 </template>
 
 <style lang="scss">
+
+@import 'src/assets/css/app';
 /* todo trouver pourquoi non trouver dans bootstrap ? */
 
 .text-center {
@@ -88,5 +90,13 @@ export default defineComponent({
 
 .success {
   color: #2ca02c;
+}
+
+#form{
+  @include loginCard;
+}
+
+.login{
+  background-color: #cc8800;
 }
 </style>
