@@ -25,12 +25,6 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function doError(): void
-    {
-        $q = $this->getEntityManager()->createNativeQuery('UPDATE a WHERE 1=1;', new ResultSetMapping());
-        $q->execute();
-    }
-
     /**
      * @throws \Doctrine\ORM\NonUniqueResultException
      */

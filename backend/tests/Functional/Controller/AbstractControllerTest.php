@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractControllerTest extends WebTestCase
 {
-    private $userByRole = [
+    private array $userByRole = [
         'ROLE_USER' => 'user',
         'ROLE_ADMIN' => 'admin',
     ];
