@@ -36,11 +36,12 @@ jobs:
       run:
         working-directory: ./deployment/docker
 
-        - name: PHP CS Fixer
-          run: docker-compose run backend composer run cs
+    steps:
+      - name: PHP CS Fixer
+        run: docker-compose run backend composer run cs
 
-        - name: PHPStan
-          run: docker-compose run backend composer run ps
+      - name: PHPStan
+        run: docker-compose run backend composer run ps
 
   tests:
     needs: build
@@ -49,5 +50,6 @@ jobs:
       run:
         working-directory: ./deployment/docker
 
+    steps:
       - name: PHPUnit
         run: docker-compose run backend composer run tu
