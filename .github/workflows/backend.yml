@@ -1,4 +1,4 @@
-name: Back linter
+name: Backend CI
 
 on:
   push:
@@ -26,11 +26,28 @@ jobs:
       - name: Install dependencies
         run: docker-compose run backend composer install --prefer-dist --no-interaction --no-suggest
 
-      - name: PHP CS Fixer
-        run: docker-compose run backend composer run cs
+      - name: Install PHPUnit
+        run: docker-compose run backend ./vendor/bin/simple-phpunit install
 
-      - name: PHPStan
-        run: docker-compose run backend composer run ps
+  checks:
+    needs: build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./deployment/docker
+
+        - name: PHP CS Fixer
+          run: docker-compose run backend composer run cs
+
+        - name: PHPStan
+          run: docker-compose run backend composer run ps
+
+  tests:
+    needs: build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./deployment/docker
 
       - name: PHPUnit
         run: docker-compose run backend composer run tu

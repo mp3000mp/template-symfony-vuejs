@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  mariadb_test:
+    image: mariadb:10.4
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: db_test
+      MYSQL_USER: user1
+      MYSQL_PASSWORD: password1
+    volumes:
+      - ./mariadb_test/db:/var/lib/mysql
+      - ./mariadb_test/conf/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./mariadb/log:/var/log/mysql
+
+  redis:
+    image: redis:alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+
+  backend:
+    build: backend
+    ports:
+      - "5000:80"
+    environment:
+      COMPOSER_MEMORY_LIMIT: -1 # marche po ?
+    volumes:
+      - ../../backend:/var/www/html
+      - ./backend/sites-enabled:/etc/apache2/sites-enabled
+      - ./backend/conf.d/php.ini:/usr/local/etc/php/conf.d/php.ini
+
+  maildev:
+    image: maildev/maildev
+    ports:
+      - "1080:80"
