@@ -16,9 +16,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Pull images
+        run: docker-compose -f ./docker-compose-ci.yml pull
+
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+
       - name: Build docker-compose services
         working-directory: ./deployment/docker
-        run: docker-compose up -d
+        run: docker-compose -f ./docker-compose-ci.yml up -d
 
       - name: Validate composer.json and composer.lock
         run: docker-compose run backend composer validate --strict
@@ -29,27 +35,11 @@ jobs:
       - name: Install PHPUnit
         run: docker-compose run backend ./vendor/bin/simple-phpunit install
 
-  checks:
-    needs: build
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./deployment/docker
-
-    steps:
       - name: PHP CS Fixer
         run: docker-compose run backend composer run cs
 
       - name: PHPStan
         run: docker-compose run backend composer run ps
 
-  tests:
-    needs: build
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./deployment/docker
-
-    steps:
       - name: PHPUnit
         run: docker-compose run backend composer run tu
