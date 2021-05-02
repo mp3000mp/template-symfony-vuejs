@@ -22,6 +22,7 @@ jobs:
       - uses: satackey/action-docker-layer-caching@v0.0.11
         continue-on-error: true
 
+# remove this when --env-file will work
       - name: Copy env file
         working-directory: ./deployment/docker
         run: cp .env.example .env
@@ -45,6 +46,9 @@ jobs:
 # fix COMPOSER_MEMORY_LIMIT needed...
 #      - name: PHPStan
 #        run: docker-compose run backend composer run ps
+
+      - name: Migrations
+        run: docker-compose run backend bin/console doctrine:migration:migrate -e test
 
       - name: PHPUnit
         run: docker-compose run backend composer run tu
