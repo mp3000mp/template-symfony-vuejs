@@ -1,0 +1,36 @@
+name: Back linter
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./deployment/docker
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build docker-compose services
+        working-directory: ./deployment/docker
+        run: docker-compose up -d
+
+      - name: Validate composer.json and composer.lock
+        run: docker-compose run backend composer validate --strict
+
+      - name: Install dependencies
+        run: docker-compose run backend composer install --prefer-dist --no-interaction --no-suggest
+
+      - name: PHP CS Fixer
+        run: docker-compose run backend composer run cs
+
+      - name: PHPStan
+        run: docker-compose run backend composer run ps
+
+      - name: PHPUnit
+        run: docker-compose run backend composer run tu
