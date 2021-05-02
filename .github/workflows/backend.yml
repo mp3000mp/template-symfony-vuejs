@@ -24,11 +24,9 @@ jobs:
 
 # remove this when --env-file will work
       - name: Copy env file
-        working-directory: ./deployment/docker
         run: cp .env.example .env
 
       - name: Build docker-compose services
-        working-directory: ./deployment/docker
         run: docker-compose --env-file=.env.example -f ./docker-compose-ci.yml up -d
 
       - name: Validate composer.json and composer.lock
@@ -48,7 +46,7 @@ jobs:
 #        run: docker-compose run backend composer run ps
 
       - name: Migrations
-        run: docker-compose run backend bin/console doctrine:migration:migrate -e test
+        run: docker-compose run backend bin/console --no-interaction doctrine:migration:migrate -e test
 
       - name: PHPUnit
         run: docker-compose run backend composer run tu
