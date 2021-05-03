@@ -51,14 +51,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="container text-center" id="form">
+  <div class="container-fluid text-center form">
     <h1>Login</h1>
     <form @submit.prevent="login" class="d-flex flex-column"id="login-form">
       <label for="username" class="form-label"></label>
-      <input required="required" class="form-control my-2s" id="username" type="text" placeholder="Username" v-model="username" />
+      <input required="required" class="txt-color form-control my-2s" id="username" type="text" placeholder="Username" v-model="username" />
       <label for="password" class="form-label"></label>
-      <input required="required" class="form-control mb-2" id="password" type="password" placeholder="Password" v-model="password" />
-      <input class="btn-lg login" type="submit" value="login" />
+      <input required="required" class="form-control mb-2 txt-color" id="password" type="password" placeholder="Password" v-model="password" />
+      <input class="btn-lg login-btn" type="submit" value="login" />
       <span class="err">{{ securityRequests.login.message }}</span>
     </form>
     <button @click="forgottenPasswordSend.show = true" class="btn btn-link"data-cy="forgottenPasswordButton">Forgotten password</button>
@@ -78,11 +78,6 @@ export default defineComponent({
 <style lang="scss">
 
 @import 'src/assets/css/app';
-/* todo trouver pourquoi non trouver dans bootstrap ? */
-
-.text-center {
-  text-align: center;
-}
 
 .err {
   color: #8d0502;
@@ -92,11 +87,12 @@ export default defineComponent({
   color: #2ca02c;
 }
 
-#form{
-  @include loginCard;
+.login-btn{
+  background-color: #cc8800;
 }
 
-.login{
-  background-color: #cc8800;
+input.txt-color,
+input.txt-color:focus{
+  color: #001b3d;
 }
 </style>
