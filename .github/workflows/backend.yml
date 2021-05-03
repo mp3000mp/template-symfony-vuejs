@@ -57,6 +57,6 @@ jobs:
           COVERALLS_FLAG_NAME: back-unit
         run: |
           docker-compose run backend composer global require php-coveralls/php-coveralls
-          docker-compose run backend ~/.composer/vendor/bin/php-coveralls -v
+          docker-compose run backend php-coveralls --coverage-clover=ci/coverage/unit/clover.xml -v
 
 # todo separate unit and functional coverage
