@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed, reactive, ref } from 'vue'
+import { defineComponent, computed, reactive } from 'vue'
 import { useStore } from '@/store'
 
 export default defineComponent({

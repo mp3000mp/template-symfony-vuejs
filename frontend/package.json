@@ -1,7 +1,19 @@
 {
-  "name": "mp3000mp-template",
-  "version": "0.1.0",
-  "private": true,
+  "name": "mp3000mp-template-symfony-vuejs",
+  "version": "0.3.0",
+  "description": "Basic web template",
+  "keywords": ["symfony", "vuejs", "template"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "mp3000mp",
+      "email": "moussadedijon@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mp3000mp/template-symfony-vuejs"
+  },
   "scripts": {
     "serve": "vue-cli-service serve --port 8081",
     "build": "vue-cli-service build",

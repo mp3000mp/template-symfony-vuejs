@@ -22,7 +22,6 @@ jobs:
       - uses: satackey/action-docker-layer-caching@v0.0.11
         continue-on-error: true
 
-# remove this when --env-file will work
       - name: Copy env file
         run: cp .env.example .env
 
@@ -30,23 +29,34 @@ jobs:
         run: docker-compose --env-file=.env.example -f ./docker-compose-ci.yml up -d
 
       - name: Validate composer.json and composer.lock
-        run: docker-compose run backend composer validate --strict
+        run: docker-compose exec backend composer validate --strict
 
       - name: Install dependencies
-        run: docker-compose run backend composer install --prefer-dist --no-interaction --no-suggest
+        run: docker-compose exec backend composer install --prefer-dist --no-interaction --no-suggest
 
       - name: Install PHPUnit
-        run: docker-compose run backend ./vendor/bin/simple-phpunit install
+        run: docker-compose exec backend ./vendor/bin/simple-phpunit install
 
       - name: PHP CS Fixer
-        run: docker-compose run backend composer run cs
+        run: docker-compose exec backend composer run cs
 
-# fix COMPOSER_MEMORY_LIMIT needed...
-#      - name: PHPStan
-#        run: docker-compose run backend composer run ps
+      - name: PHPStan
+        run: docker-compose exec backend composer run ps
 
       - name: Migrations
-        run: docker-compose run backend bin/console --no-interaction doctrine:migration:migrate -e test
+        run: docker-compose exec backend bin/console --no-interaction doctrine:migration:migrate -e test
 
       - name: PHPUnit
-        run: docker-compose run backend composer run tu
+        run: docker-compose exec backend composer run tu-ci
+
+      # coverallsapp/github-action@master only support lcov.info file for now
+      - name: Upload coverage results to Coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_PARALLEL: true
+          COVERALLS_FLAG_NAME: back-unit
+        run: |
+          composer global require php-coveralls/php-coveralls
+          ~/.composer/vendor/bin/php-coveralls -v
+
+# todo separate unit and functional coverage

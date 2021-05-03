@@ -13,8 +13,6 @@ jobs:
       run:
         working-directory: ./frontend
 
-# install yarn
-
     steps:
       - uses: actions/checkout@v2
 
@@ -24,7 +22,9 @@ jobs:
 
       - uses: actions/cache@v2
         with:
-          path: '**/node_modules'
+          path: |
+            node_modules
+            /home/runner/.cache/Cypress
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Copy config file
@@ -43,7 +43,17 @@ jobs:
         run: npm run build
 
       - name: Unit tests
-        run: npm run test:unit
+        run: npm run test:ucov
+
+      - name: Unit tests coverage
+        uses: coverallsapp/github-action@master
+        with:
+          base-path: ./src
+          flag-name: front-unit
+          github-token: ${{ github.token }}
+          path-to-lcov: ./ci/coverage/unit/lcov-report/lcov.info
 
       - name: End to end tests
         run: npm run test:e2e
+
+# todo coverage e2e

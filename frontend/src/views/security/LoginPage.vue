@@ -2,6 +2,7 @@
 import { defineComponent, ref, reactive, computed, watch } from 'vue'
 import { useStore } from '@/store'
 import { useRouter } from 'vue-router'
+import { AxiosResponse } from 'axios'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -29,14 +30,14 @@ export default defineComponent({
     }
     function sendForgottenPasswordEmail () {
       store.dispatch('security/forgottenPasswordSend', forgottenPasswordSend.email)
-        .then((res: any) => {
+        .then((res: AxiosResponse) => {
           forgottenPasswordSend.status = true
           forgottenPasswordSend.message = res.data.message
           forgottenPasswordSend.email = ''
         })
-        .catch((err: any) => {
+        .catch((err: string) => {
           forgottenPasswordSend.status = false
-          forgottenPasswordSend.message = err.message || err.response.data.message
+          forgottenPasswordSend.message = err
         })
     }
 

@@ -1,14 +1,22 @@
 {
-    "name": "mp3000mp/symfony-template",
-    "authors": [
-      {
-        "name": "mp3000mp",
-        "email": "moussadedijon@gmail.com"
-      }
-    ],
-    "description": "Base web template",
+    "name": "mp3000mp/template-symfony-vuejs",
+    "version": "0.3.0",
+    "description": "Basic web template",
     "type": "project",
+    "keywords": ["symfony", "vuejs", "template"],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "mp3000mp",
+            "email": "moussadedijon@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/mp3000mp/template-symfony-vuejs"
+        }
+    ],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
@@ -88,9 +96,10 @@
           ],
           "cs": "./vendor/bin/php-cs-fixer fix -v --dry-run --allow-risky=yes",
           "csf": "./vendor/bin/php-cs-fixer fix --allow-risky=yes",
-          "ps": "./vendor/bin/phpstan analyse -c ./phpstan.neon",
+          "ps": "COMPOSER_MEMORY_LIMIT=-1 ./vendor/bin/phpstan analyse -c ./phpstan.neon",
           "tu": "./vendor/bin/simple-phpunit --bootstrap ./tests/bootstrap.php --testdox",
           "tuc": "./vendor/bin/simple-phpunit --bootstrap ./tests/bootstrap.php --testdox --whitelist ./src --coverage-html ./ci/coverage/unit",
+          "tu-ci": "./vendor/bin/simple-phpunit --bootstrap ./tests/bootstrap.php --testdox --whitelist ./src --coverage-clover ./ci/coverage/unit/clover.xml",
           "pm": "phpmetrics --report-html=ic/metrics .",
         "post-install-cmd": [
             "@auto-scripts"
