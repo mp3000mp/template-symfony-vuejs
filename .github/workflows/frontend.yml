@@ -48,10 +48,10 @@ jobs:
       - name: Unit tests coverage
         uses: coverallsapp/github-action@master
         with:
-          base-path: ./frontend/src
+          base-path: frontend/src
           flag-name: front-unit
           github-token: ${{ github.token }}
-          path-to-lcov: ./frontend/ci/coverage/unit/lcov.info
+          path-to-lcov: frontend/ci/coverage/unit/lcov.info
 
       - name: End to end tests
         run: npm run test:e2e
