@@ -32,38 +32,38 @@ jobs:
       - name: Build docker-compose services
         run: docker-compose -f docker-compose-ci.yml up -d
 
-      - name: docker ps
-        run: docker-compose ps
-
-      - name: docker log
-        run: docker-compose logs backend
+#      - name: docker ps
+#        run: docker-compose ps
+#
+#      - name: docker log
+#        run: docker-compose logs backend
 
       - name: Validate composer.json and composer.lock
-        run: docker-compose -f docker-compose-ci.yml exec backend composer validate --strict
+        run: docker-compose -f docker-compose-ci.yml exec -T backend composer validate --strict
 
       - name: Install dependencies
-        run: docker-compose -f docker-compose-ci.yml exec backend composer install --prefer-dist --no-interaction --no-suggest
+        run: docker-compose -f docker-compose-ci.yml exec -T backend composer install --prefer-dist --no-interaction --no-suggest
 
       - name: Install PHPUnit
-        run: docker-compose -f docker-compose-ci.yml exec backend ./vendor/bin/simple-phpunit install
+        run: docker-compose -f docker-compose-ci.yml exec -T backend ./vendor/bin/simple-phpunit install
 
       - name: PHP CS Fixer
-        run: docker-compose -f docker-compose-ci.yml exec backend composer run cs
+        run: docker-compose -f docker-compose-ci.yml exec -T backend composer run cs
 
       - name: PHPStan
-        run: docker-compose -f docker-compose-ci.yml exec backend bash -c "php -d memory_limit=2G vendor/bin/phpstan"
+        run: docker-compose -f docker-compose-ci.yml exec -T backend bash -c "php -d memory_limit=2G vendor/bin/phpstan"
 
       - name: Migrations
-        run: docker-compose -f docker-compose-ci.yml exec backend bin/console --no-interaction doctrine:migration:migrate -e test
+        run: docker-compose -f docker-compose-ci.yml exec -T backend bin/console --no-interaction doctrine:migration:migrate -e test
 
       - name: PHPUnit
-        run: docker-compose -f docker-compose-ci.yml exec backend composer run tu-ci
+        run: docker-compose -f docker-compose-ci.yml exec -T backend composer run tu-ci
 
       # coverallsapp/github-action@master only support lcov.info file for now
       - name: Upload coverage results to Coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ github.token }}
           COVERALLS_FLAG_NAME: back-unit
-        run: docker-compose -f docker-compose-ci.yml exec vendor/bin/php-coveralls --coverage_clover=ci/coverage/unit/clover.xml -v
+        run: docker-compose -f docker-compose-ci.yml exec -T vendor/bin/php-coveralls --coverage_clover=ci/coverage/unit/clover.xml -v
 
 # todo separate unit and functional coverage
