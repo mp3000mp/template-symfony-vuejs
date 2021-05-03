@@ -123,6 +123,15 @@
     "gesdinet/jwt-refresh-token-bundle": {
         "version": "v0.11.1"
     },
+    "guzzlehttp/guzzle": {
+        "version": "7.3.0"
+    },
+    "guzzlehttp/promises": {
+        "version": "1.4.1"
+    },
+    "guzzlehttp/psr7": {
+        "version": "1.8.2"
+    },
     "justinrainbow/json-schema": {
         "version": "5.2.10"
     },
@@ -174,6 +183,9 @@
             "config/packages/nelmio_cors.yaml"
         ]
     },
+    "php-coveralls/php-coveralls": {
+        "version": "v2.4.3"
+    },
     "php-cs-fixer/diff": {
         "version": "v1.3.1"
     },
@@ -189,8 +201,17 @@
     "psr/event-dispatcher": {
         "version": "1.0.0"
     },
+    "psr/http-client": {
+        "version": "1.0.1"
+    },
+    "psr/http-message": {
+        "version": "1.0.1"
+    },
     "psr/log": {
         "version": "1.1.3"
+    },
+    "ralouphie/getallheaders": {
+        "version": "3.0.3"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
