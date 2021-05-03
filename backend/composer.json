@@ -11,12 +11,6 @@
             "email": "moussadedijon@gmail.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/mp3000mp/template-symfony-vuejs"
-        }
-    ],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {

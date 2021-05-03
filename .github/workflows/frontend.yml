@@ -51,7 +51,7 @@ jobs:
           base-path: ./src
           flag-name: front-unit
           github-token: ${{ github.token }}
-          path-to-lcov: ./ci/coverage/unit/lcov-report/lcov.info
+          path-to-lcov: ./ci/coverage/unit/lcov.info
 
       - name: End to end tests
         run: npm run test:e2e
