@@ -61,9 +61,6 @@ jobs:
 
       # coverallsapp/github-action@master only support lcov.info file for now
       - name: Upload coverage results to Coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ github.token }}
-          COVERALLS_FLAG_NAME: back-unit
-        run: docker-compose -f docker-compose-ci.yml exec -T vendor/bin/php-coveralls --coverage_clover=ci/coverage/unit/clover.xml -v
+        run: docker-compose -f docker-compose-ci.yml exec -T bash -c "COVERALLS_REPO_TOKEN=${{ github.token }} COVERALLS_FLAG_NAME=back-unit vendor/bin/php-coveralls --coverage_clover=ci/coverage/unit/clover.xml -vvv"
 
 # todo separate unit and functional coverage
