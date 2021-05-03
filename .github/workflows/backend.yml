@@ -55,7 +55,6 @@ jobs:
         env:
           COVERALLS_REPO_TOKEN: ${{ github.token }}
           COVERALLS_FLAG_NAME: back-unit
-        run: |
-          docker-compose run backend composer global require php-coveralls/php-coveralls && php-coveralls --coverage-clover=ci/coverage/unit/clover.xml -v
+        run: docker-compose run backend composer require --dev php-coveralls/php-coveralls && php vendor/bin/php-coveralls --coverage-clover=ci/coverage/unit/clover.xml -v
 
 # todo separate unit and functional coverage
