@@ -16,7 +16,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface, ContainerAw
 {
     private UserPasswordEncoderInterface $encoder;
 
-    private $container;
+    private ?ContainerInterface $container;
 
     public function setContainer(ContainerInterface $container = null): void
     {

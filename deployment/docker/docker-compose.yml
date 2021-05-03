@@ -9,9 +9,9 @@ services:
       MYSQL_USER: "$MYSQL_USER"
       MYSQL_PASSWORD: "$MYSQL_PASSWORD"
     volumes:
-      - ./deployment/mariadb/db:/var/lib/mysql
-      - ./deployment/mariadb/conf/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./deployment/mariadb/log:/var/log/mysql
+      - ./mariadb/db:/var/lib/mysql
+      - ./mariadb/conf/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./mariadb/log:/var/log/mysql
 
   mariadb_test:
     image: mariadb:10.4
@@ -21,39 +21,31 @@ services:
       MYSQL_USER: user1
       MYSQL_PASSWORD: password1
     volumes:
-      - ./deployment/mariadb_test/db:/var/lib/mysql
-      - ./deployment/mariadb_test/conf/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./deployment/mariadb/log:/var/log/mysql
+      - ./mariadb_test/db:/var/lib/mysql
+      - ./mariadb_test/conf/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./mariadb/log:/var/log/mysql
 
   redis:
     image: redis:alpine
     command: redis-server --requirepass ${REDIS_PASSWORD}
 
-#  frontend:
-#    build: ./deployment/frontend
-#    stdin_open: true
-#    ports:
-#      - "80:8080"
-#    environment:
-#      - NODE_ENV=dev
-#    volumes:
-#      - ./frontend:/home/node/app
-
   backend:
-    build: ./deployment/backend
+    build: backend
     ports:
       - "5000:80"
+    environment:
+      COMPOSER_MEMORY_LIMIT: -1 # marche po ?
     volumes:
-      - ./backend:/var/www/html
-      - ./deployment/backend/sites-enabled:/etc/apache2/sites-enabled
-      - ./deployment/backend/conf.d/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ../../backend:/var/www/html
+      - ./backend/sites-enabled:/etc/apache2/sites-enabled
+      - ./backend/conf.d/php.ini:/usr/local/etc/php/conf.d/php.ini
     depends_on:
       - mariadb
 
   adminer:
     image: adminer
     ports:
-      - '1081:8080'
+      - '8080:8080'
     depends_on:
       - mariadb
 

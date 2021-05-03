@@ -1,9 +1,11 @@
 # deployment
-/.env
-/deployment/mariadb/db
-/deployment/mariadb/log
-/deployment/mariadb_test/db
-/deployment/mariadb_test/log
+/deployment/docker/.env
+/deployment/docker/mariadb/db
+/deployment/docker/mariadb/log
+/deployment/docker/mariadb_test/db
+/deployment/docker/mariadb_test/log
+/deployment/ansible/vars.yml
+/deployment/ansible/roles/*/vars.yml
 
 # backend
 /backend/ci
@@ -37,7 +39,7 @@
 /frontend/dist
 /frontend/.nyc_output
 /frontend/ci
-/frontend/src/variables.json
+/frontend/config/variables.json
 /frontend/log
 
 # npm/yarn

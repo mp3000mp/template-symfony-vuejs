@@ -1,6 +1,9 @@
 # backend
 
-todo
+## Configuration
+
+Create backend/.env.local file based on .env file.
+Make it correspond to your deployment/docker/.env config.
 
 ## Generate RSA key
 
@@ -19,13 +22,26 @@ Type the value of your `JWT_PASSPHRASE` environment variable.
 # fixtures 
 php bin/console doctrine:fixtures:load --group=dev
 ```
-or
+
+## Lint
+
 ```
-php bin/console doctrine:fixtures:load --group=test
+# PHP CS Fixer
+compose cs
+
+# PHP CS Fixer autofix
+compose csf
+
+# PHPStan
+composer ps
 ```
 
 ## Testing
 
 ```
+# Unit tests
 composer tu
+
+# Unit tests with coverage
+composer tuc
 ```
