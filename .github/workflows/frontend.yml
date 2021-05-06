@@ -45,9 +45,10 @@ jobs:
       - name: Unit tests
         run: npm run test:ucov
 
-      - name: debug
-        run: cat ${{ github.workspace }}/frontend/ci/coverage/unit/lcov.info
+#      - name: debug
+#        run: cat ${{ github.workspace }}/frontend/ci/coverage/unit/lcov.info
 
+# why coveralls empty ?
       - name: Unit tests coverage
         uses: coverallsapp/github-action@master
         with:

@@ -53,7 +53,7 @@ export default defineComponent({
 <template>
   <div class="container text-center">
     <h1>Login</h1>
-    <form @submit.prevent="login">
+    <form @submit.prevent="login" id="login-form">
       <label for="username"></label>
       <input required="required" id="username" type="text" placeholder="Username" v-model="username" />
       <label for="password"></label>
@@ -61,8 +61,8 @@ export default defineComponent({
       <input type="submit" value="login" />
       <span class="err">{{ securityRequests.login.message }}</span>
     </form>
-    <button @click="forgottenPasswordSend.show = true">Forgotten password</button>
-    <form v-if="forgottenPasswordSend.show" @submit.prevent="sendForgottenPasswordEmail">
+    <button @click="forgottenPasswordSend.show = true" data-cy="forgottenPasswordButton">Forgotten password</button>
+    <form v-if="forgottenPasswordSend.show" @submit.prevent="sendForgottenPasswordEmail" id="forgotten-password-form">
       <label for="email"></label>
       <input required="required" id="email" type="email" placeholder="email@example.com" v-model="forgottenPasswordSend.email" />
       <input type="submit" value="Send forgotten password email" />
