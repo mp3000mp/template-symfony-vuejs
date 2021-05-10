@@ -25,7 +25,7 @@ abstract class AbstractControllerTest extends WebTestCase
 
     protected function setUp(): void
     {
-        $this->client = $client = static::createClient();
+        $this->client = static::createClient();
         $this->client->setServerParameter('CONTENT_TYPE', 'application/json');
 
         // utils
