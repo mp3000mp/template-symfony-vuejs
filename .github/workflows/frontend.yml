@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./frontend
+        working-directory: ${{ github.workspace }}/frontend
 
     steps:
       - uses: actions/checkout@v2
@@ -45,17 +45,30 @@ jobs:
       - name: Unit tests
         run: npm run test:ucov
 
+      - name: debug
+        run: echo "${{ github.id }}"
+
 #      - name: debug
 #        run: cat ${{ github.workspace }}/frontend/ci/coverage/unit/lcov.info
 
 # why coveralls empty ?
+#      - name: Unit tests coverage
+#        uses: coverallsapp/github-action@master
+#        with:
+#          base-path: frontend/src
+#          flag-name: front-unit
+#          github-token: ${{ github.token }}
+#          path-to-lcov: ${{ github.workspace }}/frontend/ci/coverage/unit/lcov.info
+
       - name: Unit tests coverage
-        uses: coverallsapp/github-action@master
-        with:
-          base-path: frontend/src
-          flag-name: front-unit
-          github-token: ${{ github.token }}
-          path-to-lcov: ${{ github.workspace }}/frontend/ci/coverage/unit/lcov.info
+        run: ./node_modules/coveralls/bin/coveralls.js < ./ci/coverage/unit/lcov.info
+        env:
+          COVERALLS_SERVICE_NAME: 'github'
+          COVERALLS_REPO_TOKEN: ${{ github.token }}
+          COVERALLS_GIT_COMMIT: ${{ github.sha }}
+          COVERALLS_GIT_BRANCH: ${{ github.ref }}
+          COVERALLS_SERVICE_JOB_ID: ${{ github.id }}
+          COVERALLS_FLAG_NAME: 'front-unit'
 
       - name: End to end tests
         run: npm run test:e2e

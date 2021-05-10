@@ -4,5 +4,5 @@ module.exports = {
     '^.+\\.vue$': 'vue-jest'
   },
   collectCoverageFrom: ['src/**/*.{js,ts,vue}', '!src/router/*.*', '!src/*.{js,ts,vue}'],
-  coverageDirectory: 'ci/coverage/unit'
+  coverageDirectory: './ci/coverage/unit'
 }
