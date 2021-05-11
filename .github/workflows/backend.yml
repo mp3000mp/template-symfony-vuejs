@@ -59,9 +59,12 @@ jobs:
       - name: PHPUnit
         run: docker-compose -f docker-compose-ci.yml exec -T backend composer run tu-ci
 
-# marche po...
-#      # coverallsapp/github-action@master only support lcov.info file for now
-#      - name: Upload coverage results to Coveralls
-#        run: docker-compose -f docker-compose-ci.yml exec -T bash -c "COVERALLS_REPO_TOKEN=${{ github.token }} COVERALLS_FLAG_NAME=back-unit vendor/bin/php-coveralls --coverage_clover=ci/coverage/unit/clover.xml --json_path=ci/coverage/unit/coveralls-upload.json -vvv"
+      - name: debug
+        run: cat ./ci/coverage/unit/clover.xml
+        working-directory: ./backend
+
+      - name: Codecov
+        run: bash <(curl -s https://codecov.io/bash) -F backend -f "./ci/coverage/unit/clover.xml"
+        working-directory: ./backend
 
 # todo separate unit and functional coverage
