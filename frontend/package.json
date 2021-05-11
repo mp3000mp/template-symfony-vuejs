@@ -88,7 +88,8 @@
       ".js", ".ts", ".vue"
     ],
     "include": ["src/**/*.{js,ts,vue}"],
-    "exclude": ["**/*.spec.js"],
+    "exclude": ["tests", "src/router/*.*", "src/*.{js,ts,vue}"],
+    "excludeAfterRemap": true,
     "report-dir": "ci/coverage/e2e"
   }
 }
