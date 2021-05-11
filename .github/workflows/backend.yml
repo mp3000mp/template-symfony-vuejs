@@ -59,10 +59,6 @@ jobs:
       - name: PHPUnit
         run: docker-compose -f docker-compose-ci.yml exec -T backend composer run tu-ci
 
-      - name: debug
-        run: cat ./ci/coverage/unit/clover.xml
-        working-directory: ./backend
-
       - name: Codecov
         run: bash <(curl -s https://codecov.io/bash) -F backend -f "./ci/coverage/unit/clover.xml"
         working-directory: ./backend

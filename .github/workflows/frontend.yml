@@ -45,17 +45,20 @@ jobs:
       - name: Unit tests
         run: npm run test:ucov
 
-      - uses: nelonoel/branch-name@v1.0.1
+      - name: Codecov
+        run: bash <(curl -s https://codecov.io/bash) -F frontend -f "./ci/coverage/unit/clover.xml"
 
-      - name: Unit tests coverage
-        run: ./node_modules/coveralls/bin/coveralls.js < ./ci/coverage/unit/lcov.info
-        env:
-          COVERALLS_SERVICE_NAME: 'github'
-          COVERALLS_REPO_TOKEN: ${{ github.token }}
-          COVERALLS_GIT_COMMIT: ${{ github.sha }}
-          COVERALLS_GIT_BRANCH: ${{ env.BRANCH_NAME }}
-          COVERALLS_SERVICE_JOB_ID: ${{ github.run_id }}
-          COVERALLS_FLAG_NAME: 'front-unit'
+#      - uses: nelonoel/branch-name@v1.0.1
+#
+#      - name: Unit tests coverage
+#        run: ./node_modules/coveralls/bin/coveralls.js < ./ci/coverage/unit/lcov.info
+#        env:
+#          COVERALLS_SERVICE_NAME: 'github'
+#          COVERALLS_REPO_TOKEN: ${{ github.token }}
+#          COVERALLS_GIT_COMMIT: ${{ github.sha }}
+#          COVERALLS_GIT_BRANCH: ${{ env.BRANCH_NAME }}
+#          COVERALLS_SERVICE_JOB_ID: ${{ github.run_id }}
+#          COVERALLS_FLAG_NAME: 'front-unit'
 
       - name: End to end tests
         run: npm run test:e2e
