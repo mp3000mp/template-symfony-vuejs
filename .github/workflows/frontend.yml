@@ -45,20 +45,7 @@ jobs:
       - name: Unit tests
         run: npm run test:ucov
 
-      - name: debug
-        run: echo "${{ github.id }}"
-
-#      - name: debug
-#        run: cat ${{ github.workspace }}/frontend/ci/coverage/unit/lcov.info
-
-# why coveralls empty ?
-#      - name: Unit tests coverage
-#        uses: coverallsapp/github-action@master
-#        with:
-#          base-path: frontend/src
-#          flag-name: front-unit
-#          github-token: ${{ github.token }}
-#          path-to-lcov: ${{ github.workspace }}/frontend/ci/coverage/unit/lcov.info
+      - uses: nelonoel/branch-name@v1.0.1
 
       - name: Unit tests coverage
         run: ./node_modules/coveralls/bin/coveralls.js < ./ci/coverage/unit/lcov.info
@@ -66,8 +53,8 @@ jobs:
           COVERALLS_SERVICE_NAME: 'github'
           COVERALLS_REPO_TOKEN: ${{ github.token }}
           COVERALLS_GIT_COMMIT: ${{ github.sha }}
-          COVERALLS_GIT_BRANCH: ${{ github.ref }}
-          COVERALLS_SERVICE_JOB_ID: ${{ github.id }}
+          COVERALLS_GIT_BRANCH: ${{ env.BRANCH_NAME }}
+          COVERALLS_SERVICE_JOB_ID: ${{ github.job }}
           COVERALLS_FLAG_NAME: 'front-unit'
 
       - name: End to end tests
