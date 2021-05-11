@@ -56,11 +56,16 @@ jobs:
       - name: Migrations
         run: docker-compose -f docker-compose-ci.yml exec -T backend bin/console --no-interaction doctrine:migration:migrate -e test
 
-      - name: PHPUnit
+      - name: PHPUnit unit
         run: docker-compose -f docker-compose-ci.yml exec -T backend composer run tu-ci
 
-      - name: Codecov
-        run: bash <(curl -s https://codecov.io/bash) -F backend -f "./ci/coverage/unit/clover.xml"
+      - name: Codecov unit
+        run: bash <(curl -s https://codecov.io/bash) -F backend,back-unit -f "./ci/coverage/unit/clover.xml"
         working-directory: ./backend
 
-# todo separate unit and functional coverage
+      - name: PHPUnit functional
+        run: docker-compose -f docker-compose-ci.yml exec -T backend composer run tf-ci
+
+      - name: Codecov functional
+        run: bash <(curl -s https://codecov.io/bash) -F backend,back-functional -f "./ci/coverage/functional/clover.xml"
+        working-directory: ./backend
