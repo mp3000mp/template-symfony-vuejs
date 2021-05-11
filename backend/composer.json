@@ -92,7 +92,8 @@
           "ps": "./vendor/bin/phpstan analyse -c ./phpstan.neon",
           "tu": "./vendor/bin/simple-phpunit --bootstrap ./tests/bootstrap.php --testdox",
           "tuc": "./vendor/bin/simple-phpunit --bootstrap ./tests/bootstrap.php --testdox --whitelist ./src --coverage-html ./ci/coverage/unit",
-          "tu-ci": "./vendor/bin/simple-phpunit --bootstrap ./tests/bootstrap.php --testdox --whitelist ./src --coverage-clover ./ci/coverage/unit/clover.xml",
+          "tu-ci": "./vendor/bin/simple-phpunit --bootstrap ./tests/bootstrap.php --testsuite unit --testdox --whitelist ./src --coverage-clover ./ci/coverage/unit/clover.xml",
+          "tf-ci": "./vendor/bin/simple-phpunit --bootstrap ./tests/bootstrap.php --testsuite functional --testdox --whitelist ./src --coverage-clover ./ci/coverage/functional/clover.xml",
           "pm": "phpmetrics --report-html=ic/metrics .",
         "post-install-cmd": [
             "@auto-scripts"
