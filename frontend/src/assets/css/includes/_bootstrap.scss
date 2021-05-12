@@ -1,4 +1,4 @@
-// override vars
+
 
 $white:    #ffeac2;
 // $gray-100: #f8f9fa;
@@ -32,11 +32,6 @@ $orange:  #ffa90a;
 
 $body-color:       #ffeac2;
 
-@import '~bootstrap/scss/functions';
-@import '~bootstrap/scss/variables';
-@import '~bootstrap/scss/mixins';
-@import '~bootstrap/scss/utilities';
-
 
 // use vars computed by bootstrap
 $body-bg:          #001229;
@@ -44,6 +39,17 @@ $body-bg:          #001229;
 $link-color:       #cc8800;
 $link-decoration:  none;
 $link-hover-color: #ffa90a;
+
+
+@import '~bootstrap';
+/*
+// override vars
+
+
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+@import '~bootstrap/scss/utilities';
 
 
 
@@ -80,3 +86,4 @@ $link-hover-color: #ffa90a;
 @import '~bootstrap/scss/spinners';
 
 @import '~bootstrap/scss/helpers';
+*/
