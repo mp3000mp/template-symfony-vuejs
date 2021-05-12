@@ -60,12 +60,12 @@ jobs:
         run: docker-compose -f docker-compose-ci.yml exec -T backend composer run tu-ci
 
       - name: Codecov unit
-        run: bash <(curl -s https://codecov.io/bash) -F back-unit -f "./ci/coverage/unit/clover.xml"
+        run: bash <(curl -s https://codecov.io/bash) -F backend,back-unit -f "./ci/coverage/unit/clover.xml"
         working-directory: ./backend
 
       - name: PHPUnit functional
         run: docker-compose -f docker-compose-ci.yml exec -T backend composer run tf-ci
 
       - name: Codecov functional
-        run: bash <(curl -s https://codecov.io/bash) -F back-functional -f "./ci/coverage/functional/clover.xml"
+        run: bash <(curl -s https://codecov.io/bash) -F backend,back-functional -f "./ci/coverage/functional/clover.xml"
         working-directory: ./backend

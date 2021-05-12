@@ -5,12 +5,12 @@ coverage:
     project:
       backend:
         paths:
-          - backend/
+          - backend/src
         flags:
           - backend
       frontend:
         paths:
-          - frontend/
+          - frontend/src
         flags:
           - frontend
 
