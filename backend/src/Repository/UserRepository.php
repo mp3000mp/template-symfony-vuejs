@@ -24,19 +24,4 @@ class UserRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, User::class);
     }
-
-    /**
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function findByEmailOrUsername(string $input): ?User
-    {
-        $q = $this->createQueryBuilder('u')
-            ->where('u.username = :input')
-            ->orWhere('u.email = :input')
-            ->setParameter('input', $input)
-            ->getQuery()
-            ;
-
-        return $q->getOneOrNullResult();
-    }
 }

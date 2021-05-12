@@ -11,9 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./frontend
-
-# install yarn
+        working-directory: ${{ github.workspace }}/frontend
 
     steps:
       - uses: actions/checkout@v2
@@ -24,7 +22,9 @@ jobs:
 
       - uses: actions/cache@v2
         with:
-          path: '**/node_modules'
+          path: |
+            node_modules
+            /home/runner/.cache/Cypress
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Copy config file
@@ -43,7 +43,13 @@ jobs:
         run: npm run build
 
       - name: Unit tests
-        run: npm run test:unit
+        run: npm run test:ucov
+
+      - name: Codecov unit
+        run: bash <(curl -s https://codecov.io/bash) -F frontend,front-unit -f "./ci/coverage/unit/clover.xml"
 
       - name: End to end tests
-        run: npm run test:e2e
+        run: npm run test:e2ecov
+
+      - name: Codecov e2e
+        run: bash <(curl -s https://codecov.io/bash) -F frontend,front-e2e -f "./ci/coverage/e2e/clover.xml"

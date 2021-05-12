@@ -2,6 +2,7 @@
 import { defineComponent, ref, reactive, computed, watch } from 'vue'
 import { useStore } from '@/store'
 import { useRouter } from 'vue-router'
+import { AxiosResponse } from 'axios'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -29,14 +30,14 @@ export default defineComponent({
     }
     function sendForgottenPasswordEmail () {
       store.dispatch('security/forgottenPasswordSend', forgottenPasswordSend.email)
-        .then((res: any) => {
+        .then((res: AxiosResponse) => {
           forgottenPasswordSend.status = true
           forgottenPasswordSend.message = res.data.message
           forgottenPasswordSend.email = ''
         })
-        .catch((err: any) => {
+        .catch((err: string) => {
           forgottenPasswordSend.status = false
-          forgottenPasswordSend.message = err.message || err.response.data.message
+          forgottenPasswordSend.message = err
         })
     }
 
@@ -52,7 +53,7 @@ export default defineComponent({
 <template>
   <div class="container text-center">
     <h1>Login</h1>
-    <form @submit.prevent="login">
+    <form @submit.prevent="login" id="login-form">
       <label for="username"></label>
       <input required="required" id="username" type="text" placeholder="Username" v-model="username" />
       <label for="password"></label>
@@ -60,8 +61,8 @@ export default defineComponent({
       <input type="submit" value="login" />
       <span class="err">{{ securityRequests.login.message }}</span>
     </form>
-    <button @click="forgottenPasswordSend.show = true">Forgotten password</button>
-    <form v-if="forgottenPasswordSend.show" @submit.prevent="sendForgottenPasswordEmail">
+    <button @click="forgottenPasswordSend.show = true" data-cy="forgottenPasswordButton">Forgotten password</button>
+    <form v-if="forgottenPasswordSend.show" @submit.prevent="sendForgottenPasswordEmail" id="forgotten-password-form">
       <label for="email"></label>
       <input required="required" id="email" type="email" placeholder="email@example.com" v-model="forgottenPasswordSend.email" />
       <input type="submit" value="Send forgotten password email" />

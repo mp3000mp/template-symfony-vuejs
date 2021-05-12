@@ -2,6 +2,13 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios'
 import { StoreRequest } from '@/store/types'
 import store from '@/store'
 
+const debugMode = false
+function debug (msg: string) {
+  if (debugMode) {
+    console.log(msg)
+  }
+}
+
 interface ApiRequestConfig {
   headers?: {
     [key: string]: string;
@@ -66,18 +73,18 @@ export class ApiClient {
       config.headers.Authorization = ApiClient.getJwtToken()
     }
 
-    console.log(`req start: ${config.method} ${config.url}`)
+    debug(`req start: ${config.method} ${config.url}`)
     request.start()
     try {
       const response = await this.axios.request(config)
 
       this.nbRefreshTokenRetry = 0
-      console.log(`req ok: ${config.method} ${config.url}`)
+      debug(`req ok: ${config.method} ${config.url}`)
       request.end(response.status, response.data.message || '')
       return response
     } catch (err) {
       if (err.response) {
-        console.log(`req ${err.response.status}: ${config.method} ${config.url}`)
+        debug(`req ${err.response.status}: ${config.method} ${config.url}`)
 
         // tru refresh token
         if (err.response.status === 401 && err.response.data.message === 'Expired JWT Token' && this.nbRefreshTokenRetry === 0) {
@@ -88,15 +95,15 @@ export class ApiClient {
             const response = await this.axios.request(config)
 
             this.nbRefreshTokenRetry = 0
-            console.log(`req ok: ${config.method} ${config.url}`)
+            debug(`req ok: ${config.method} ${config.url}`)
             request.end(response.status, response.data.message || '')
             return response
           } catch (refreshErr) {
             if (refreshErr.response) {
-              console.log(`req ${refreshErr.response.status}: ${config.method} ${config.url}`)
+              debug(`req ${refreshErr.response.status}: ${config.method} ${config.url}`)
             } else {
-              console.log(`refresh token failed: ${config.method} ${config.url}`)
-              console.log(refreshErr)
+              debug(`refresh token failed: ${config.method} ${config.url}`)
+              debug(refreshErr)
             }
             request.end(refreshErr.response.status, ApiClient.generateErrorMessage(refreshErr))
             throw refreshErr
@@ -104,8 +111,8 @@ export class ApiClient {
         }
         request.end(err.response.status, ApiClient.generateErrorMessage(err))
       } else {
-        console.log(`unexpected err: ${config.method} ${config.url}`)
-        console.log(err)
+        debug(`unexpected err: ${config.method} ${config.url}`)
+        debug(err)
         request.end(500, 'Unexpected request error')
       }
       throw err

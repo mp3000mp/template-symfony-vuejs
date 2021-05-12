@@ -1,14 +1,31 @@
 {
-  "name": "mp3000mp-template",
-  "version": "0.1.0",
-  "private": true,
+  "name": "mp3000mp-template-symfony-vuejs",
+  "version": "0.3.0",
+  "description": "Basic web template",
+  "keywords": [
+    "symfony",
+    "vuejs",
+    "template"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "mp3000mp",
+      "email": "moussadedijon@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mp3000mp/template-symfony-vuejs"
+  },
   "scripts": {
     "serve": "vue-cli-service serve --port 8081",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:ucov": "vue-cli-service test:unit --coverage=true",
-    "test:e2e": "vue-cli-service test:e2e --headless",
-    "test:e2eui": "vue-cli-service test:e2e",
+    "test:e2e": "vue-cli-service test:e2e --headless --env coverage=false",
+    "test:e2ecov": "vue-cli-service test:e2e --headless",
+    "test:e2eui": "vue-cli-service test:e2e --env coverage=false",
     "lint": "vue-cli-service lint",
     "lint:style": "stylelint ./src/**/*.{vue,scss}"
   },
@@ -30,6 +47,7 @@
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.9.5",
     "@types/bootstrap": "^5.0.10",
     "@types/jest": "^24.0.19",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
@@ -66,6 +84,12 @@
     "cypress": "^6.8.0"
   },
   "nyc": {
+    "extension": [
+      ".js", ".ts", ".vue"
+    ],
+    "include": ["src/**/*.{js,ts,vue}"],
+    "exclude": ["tests", "src/router/*.*", "src/*.{js,ts,vue}"],
+    "excludeAfterRemap": true,
     "report-dir": "ci/coverage/e2e"
   }
 }

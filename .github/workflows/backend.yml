@@ -17,36 +17,55 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Pull images
-        run: docker-compose -f ./docker-compose-ci.yml pull
+        run: docker-compose -f docker-compose-ci.yml pull
 
       - uses: satackey/action-docker-layer-caching@v0.0.11
         continue-on-error: true
 
-# remove this when --env-file will work
       - name: Copy env file
         run: cp .env.example .env
 
+      - name: Create var folder
+        working-directory: ./backend
+        run: mkdir var var/cache var/log
+
       - name: Build docker-compose services
-        run: docker-compose --env-file=.env.example -f ./docker-compose-ci.yml up -d
+        run: docker-compose -f docker-compose-ci.yml up -d
+
+#      - name: docker ps
+#        run: docker-compose ps
+#
+#      - name: docker log
+#        run: docker-compose logs backend
 
       - name: Validate composer.json and composer.lock
-        run: docker-compose run backend composer validate --strict
+        run: docker-compose -f docker-compose-ci.yml exec -T backend composer validate --strict
 
       - name: Install dependencies
-        run: docker-compose run backend composer install --prefer-dist --no-interaction --no-suggest
+        run: docker-compose -f docker-compose-ci.yml exec -T backend composer install --prefer-dist --no-interaction --no-suggest
 
       - name: Install PHPUnit
-        run: docker-compose run backend ./vendor/bin/simple-phpunit install
+        run: docker-compose -f docker-compose-ci.yml exec -T backend ./vendor/bin/simple-phpunit install
 
       - name: PHP CS Fixer
-        run: docker-compose run backend composer run cs
+        run: docker-compose -f docker-compose-ci.yml exec -T backend composer run cs
 
-# fix COMPOSER_MEMORY_LIMIT needed...
-#      - name: PHPStan
-#        run: docker-compose run backend composer run ps
+      - name: PHPStan
+        run: docker-compose -f docker-compose-ci.yml exec -T backend bash -c "php -d memory_limit=2G vendor/bin/phpstan"
 
       - name: Migrations
-        run: docker-compose run backend bin/console --no-interaction doctrine:migration:migrate -e test
+        run: docker-compose -f docker-compose-ci.yml exec -T backend bin/console --no-interaction doctrine:migration:migrate -e test
 
-      - name: PHPUnit
-        run: docker-compose run backend composer run tu
+      - name: PHPUnit unit
+        run: docker-compose -f docker-compose-ci.yml exec -T backend composer run tu-ci
+
+      - name: Codecov unit
+        run: bash <(curl -s https://codecov.io/bash) -F backend,back-unit -f "./ci/coverage/unit/clover.xml"
+        working-directory: ./backend
+
+      - name: PHPUnit functional
+        run: docker-compose -f docker-compose-ci.yml exec -T backend composer run tf-ci
+
+      - name: Codecov functional
+        run: bash <(curl -s https://codecov.io/bash) -F backend,back-functional -f "./ci/coverage/functional/clover.xml"
+        working-directory: ./backend

@@ -60,7 +60,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <form @submit.prevent="reset">
+  <form @submit.prevent="reset" id="init-password-form">
     <div v-if="displayForm && !checkTokenIsError">
       <label for="pwd">
         New password:
