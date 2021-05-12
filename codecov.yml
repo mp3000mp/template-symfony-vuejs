@@ -1,0 +1,23 @@
+coverage:
+  round: nearest
+  range: "50...90"
+  status:
+    project:
+      backend:
+        paths:
+          - backend/
+        flags:
+          - backend
+      frontend:
+        paths:
+          - frontend/
+        flags:
+          - frontend
+
+flags:
+  backend:
+    paths:
+      - backend/src
+  frontend:
+    paths:
+      - frontend/src
