@@ -10,7 +10,6 @@ mysql_root_password: root_pwd
 mysql_database: template_sf
 mysql_user: user
 mysql_password: user_pwd
-redis_password: redis_pwd
 
 app_secret: secret
 jwt_passphrase: secret

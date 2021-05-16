@@ -13,9 +13,8 @@ RUN curl -sSk https://getcomposer.org/installer | php -- --install-dir=/usr/loca
 
 # install ext
 RUN docker-php-ext-install pdo_mysql intl \
-    && pecl install redis-5.3.3 \
     && pecl install xdebug-3.0.3 \
-    && docker-php-ext-enable redis xdebug \
+    && docker-php-ext-enable xdebug \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.remote_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini

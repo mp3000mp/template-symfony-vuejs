@@ -20,8 +20,8 @@ class UserChecker implements UserCheckerInterface
             return;
         }
 
-        // users is deleted, show a generic Account Not Found message.
         if (!$user->getIsEnabled()) {
+            var_dump('AccountDisabledException');
             throw new AccountDisabledException();
         }
     }

@@ -5,7 +5,6 @@
 You can easily mount:
  - A mariadb server for dev environment
  - A mariadb server for test environment
- - A redis server
  - A maildev server
  - An adminer instance
 
@@ -42,7 +41,6 @@ This hosting server needs the following requirements de deploy:
 Prod deployment include:
  - Deployment of code source
  - A mariadb server
- - A redis server
 
 You can easily deploy the application:
  - Step 1: Create your inventory file in deployment/ansible/inventory/hosts 

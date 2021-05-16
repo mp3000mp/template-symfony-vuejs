@@ -15,6 +15,7 @@
 
 ###> symfony/framework-bundle ###
 /backend/.env.local
+/backend/.env.*.local
 /backend/config/secrets/prod/prod.decrypt.private.php
 /backend/config/jwt/*.pem
 !/backend/config/jwt/test/*.pem

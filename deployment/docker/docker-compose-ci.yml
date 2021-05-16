@@ -13,10 +13,6 @@ services:
       - ./mariadb_test/conf/my.cnf:/etc/mysql/conf.d/my.cnf
       - ./mariadb/log:/var/log/mysql
 
-  redis:
-    image: redis:alpine
-    command: redis-server --requirepass ${REDIS_PASSWORD}
-
   backend:
     build: backend
     ports:
