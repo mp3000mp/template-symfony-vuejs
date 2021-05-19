@@ -39,6 +39,7 @@
     "axios": "^0.21.1",
     "bootstrap": "^5.0.0-beta3",
     "core-js": "^3.6.5",
+    "cypress": "^6.8.0",
     "register-service-worker": "^1.7.1",
     "sweetalert2": "^10.15.5",
     "vue": "^3.0.0",
@@ -85,10 +86,18 @@
   },
   "nyc": {
     "extension": [
-      ".js", ".ts", ".vue"
+      ".js",
+      ".ts",
+      ".vue"
     ],
-    "include": ["src/**/*.{js,ts,vue}"],
-    "exclude": ["tests", "src/router/*.*", "src/*.{js,ts,vue}"],
+    "include": [
+      "src/**/*.{js,ts,vue}"
+    ],
+    "exclude": [
+      "tests",
+      "src/router/*.*",
+      "src/*.{js,ts,vue}"
+    ],
     "excludeAfterRemap": true,
     "report-dir": "ci/coverage/e2e"
   }
