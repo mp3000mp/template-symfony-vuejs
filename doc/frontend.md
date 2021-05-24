@@ -40,6 +40,9 @@ npm run test:ucov
 # Background
 npm run test:e2e
 
+# Background tests with coverage
+npm run test:e2ecov
+
 # Open Cypress UI
 npm run test:e2eui
 ```

@@ -1,6 +1,6 @@
 import apiRegistry from '@/helpers/apiRegistry'
 import { ActionContext } from 'vuex'
-import { UserState } from '@/store/modules/users/types'
+import { UserState } from './types'
 import { RootState } from '@/store/types'
 import { ApiClient } from '@/helpers/apiClient'
 
@@ -12,9 +12,6 @@ interface AddUserPayload {
 }
 interface UpdateUserPayload extends AddUserPayload {
   id: number;
-  email: string;
-  roles: string[];
-  username: string;
 }
 
 export const actions = {

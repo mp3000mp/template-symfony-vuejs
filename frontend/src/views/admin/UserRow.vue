@@ -3,7 +3,7 @@ import { defineComponent, ref, reactive, onMounted } from 'vue'
 import { useStore } from '@/store'
 
 export default defineComponent({
-  name: 'AdminUserRowPage',
+  name: 'AdminUserRow',
   props: {
     user: { type: Object, required: true }
   },
@@ -12,12 +12,7 @@ export default defineComponent({
 
     const isUpdating = ref(false)
     const profile = ref('user')
-    const tmpUser = reactive({
-      id: null,
-      email: '',
-      roles: ['ROLE_ANONYMOUS'],
-      username: ''
-    })
+    let tmpUser = reactive(Object.assign({}, props.user))
 
     function getRoles (): string[] {
       if (profile.value === 'user') {
@@ -34,10 +29,7 @@ export default defineComponent({
       }
     }
     function initTmpUser () {
-      tmpUser.id = props.user.id
-      tmpUser.email = props.user.email
-      tmpUser.roles = props.user.roles
-      tmpUser.username = props.user.username
+      tmpUser = Object.assign(tmpUser, props.user)
       initProfile()
     }
     function closeForm () {
@@ -84,12 +76,22 @@ export default defineComponent({
 <template>
   <tr v-if="isUpdating">
     <td colspan="4">
-      <form @submit.prevent="updateUser">
-        <label for="updateUsername"></label><input required="required" type="text" placeholder="Username" v-model="tmpUser.username" id="updateUsername" />
-        <label for="updateEmail"></label><input required="required" type="email" placeholder="Email" v-model="tmpUser.email" id="updateEmail" />
-        <label for="updateRoles"></label><select id="updateRoles" v-model="profile"><option value="user">User</option><option value="admin">Admin</option></select>
-        <input type="submit" value="Update user" />
-        <input type="submit" value="Cancel" @click.prevent="closeForm" />
+      <form @submit.prevent="updateUser" class="row">
+        <div class="col-2">
+          <input class="form-control" required="required" type="text" placeholder="Username" v-model="tmpUser.username" id="updateUsername" />
+        </div>
+        <div class="col-2">
+          <input class="form-control" required="required" type="email" placeholder="Email" v-model="tmpUser.email" id="updateEmail" />
+        </div>
+        <div class="col-2">
+          <select class="form-select" id="updateRoles" v-model="profile"><option value="user">User</option><option value="admin">Admin</option></select>
+        </div>
+        <div class="col-2">
+          <input type="submit" class="btn btn-primary form-control" value="Update user" />
+        </div>
+        <div class="col-2">
+          <input type="submit" class="btn btn-secondary form-control" value="Cancel" @click.prevent="closeForm" />
+        </div>
       </form>
     </td>
   </tr>

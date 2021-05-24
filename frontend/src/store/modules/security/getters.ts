@@ -1,4 +1,4 @@
-import { SecurityState } from '@/store/modules/security/types'
+import { SecurityState } from './types'
 
 export const getters = {
   getIsAuth: (state: SecurityState) => {

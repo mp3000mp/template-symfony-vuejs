@@ -1,8 +1,38 @@
-.form{
-  background-color: #001b3d;
-  padding: 40px;
-  max-width: 600px;
-  margin: 40px auto;
-  border-radius: 4px;
-  box-shadow: 0 4px 10px 4px rgba(#001b3d,.3);
+form {
+  .err {
+    color: $red2;
+  }
+
+  .success {
+    color: $green4;
+  }
+
+  input,
+  select {
+    &.form-control,
+    &.form-control:focus,
+    &.form-select,
+    &.form-select:focus {
+      color: $body-bg-light;
+    }
+  }
+
+  &.basic-form{
+    background-color: $body-bg-light;
+    padding: 40px;
+    max-width: 600px;
+    margin: 40px auto;
+    border-radius: 4px;
+    box-shadow: 0 4px 10px 4px rgba($body-bg-light,.3);
+  }
+}
+
+.btn {
+  &.btn-primary {
+    background-color: $link-color;
+
+    &:hover {
+      background-color: $link-hover-color;
+    }
+  }
 }

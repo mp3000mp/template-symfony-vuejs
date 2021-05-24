@@ -51,48 +51,25 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="container-fluid text-center form">
-    <h1>Login</h1>
-    <form @submit.prevent="login" class="d-flex flex-column" id="login-form">
+  <div class="container-fluid text-center">
+    <h1>Welcome</h1>
+    <form @submit.prevent="login" class="d-flex flex-column basic-form" id="login-form">
       <label for="username" class="form-label"></label>
-      <input required="required" class="txt-color form-control my-2s" id="username" type="text" placeholder="Username" v-model="username" />
+      <input required="required" class="form-control" id="username" type="text" placeholder="Username" v-model="username" />
       <label for="password" class="form-label"></label>
-      <input required="required" class="form-control mb-2 txt-color" id="password" type="password" placeholder="Password" v-model="password" />
-      <input class="btn-lg login-btn" type="submit" value="login" />
+      <input required="required" class="form-control mb-2" id="password" type="password" placeholder="Password" v-model="password" />
+      <input class="btn btn-primary" type="submit" value="Log in" />
       <span class="err">{{ securityRequests.login.message }}</span>
     </form>
-    <button @click="forgottenPasswordSend.show = true" class="btn btn-link" data-cy="forgottenPasswordButton">Forgotten password</button>
-    <form v-if="forgottenPasswordSend.show" @submit.prevent="sendForgottenPasswordEmail" id="forgotten-password-form">
+    <button @click="forgottenPasswordSend.show = !forgottenPasswordSend.show" class="btn btn-link" data-cy="forgottenPasswordButton">Forgotten password</button>
+    <form v-if="forgottenPasswordSend.show" @submit.prevent="sendForgottenPasswordEmail" id="forgotten-password-form" class="d-flex flex-column basic-form">
       <label for="email"></label>
-      <input required="required" id="email" type="email" placeholder="email@example.com" v-model="forgottenPasswordSend.email" />
-      <input type="submit" value="Send forgotten password email" />
+      <input class="form-control mb-2" required="required" id="email" type="email" placeholder="email@example.com" v-model="forgottenPasswordSend.email" />
+      <input class="btn btn-primary" type="submit" value="Send forgotten password email" />
       <span :class="{
         err: securityRequests.forgottenPasswordSend.isError,
         success: !securityRequests.forgottenPasswordSend.isError
       }">{{ securityRequests.forgottenPasswordSend.message }}</span>
     </form>
   </div>
-  <p class="ms-3">todo design</p>
 </template>
-
-<style lang="scss">
-
-@import 'src/assets/css/app';
-
-.err {
-  color: #8d0502;
-}
-
-.success {
-  color: #2ca02c;
-}
-
-.login-btn{
-  background-color: #cc8800;
-}
-
-input.txt-color,
-input.txt-color:focus{
-  color: #001b3d;
-}
-</style>

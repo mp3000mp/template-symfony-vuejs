@@ -8,6 +8,6 @@ export default defineComponent({
 
 <template>
   <div class="home">
-    <h1>Bienvenue</h1>
+    <h1>Welcome</h1>
   </div>
 </template>

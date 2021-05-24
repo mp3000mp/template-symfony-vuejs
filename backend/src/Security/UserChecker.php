@@ -21,7 +21,6 @@ class UserChecker implements UserCheckerInterface
         }
 
         if (!$user->getIsEnabled()) {
-            var_dump('AccountDisabledException');
             throw new AccountDisabledException();
         }
     }

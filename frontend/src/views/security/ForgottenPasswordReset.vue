@@ -60,17 +60,30 @@ export default defineComponent({
 </script>
 
 <template>
-  <form @submit.prevent="reset" id="init-password-form">
-    <div v-if="displayForm && !checkTokenIsError">
-      <label for="pwd">
-        New password:
-        <input type="password" name="pwd" id="pwd" v-model="password" />
-      </label>
-      <label for="pwd_confirm">
-        Password confirmation:
-        <input type="password" name="pwd_confirm" id="pwd_confirm" v-model="passwordConfirm" />
-      </label>
-      <input type="submit" value="send" />
+  <form @submit.prevent="reset" id="init-password-form" class="basic-form">
+    <div
+      v-if="displayForm && !checkTokenIsError"
+      class="d-flex flex-column"
+    >
+      <label for="pwd" class="form-label"></label>
+      <input
+        class="form-control"
+        type="password"
+        name="pwd"
+        id="pwd"
+        v-model="password"
+        placeholder="New password"
+      />
+      <label for="pwd_confirm" class="form-label"></label>
+      <input
+        class="form-control mb-2"
+        type="password"
+        name="pwd_confirm"
+        id="pwd_confirm"
+        v-model="passwordConfirm"
+        placeholder="Password confirmation"
+      />
+      <input class="btn btn-primary" type="submit" value="Send" />
     </div>
     <span
       class="err"
@@ -86,13 +99,3 @@ export default defineComponent({
     </span>
   </form>
 </template>
-
-<style lang="scss" scoped>
-.err {
-  color: #ff0000;
-}
-
-.success {
-  color: #00ff00;
-}
-</style>

@@ -1,0 +1,11 @@
+table {
+  th {
+    text-align: left;
+  }
+
+  tr {
+    &:hover {
+      background: $body-bg-light;
+    }
+  }
+}

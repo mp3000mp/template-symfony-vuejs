@@ -35,7 +35,7 @@ abstract class AbstractControllerTest extends WebTestCase
 
         // reset database
         $purger = new ORMPurger($this->em, []);
-        $purger->setPurgeMode(ORMPurger::PURGE_MODE_TRUNCATE);
+        $purger->setPurgeMode(ORMPurger::PURGE_MODE_DELETE);
         $loader = new ContainerAwareLoader(self::$kernel->getContainer());
         $loader->addFixture(new AppFixtures());
         $executor = new ORMExecutor($this->em, $purger);

@@ -50,7 +50,7 @@ class JsonRequestHelper
                 $err .= sprintf("[%s] %s\n", $error['property'], $error['message']);
             }
             $this->logger->error($err);
-            throw new JsonSchemaException(500, 'Invalid request content.');
+            throw new JsonSchemaException(400, 'Invalid request content.');
         }
 
         // entity validation

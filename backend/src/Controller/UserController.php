@@ -42,7 +42,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/users", name="users.create", methods={"PUT"})
+     * @Route("/api/users", name="users.create", methods={"POST"})
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function create(Request $request, MailerService $mailer): Response
@@ -103,7 +103,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/users/{id}/enable", name="users.enable", methods={"POST"}, requirements={"id"="\d+"})
+     * @Route("/api/users/{id}/enable", name="users.enable", methods={"PUT"}, requirements={"id"="\d+"})
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function enable(User $user, MailerService $mailer): Response
@@ -132,7 +132,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/users/{id}/disable", name="users.disable", methods={"POST"}, requirements={"id"="\d+"})
+     * @Route("/api/users/{id}/disable", name="users.disable", methods={"PUT"}, requirements={"id"="\d+"})
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function disable(User $user): Response

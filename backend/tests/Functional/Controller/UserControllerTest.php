@@ -58,13 +58,13 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
         $this->client->request('GET', "/api/users/$id");
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
-        $this->client->request('PUT', '/api/users');
+        $this->client->request('POST', '/api/users');
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
         $this->client->request('POST', "/api/users/$id");
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
-        $this->client->request('POST', "/api/users/$id/enable");
+        $this->client->request('PUT', "/api/users/$id/enable");
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
-        $this->client->request('POST', "/api/users/$id/disable");
+        $this->client->request('PUT', "/api/users/$id/disable");
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
         $this->client->request('DELETE', "/api/users/$id");
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
@@ -74,7 +74,7 @@ class UserControllerTest extends AbstractControllerTest
     {
         $this->loginUser($this->client, 'ROLE_ADMIN');
 
-        $this->client->request('PUT', '/api/users', [], [], [], json_encode([
+        $this->client->request('POST', '/api/users', [], [], [], json_encode([
             'email' => 'test@mp3000.fr',
             'isEnabled' => false,
             'roles' => ['ROLE_USER'],
@@ -89,7 +89,7 @@ class UserControllerTest extends AbstractControllerTest
         // todo check bdd
 
         // enabled
-        $this->client->request('PUT', '/api/users', [], [], [], json_encode([
+        $this->client->request('POST', '/api/users', [], [], [], json_encode([
             'email' => 'test2@mp3000.fr',
             'isEnabled' => true,
             'roles' => ['ROLE_USER'],
@@ -108,14 +108,14 @@ class UserControllerTest extends AbstractControllerTest
     {
         $this->loginUser($this->client, 'ROLE_ADMIN');
 
-        $this->client->request('PUT', '/api/users', [], [], [], json_encode([
+        $this->client->request('POST', '/api/users', [], [], [], json_encode([
             'badProperty' => 'test@mp3000.fr',
             'isEnabled' => false,
             'roles' => ['ROLE_USER'],
             'username' => 'test',
         ]));
 
-        $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
         $this->assertEquals('Invalid request content.', $jsonResponse['message']);
@@ -125,7 +125,7 @@ class UserControllerTest extends AbstractControllerTest
     {
         $this->loginUser($this->client, 'ROLE_ADMIN');
 
-        $this->client->request('PUT', '/api/users', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+        $this->client->request('POST', '/api/users', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'email' => 'user@mp3000.fr',
             'isEnabled' => false,
             'roles' => ['ROLE_USER'],
@@ -157,10 +157,10 @@ class UserControllerTest extends AbstractControllerTest
 
         $this->assertEquals('test', $jsonResponse['username']);
         $this->assertEmailCount(0);
-        // todo check bdd
 
         // enabled
-        $this->client->request('POST', '/api/users/1', [], [], [], json_encode([
+        $id = $this->getUserId('test');
+        $this->client->request('POST', "/api/users/$id", [], [], [], json_encode([
             'email' => 'test2@mp3000.fr',
             'isEnabled' => true,
             'roles' => ['ROLE_USER'],
@@ -187,7 +187,7 @@ class UserControllerTest extends AbstractControllerTest
             'username' => 'test',
         ]));
 
-        $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
         $this->assertEquals('Invalid request content.', $jsonResponse['message']);
@@ -236,7 +236,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->loginUser($this->client, 'ROLE_ADMIN');
 
         $id = $this->getUserId('disabled');
-        $this->client->request('POST', "/api/users/$id/enable");
+        $this->client->request('PUT', "/api/users/$id/enable");
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
@@ -250,7 +250,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->loginUser($this->client, 'ROLE_ADMIN');
 
         $id = $this->getUserId('user');
-        $this->client->request('POST', "/api/users/$id/enable");
+        $this->client->request('PUT', "/api/users/$id/enable");
 
         $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
@@ -264,7 +264,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->loginUser($this->client, 'ROLE_ADMIN');
 
         $id = $this->getUserId('user');
-        $this->client->request('POST', "/api/users/$id/disable");
+        $this->client->request('PUT', "/api/users/$id/disable");
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
@@ -277,7 +277,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->loginUser($this->client, 'ROLE_ADMIN');
 
         $id = $this->getUserId('disabled');
-        $this->client->request('POST', "/api/users/$id/disable");
+        $this->client->request('PUT', "/api/users/$id/disable");
 
         $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
@@ -290,7 +290,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->loginUser($this->client, 'ROLE_ADMIN');
 
         $id = $this->getUserId('admin');
-        $this->client->request('POST', "/api/users/$id/disable");
+        $this->client->request('PUT', "/api/users/$id/disable");
 
         $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
