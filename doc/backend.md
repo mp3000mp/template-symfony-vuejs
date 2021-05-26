@@ -45,3 +45,10 @@ composer tu
 # Unit tests with coverage
 composer tuc
 ```
+
+## Prod
+
+Generate your first user with this command:
+```
+php bin/console app:user:create -a first_user first_user@mp3000.fr first_pa$$word3000 
+```

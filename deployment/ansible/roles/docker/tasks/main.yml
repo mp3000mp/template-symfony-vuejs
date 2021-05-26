@@ -8,8 +8,8 @@
 
 - name: Create docker-compose.yml
   template:
-    src: templates/.env.j2
-    dest: "/{{ app_directory }}/docker/docker-compose.yml.j2"
+    src: templates/docker-compose.yml.j2
+    dest: "/{{ app_directory }}/docker/docker-compose.yml"
     owner: "{{ maintainer_user }}"
     group: "{{ maintainer_user }}"
     mode: '755'

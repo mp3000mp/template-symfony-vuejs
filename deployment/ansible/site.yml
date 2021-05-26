@@ -5,8 +5,8 @@
   vars_files:
     - vars.yml
   roles:
-#    - files
-#    - docker
-#    - build_back
+    - files
+    - docker
+    - build_back
     - build_front
-#    - apache
+    - apache

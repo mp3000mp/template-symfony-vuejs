@@ -52,7 +52,7 @@
     cmd: docker-compose exec backend bash -l -c "php bin/console doctrine:migration:migrate --no-interaction"
     chdir: "{{ app_directory }}/docker"
 
-# todo only first time
+# todo only first time. Avoid as dev dependencies are needed. Make a command to create first user instead.
 #- name: Composer fixtures
 #  shell:
 #    cmd: docker-compose exec backend bash -l -c "php bin/console doctrine:fixtures:load --group=dev --append --no-interaction -e dev"
