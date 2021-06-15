@@ -2,7 +2,7 @@
 
 namespace App\Tests\Functional\Controller;
 
-use App\DataFixtures\AppFixtures;
+use App\DataFixtures\AppTestFixtures;
 use App\Repository\UserRepository;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
@@ -37,7 +37,7 @@ abstract class AbstractControllerTest extends WebTestCase
         $purger = new ORMPurger($this->em, []);
         $purger->setPurgeMode(ORMPurger::PURGE_MODE_DELETE);
         $loader = new ContainerAwareLoader(self::$kernel->getContainer());
-        $loader->addFixture(new AppFixtures());
+        $loader->addFixture(new AppTestFixtures());
         $executor = new ORMExecutor($this->em, $purger);
         $executor->execute($loader->getFixtures());
 
@@ -76,5 +76,10 @@ abstract class AbstractControllerTest extends WebTestCase
     protected function getResponseJson(Response $response): array
     {
         return json_decode($response->getContent(), true);
+    }
+
+    protected function dumpResponse(): void
+    {
+        echo $this->client->getResponse()->getContent();
     }
 }

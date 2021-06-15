@@ -20,7 +20,10 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
-        $this->assertEquals('user', $jsonResponse['username']);
+        $this->assertEquals([
+            'username' => 'user',
+            'roles' => ['ROLE_USER'],
+        ], $jsonResponse);
     }
 
     public function testIndexOk(): void
@@ -32,7 +35,16 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'user']);
+
         $this->assertCount(3, $jsonResponse);
+        $this->assertEquals([
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'username' => $user->getUsername(),
+            'isEnabled' => $user->getIsEnabled(),
+            'roles' => $user->getRoles(),
+        ], $jsonResponse[0]);
     }
 
     public function testShowOk(): void

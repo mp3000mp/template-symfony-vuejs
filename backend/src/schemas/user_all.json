@@ -1,6 +1,7 @@
 {
-  "title": "user_create",
-  "description": "User creation request data",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "user_all",
+  "description": "User creation/update request data",
   "type": "object",
   "properties": {
     "email": {
@@ -19,5 +20,6 @@
       "type": "string"
     }
   },
-  "required": ["email", "username"]
+  "required": ["email", "username"],
+  "additionalProperties": false
 }

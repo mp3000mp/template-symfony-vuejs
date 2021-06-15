@@ -2,7 +2,7 @@
     "name": "mp3000mp/template-symfony-vuejs",
     "description": "Basic web template",
     "type": "project",
-    "keywords": ["symfony", "vuejs", "template"],
+    "keywords": ["symfony", "vuejs", "template", "mp3000"],
     "license": "MIT",
     "authors": [
         {
@@ -23,9 +23,9 @@
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^2.8",
         "gesdinet/jwt-refresh-token-bundle": "^0.11.1",
-        "justinrainbow/json-schema": "^5.2",
         "lexik/jwt-authentication-bundle": "^2.11",
         "nelmio/cors-bundle": "^2.1",
+        "opis/json-schema": "^2.1",
         "sensio/framework-extra-bundle": "^6.1",
         "symfony/console": "5.2.*",
         "symfony/dotenv": "5.2.*",

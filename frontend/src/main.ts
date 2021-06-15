@@ -12,9 +12,15 @@ import variables from '../config/variables.json'
 import apiRegistry from './helpers/apiRegistry'
 
 import './assets/css/app.scss'
+import { AxiosResponse } from 'axios'
 // import { Tooltip, Toast, Popover } from 'bootstrap'
 
-apiRegistry.set('default', variables.URL)
+apiRegistry.set('default', variables.URL, (error: AxiosResponse) => {
+  if (error.status === 401 || error.status === 403) {
+    console.log('redirect login')
+    router.push({ path: '/login' })
+  }
+})
 
 library.add(faHandSparkles, faMagic, faUserCheck, faUserTimes, faTrashAlt, faEdit)
 

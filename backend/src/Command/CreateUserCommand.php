@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Command;
 
 use App\Entity\User;
@@ -14,7 +13,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class CreateUserCommand extends Command
 {
-
     protected EntityManagerInterface $em;
     protected UserPasswordEncoderInterface $passwordEncoder;
     protected static $defaultName = 'app:user:create';
@@ -29,7 +27,7 @@ class CreateUserCommand extends Command
     protected function configure(): void
     {
         $this->setDescription('Create new user.');
-        $this->setHelp('This command create a new user.');
+        $this->setHelp('This command creates a new user.');
         $this->addArgument('username', InputArgument::REQUIRED, 'Username');
         $this->addArgument('email', InputArgument::REQUIRED, 'Email');
         $this->addArgument('password', InputArgument::REQUIRED, 'Password');
@@ -38,10 +36,10 @@ class CreateUserCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln(['Creating user ' . $input->getArgument('username')]);
+        $output->writeln(['Creating user '.$input->getArgument('username')]);
 
         $roles = ['ROLE_USER'];
-        if($input->getOption('is-admin')){
+        if ($input->getOption('is-admin')) {
             $roles[] = 'ROLE_ADMIN';
         }
 

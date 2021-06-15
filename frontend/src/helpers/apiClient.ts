@@ -23,9 +23,11 @@ export class ApiClient {
   baseUrl: string;
   private axios: AxiosInstance;
   private nbRefreshTokenRetry = 0;
+  onError: Function;
 
-  constructor (baseURL: string) {
+  constructor (baseURL: string, onError: Function) {
     this.baseUrl = baseURL
+    this.onError = onError
     this.axios = axios.create({
       baseURL,
       headers: {
@@ -106,9 +108,11 @@ export class ApiClient {
               debug(refreshErr)
             }
             request.end(refreshErr.response.status, ApiClient.generateErrorMessage(refreshErr))
+            this.onError(refreshErr.response)
             throw refreshErr
           }
         }
+        this.onError(err.response)
         request.end(err.response.status, ApiClient.generateErrorMessage(err))
       } else {
         debug(`unexpected err: ${config.method} ${config.url}`)

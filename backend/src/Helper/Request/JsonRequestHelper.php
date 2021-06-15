@@ -6,7 +6,8 @@ namespace App\Helper\Request;
 
 use App\Helper\Request\Exception\EntityValidationException;
 use App\Helper\Request\Exception\JsonSchemaException;
-use JsonSchema\Validator;
+use Opis\JsonSchema\Errors\ErrorFormatter;
+use Opis\JsonSchema\Validator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -33,24 +34,32 @@ class JsonRequestHelper
      * @template T
      *
      * @param mixed           $rawData
-     * @param class-string<T> $class
+     * @param ?class-string<T> $class
      * @param T|null          $entity
      *
-     * @return T
+     * @return T|bool
      */
-    public function handleRequest($rawData, string $schema, string $class, $entity = null)
+    public function handleRequest($rawData, string $schema, ?string $class = null, $entity = null)
     {
         // json schema
         $jsonData = json_decode($rawData);
         $jsonSchema = json_decode(file_get_contents($this->PATH_SCHEMAS.$schema.'.json'));
-        $this->jsonValidator->validate($jsonData, $jsonSchema);
-        if (!$this->jsonValidator->isValid()) {
+        $result = $this->jsonValidator->validate($jsonData, $jsonSchema);
+        if (!$result->isValid()) {
             $err = "JSON does not validate. Violations:\n";
-            foreach ($this->jsonValidator->getErrors() as $error) {
-                $err .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+
+            $formatter = new ErrorFormatter();
+            $errors = $formatter->formatKeyed($result->error());
+            foreach ($errors as $k => $error) {
+                $err .= sprintf("[%s] %s\n", $k, implode(', ', $error));
             }
             $this->logger->error($err);
+            //throw new JsonSchemaException(400, '$err');
             throw new JsonSchemaException(400, 'Invalid request content.');
+        }
+
+        if($class === null) {
+            return true;
         }
 
         // entity validation

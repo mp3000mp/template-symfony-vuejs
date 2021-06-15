@@ -5,7 +5,8 @@ import store from '@/store'
 
 // todo test état StoreRequest après les requêtes
 
-let apiClient = new ApiClient('')
+const onErrorMock = jest.fn()
+let apiClient = new ApiClient('', onErrorMock)
 
 const mockedStore = store as jest.Mocked<typeof store>
 jest.mock('@/store', () => ({
@@ -30,7 +31,7 @@ describe('apiRegistry.ts', () => {
       Promise.resolve({ data: { message: 'ok' }, status: 200 })
     )
 
-    apiClient = new ApiClient('http://mp3000.fr')
+    apiClient = new ApiClient('http://mp3000.fr', onErrorMock)
     const storeRequest = new StoreRequest('GET', '/api/test-200', false)
     const result = await apiClient.httpReq(storeRequest)
 
@@ -44,7 +45,7 @@ describe('apiRegistry.ts', () => {
       Promise.resolve({ data: { message: 'ok' }, status: 200 })
     )
 
-    apiClient = new ApiClient('http://mp3000.fr')
+    apiClient = new ApiClient('http://mp3000.fr', onErrorMock)
     const storeRequest = new StoreRequest('GET', url, true)
     const result = await apiClient.httpReq(storeRequest)
 
@@ -77,7 +78,7 @@ describe('apiRegistry.ts', () => {
     })
     mockedStore.dispatch.mockImplementationOnce(jest.fn())
 
-    apiClient = new ApiClient('http://mp3000.fr')
+    apiClient = new ApiClient('http://mp3000.fr', onErrorMock)
     const storeRequest = new StoreRequest('GET', '/api/test-refresh-200', true)
     const result = await apiClient.httpReq(storeRequest)
 
@@ -98,7 +99,7 @@ describe('apiRegistry.ts', () => {
       return Promise.reject({ response: responseData })
     }))
 
-    apiClient = new ApiClient('http://mp3000.fr')
+    apiClient = new ApiClient('http://mp3000.fr', onErrorMock)
     const storeRequest = new StoreRequest('GET', '/api/test-refresh-once', true)
     await expect(apiClient.httpReq(storeRequest)).rejects.toHaveProperty('response', { data: { message: 'Expired JWT Token' }, status: 401 })
 

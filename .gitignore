@@ -30,6 +30,7 @@
 ###> friendsofphp/php-cs-fixer ###
 /backend/.php_cs
 /backend/.php_cs.cache
+/backend/.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
 
 # frontend

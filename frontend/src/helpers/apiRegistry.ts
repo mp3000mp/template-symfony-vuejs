@@ -5,8 +5,8 @@ class ApiClientRegistry {
     [key: string]: ApiClient;
   } = {};
 
-  set (api: string, baseURL: string) {
-    this.registry[api] = new ApiClient(baseURL)
+  set (api: string, baseURL: string, onError: Function) {
+    this.registry[api] = new ApiClient(baseURL, onError)
   }
 
   get (api = 'default'): ApiClient {
