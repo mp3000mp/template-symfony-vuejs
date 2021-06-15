@@ -33,9 +33,9 @@ class JsonRequestHelper
     /**
      * @template T
      *
-     * @param mixed           $rawData
+     * @param mixed            $rawData
      * @param ?class-string<T> $class
-     * @param T|null          $entity
+     * @param T|null           $entity
      *
      * @return T|bool
      */
@@ -58,7 +58,7 @@ class JsonRequestHelper
             throw new JsonSchemaException(400, 'Invalid request content.');
         }
 
-        if($class === null) {
+        if (null === $class) {
             return true;
         }
 

@@ -11,7 +11,6 @@ use Doctrine\Persistence\ObjectManager;
 
 class AppDevFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
-
     public function load(ObjectManager $manager): void
     {
     }
