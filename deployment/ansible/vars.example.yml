@@ -11,6 +11,7 @@ mysql_database: template_sf
 mysql_user: user
 mysql_password: user_pwd
 
+app_version: 1.0.0
 app_secret: secret
 jwt_passphrase: secret
 

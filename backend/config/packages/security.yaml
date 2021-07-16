@@ -18,6 +18,11 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        api_info:
+            pattern:  ^/api/info
+            stateless: true
+            anonymous: true
+
         refresh_token:
             pattern:  ^/api/token/refresh
             stateless: true
@@ -58,7 +63,8 @@ security:
     access_control:
         - { path: ^/api/token/refresh,      roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/logincheck,         roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/password/init,     roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/password/init,      roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/password/forgotten, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/info,               roles: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/api/admin,              roles: ROLE_ADMIN }
         - { path: ^/api,                    roles: IS_AUTHENTICATED_FULLY }

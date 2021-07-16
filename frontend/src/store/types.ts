@@ -1,3 +1,4 @@
+import { AppState } from '@/store/modules/app/types'
 import { SecurityState } from '@/store/modules/security/types'
 import { UserState } from '@/store/modules/users/types'
 
@@ -48,6 +49,7 @@ export abstract class AbstractState {
 }
 
 export interface RootState {
+  app: AppState;
   security: SecurityState;
   users: UserState;
 }

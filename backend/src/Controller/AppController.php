@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Service\Mailer\MailerService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -28,6 +29,16 @@ class AppController extends AbstractController
         return $this->json([
             'email' => 'ok',
             'sql' => count($users) > 0 ? 'ok' : 'nok',
+        ]);
+    }
+
+    /**
+     * @Route("/api/info", name="info", methods={"GET"})
+     */
+    public function info(ParameterBagInterface $parameterBag): Response
+    {
+        return $this->json([
+            'version' => $parameterBag->get('APP_VERSION'),
         ]);
     }
 }

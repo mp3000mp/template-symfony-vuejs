@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     APP_ENV: '%env(APP_ENV)%'
+    APP_VERSION: '%env(APP_VERSION)%'
     FRONT_URL: '%env(FRONT_URL)%'
     PATH_SCHEMAS: '%kernel.project_dir%/src/schemas/'
 
