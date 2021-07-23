@@ -15,7 +15,7 @@ jest.mock('@/store', () => {
       return {
         getters: {
           'security/getIsAuth': !mockRoles.includes('ROLE_ANONYMOUS'),
-          'security/getRoles': !mockRoles
+          'security/getRoles': mockRoles
         }
       }
     })
