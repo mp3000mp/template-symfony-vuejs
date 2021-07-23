@@ -10,11 +10,11 @@ export default defineComponent({
     const store = useStore()
     const router = useRouter()
 
-    const me = computed(() => store.state.security.me)
     const isAuth = computed(() => store.getters['security/getIsAuth'])
+    const roles = computed(() => store.getters['security/getRoles'])
     const allowedMenuItems = computed(() => {
       return menuItems.filter((item: MenuItem) => {
-        return me.value.roles.includes(item.role)
+        return roles.value.includes(item.role)
       })
     })
 
@@ -23,7 +23,7 @@ export default defineComponent({
       router.push({ path: '/login' })
     }
 
-    return { allowedMenuItems, me, isAuth, logout }
+    return { allowedMenuItems, isAuth, logout }
   }
 })
 </script>
@@ -55,11 +55,3 @@ export default defineComponent({
     </li>
   </ul>
 </template>
-
-<style lang="scss">
-  /* todo trouver pourquoi non trouver dans bootstrap ? */
-
-  .justify-content-center {
-    justify-content: center;
-  }
-</style>

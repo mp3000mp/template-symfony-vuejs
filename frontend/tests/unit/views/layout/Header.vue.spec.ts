@@ -13,16 +13,9 @@ jest.mock('@/store', () => {
   return {
     useStore: jest.fn(() => {
       return {
-        state: {
-          security: {
-            me: {
-              username: 'test',
-              roles: mockRoles
-            }
-          }
-        },
         getters: {
-          'security/getIsAuth': !mockRoles.includes('ROLE_ANONYMOUS')
+          'security/getIsAuth': !mockRoles.includes('ROLE_ANONYMOUS'),
+          'security/getRoles': !mockRoles
         }
       }
     })

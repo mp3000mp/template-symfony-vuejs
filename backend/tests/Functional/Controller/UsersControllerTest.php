@@ -4,26 +4,11 @@ namespace App\Tests\Functional\Controller;
 
 use App\Entity\User;
 
-class UserControllerTest extends AbstractControllerTest
+class UsersControllerTest extends AbstractControllerTest
 {
     private function getUserId(string $username): int
     {
         return $this->em->getRepository(User::class)->findOneBy(['username' => $username])->getId();
-    }
-
-    public function testMeOk(): void
-    {
-        $this->loginUser($this->client);
-
-        $this->client->request('GET', '/api/me');
-
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $jsonResponse = $this->getResponseJson($this->client->getResponse());
-
-        $this->assertEquals([
-            'username' => 'user',
-            'roles' => ['ROLE_USER'],
-        ], $jsonResponse);
     }
 
     public function testIndexOk(): void
@@ -72,7 +57,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
         $this->client->request('POST', '/api/users');
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
-        $this->client->request('POST', "/api/users/$id");
+        $this->client->request('PUT', "/api/users/$id");
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
         $this->client->request('PUT', "/api/users/$id/enable");
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
@@ -157,7 +142,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->loginUser($this->client, 'ROLE_ADMIN');
 
         $id = $this->getUserId('user');
-        $this->client->request('POST', "/api/users/$id", [], [], [], json_encode([
+        $this->client->request('PUT', "/api/users/$id", [], [], [], json_encode([
             'email' => 'test@mp3000.fr',
             'isEnabled' => false,
             'roles' => ['ROLE_USER'],
@@ -172,7 +157,7 @@ class UserControllerTest extends AbstractControllerTest
 
         // enabled
         $id = $this->getUserId('test');
-        $this->client->request('POST', "/api/users/$id", [], [], [], json_encode([
+        $this->client->request('PUT', "/api/users/$id", [], [], [], json_encode([
             'email' => 'test2@mp3000.fr',
             'isEnabled' => true,
             'roles' => ['ROLE_USER'],
@@ -192,7 +177,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->loginUser($this->client, 'ROLE_ADMIN');
 
         $id = $this->getUserId('user');
-        $this->client->request('POST', "/api/users/$id", [], [], [], json_encode([
+        $this->client->request('PUT', "/api/users/$id", [], [], [], json_encode([
             'badProperty' => 'test@mp3000.fr',
             'isEnabled' => false,
             'roles' => ['ROLE_USER'],
@@ -210,7 +195,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->loginUser($this->client, 'ROLE_ADMIN');
 
         $id = $this->getUserId('user');
-        $this->client->request('POST', "/api/users/$id", [], [], [], json_encode([
+        $this->client->request('PUT', "/api/users/$id", [], [], [], json_encode([
             'email' => 'admin@mp3000.fr',
             'isEnabled' => false,
             'roles' => ['ROLE_USER'],
@@ -230,7 +215,7 @@ class UserControllerTest extends AbstractControllerTest
         $this->loginUser($this->client, 'ROLE_ADMIN');
 
         $id = $this->getUserId('admin');
-        $this->client->request('POST', "/api/users/$id", [], [], [], json_encode([
+        $this->client->request('PUT', "/api/users/$id", [], [], [], json_encode([
             'email' => 'admin@mp3000.fr',
             'isEnabled' => false,
             'roles' => ['ROLE_ADMIN'],
@@ -309,7 +294,7 @@ class UserControllerTest extends AbstractControllerTest
 
         $this->assertEquals('You cannot disable yourself.', $jsonResponse['message']);
 
-        $this->client->request('POST', "/api/users/$id", [], [], [], json_encode([
+        $this->client->request('PUT', "/api/users/$id", [], [], [], json_encode([
             'email' => 'admin@mp3000.fr',
             'isEnabled' => false,
             'roles' => ['ROLE_USER'],

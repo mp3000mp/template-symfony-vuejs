@@ -13,4 +13,19 @@ class AppControllerTest extends AbstractControllerTest
 
         $this->assertArrayHasKey('version', $jsonResponse);
     }
+
+    public function testMeOk(): void
+    {
+        $this->loginUser($this->client);
+
+        $this->client->request('GET', '/api/me');
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $jsonResponse = $this->getResponseJson($this->client->getResponse());
+
+        $this->assertEquals([
+            'username' => 'user',
+            'roles' => ['ROLE_USER'],
+        ], $jsonResponse);
+    }
 }

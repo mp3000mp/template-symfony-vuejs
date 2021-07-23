@@ -8,6 +8,6 @@ state.actionRequest = {
   enableUser: new StoreRequest('PUT', '/api/users/{userId}/enable'),
   disableUser: new StoreRequest('PUT', '/api/users/{userId}/disable'),
   getAll: new StoreRequest('GET', '/api/users'),
-  updateUser: new StoreRequest('POST', '/api/users/{userId}')
+  updateUser: new StoreRequest('PUT', '/api/users/{userId}')
 }
 export { state }

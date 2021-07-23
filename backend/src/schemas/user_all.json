@@ -4,6 +4,9 @@
   "description": "User creation/update request data",
   "type": "object",
   "properties": {
+    "id": {
+      "type": "integer"
+    },
     "email": {
       "type": "string"
     },

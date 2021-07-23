@@ -11,18 +11,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/api/users")
+ */
 class UserController extends AbstractController
 {
     /**
-     * @Route("/api/me", name="users.me", methods={"GET"})
-     */
-    public function me(): Response
-    {
-        return $this->responseHelper->createResponse($this->getUser(), ['me'], 200);
-    }
-
-    /**
-     * @Route("/api/users", name="users.index", methods={"GET"})
+     * @Route("", name="users.index", methods={"GET"})
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function index(): Response
@@ -33,7 +28,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/users/{id}", name="users.show", methods={"GET"}, requirements={"id"="\d+"})
+     * @Route("/{id}", name="users.show", methods={"GET"}, requirements={"id"="\d+"})
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function show(User $user): Response
@@ -42,7 +37,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/users", name="users.create", methods={"POST"})
+     * @Route("", name="users.create", methods={"POST"})
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function create(Request $request, MailerService $mailer): Response
@@ -69,7 +64,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/users/{id}", name="users.update", methods={"POST"}, requirements={"id"="\d+"})
+     * @Route("/{id}", name="users.update", methods={"PUT"}, requirements={"id"="\d+"})
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function update(Request $request, User $user, MailerService $mailer): Response
@@ -103,7 +98,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/users/{id}/enable", name="users.enable", methods={"PUT"}, requirements={"id"="\d+"})
+     * @Route("/{id}/enable", name="users.enable", methods={"PUT"}, requirements={"id"="\d+"})
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function enable(User $user, MailerService $mailer): Response
@@ -132,7 +127,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/users/{id}/disable", name="users.disable", methods={"PUT"}, requirements={"id"="\d+"})
+     * @Route("/{id}/disable", name="users.disable", methods={"PUT"}, requirements={"id"="\d+"})
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function disable(User $user): Response
@@ -158,7 +153,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/users/{id}", name="users.remove", methods={"DELETE"}, requirements={"id"="\d+"})
+     * @Route("/{id}", name="users.remove", methods={"DELETE"}, requirements={"id"="\d+"})
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function remove(User $user): Response

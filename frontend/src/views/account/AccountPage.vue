@@ -45,7 +45,7 @@ export default defineComponent({
         <td>{{ me.username }}</td>
       </tr>
     </table>
-    <button @click="resetPassword.show = true">Reset password</button>
+    <button class="btn btn-primary"  @click="resetPassword.show = true">Reset password</button>
     <form v-if="resetPassword.show" @submit.prevent="submitResetPassword">
       <label for="current_password"></label>
       <input v-model="resetPassword.currentPassword" id="current_password" name="current_password" type="password" placeholder="Current password" />
@@ -53,7 +53,7 @@ export default defineComponent({
       <input v-model="resetPassword.newPassword" id="new_password" name="new_password" type="password" placeholder="New password" />
       <label for="new_password2"></label>
       <input v-model="resetPassword.newPassword2" id="new_password2" name="new_password2" type="password" placeholder="Confirm new password" />
-      <input type="submit" value="Reset password" />
+      <input class="btn btn-primary" type="submit" value="Reset password" />
     </form>
     <span :class="{
         err: securityRequests.resetPassword.isError,
@@ -63,12 +63,6 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
-/* todo trouver pourquoi non trouver dans bootstrap ? */
-
-.text-center {
-  text-align: center;
-}
-
 table {
   margin: auto;
 
