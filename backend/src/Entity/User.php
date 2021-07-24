@@ -7,6 +7,7 @@ namespace App\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -18,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(fields="email", message="This email is not available")
  * @UniqueEntity(fields="username", message="This username is not available")
  */
-class User implements UserInterface, \Serializable
+class User implements PasswordAuthenticatedUserInterface, UserInterface, \Serializable
 {
     /**
      * @ORM\Id()
@@ -245,5 +246,10 @@ class User implements UserInterface, \Serializable
     public function setIsSuperAdmin(bool $isSuperAdmin): void
     {
         $this->isSuperAdmin = $isSuperAdmin;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->username;
     }
 }

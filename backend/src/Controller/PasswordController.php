@@ -9,8 +9,8 @@ use App\Service\Mailer\MailerService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class PasswordController extends AbstractController
 {
@@ -82,7 +82,7 @@ class PasswordController extends AbstractController
      * @Route("/api/password/init/{token}", name="password_init_reset", methods={"POST"},  requirements={"token"="\w+"})
      * @Route("/api/password/forgotten/{token}", name="password_forgotten_reset", methods={"POST"},  requirements={"token"="\w+"})
      */
-    public function forgottenPasswordReset(Request $request, string $token, UserPasswordEncoderInterface $encoder): Response
+    public function forgottenPasswordReset(Request $request, string $token, UserPasswordHasherInterface $hasher): Response
     {
         $json = json_decode($request->getContent(), true);
         $em = $this->getDoctrine()->getManager();
@@ -118,7 +118,7 @@ class PasswordController extends AbstractController
         $user->setPasswordUpdatedAt(new \DateTime());
         $user->setResetPasswordAt(null);
         $user->setResetPasswordToken(null);
-        $user->setPassword($encoder->encodePassword($user, $json['password']));
+        $user->setPassword($hasher->hashPassword($user, $json['password']));
 
         // persist
         $em = $this->getDoctrine()->getManager();
@@ -135,7 +135,7 @@ class PasswordController extends AbstractController
      *
      * @Route("/api/password/reset", name="password_reset", methods={"POST"})
      */
-    public function resetPassword(Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function resetPassword(Request $request, UserPasswordHasherInterface $hasher): Response
     {
         $json = json_decode($request->getContent(), true);
         $em = $this->getDoctrine()->getManager();
@@ -144,7 +144,7 @@ class PasswordController extends AbstractController
         $user = $this->getUser();
 
         // check currentPassword
-        if (!$encoder->isPasswordValid($user, $json['currentPassword'])) {
+        if (!$hasher->isPasswordValid($user, $json['currentPassword'])) {
             return $this->json([
                 'message' => 'Authentication failed.',
             ], 401);
@@ -170,7 +170,7 @@ class PasswordController extends AbstractController
         $user->setPasswordUpdatedAt(new \DateTime());
         $user->setResetPasswordAt(null);
         $user->setResetPasswordToken(null);
-        $user->setPassword($encoder->encodePassword($user, $json['newPassword']));
+        $user->setPassword($hasher->hashPassword($user, $json['newPassword']));
 
         // persist
         $em = $this->getDoctrine()->getManager();

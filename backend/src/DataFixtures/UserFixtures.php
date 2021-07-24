@@ -30,6 +30,8 @@ class UserFixtures extends Fixture implements FixtureGroupInterface, ContainerAw
 
     public function load(ObjectManager $manager): void
     {
+        // todo
+        // $this->hasher = $this->container->get('security.user_password_hasher');
         $this->encoder = $this->container->get('security.password_encoder');
         $password = 'Test2000!';
 
