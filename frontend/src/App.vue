@@ -9,7 +9,7 @@
       mp3000
       <font-aw icon="hand-sparkles" />
     </a>
-    <div>v{{ version }}</div>
+    <div>Front v{{ frontVersion }} - back v{{ backVersion }}</div>
   </footer>
 </template>
 
@@ -17,6 +17,7 @@
 import { computed, defineComponent, onMounted } from 'vue'
 import LayoutHeader from '@/views/layout/Header.vue'
 import { useStore } from '@/store'
+import variables from '../config/variables.json'
 
 export default defineComponent({
   name: 'App',
@@ -25,12 +26,13 @@ export default defineComponent({
   },
   setup () {
     const store = useStore()
-    const version = computed(() => store.state.app.version)
+    const backVersion = computed(() => store.state.app.version)
+    const frontVersion = variables.APP_VERSION
     onMounted(() => {
       store.dispatch('app/getInfo')
     })
 
-    return { version }
+    return { backVersion, frontVersion }
   }
 })
 </script>

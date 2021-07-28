@@ -1,6 +1,10 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 describe('Forgotten password', () => {
+  beforeEach(function () {
+    cy.interceptInfo()
+  })
+
   it('Login form forgotten password 200', () => {
     cy.intercept('/api/password/forgotten', (req) => {
       expect(req.body.email).to.include('goodEmail@mp3000.fr')

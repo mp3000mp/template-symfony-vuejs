@@ -1,6 +1,10 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 describe('Login', () => {
+  beforeEach(function () {
+    cy.interceptInfo()
+  })
+
   const testingDatasets = [
     {
       name: 'user',
@@ -15,36 +19,9 @@ describe('Login', () => {
   ]
   for (const testingDataset of testingDatasets) {
     it(`Login success ${testingDataset.name}`, () => {
-      cy.intercept('/api/logincheck', (req) => {
-        expect(req.body.username).to.include('goodUsername')
-        expect(req.body.password).to.include('goodPassword')
-        req.reply({
-          statusCode: 200,
-          body: {
-            token: 'goodToken',
-            refreshToken: 'refreshToken'
-          }
-        })
-      })
-      cy.intercept('/api/me', (req) => {
-        req.reply({
-          statusCode: 200,
-          body: {
-            username: 'goodUsername',
-            roles: testingDataset.roles
-          }
-        })
-      })
-
-      cy.visit('/login')
+      cy.visit('/')
       cy.get('#nav').find('.nav-item').should('have.length', 1)
-
-      // login
-      cy.get('#username').type('goodUsername')
-      cy.get('#password').type('goodPassword')
-      cy.get('input[type="submit"]').first().click()
-
-      cy.location('pathname').should('eq', '/')
+      cy.loginByForm(testingDataset.roles)
       cy.get('#nav').find('.nav-item').should('have.length', testingDataset.expectedMenuItemCount)
     })
   }

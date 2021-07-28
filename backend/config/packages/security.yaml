@@ -1,4 +1,5 @@
 security:
+    enable_authenticator_manager: true
     hide_user_not_found: false
     password_hashers:
         App\Entity\User:
@@ -20,22 +21,18 @@ security:
         api_info:
             pattern:  ^/api/info
             stateless: true
-            anonymous: true
 
         refresh_token:
             pattern:  ^/api/token/refresh
             stateless: true
-            anonymous: true
 
         password_forgotten:
             pattern:  ^/api/password/(init|forgotten)
             stateless: true
-            anonymous: true
 
         login:
             pattern:  ^/api/logincheck
             stateless: true
-            anonymous: true
             provider: db_provider
             user_checker: App\Security\UserChecker
             json_login:
@@ -51,19 +48,13 @@ security:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#firewalls-authentication
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
-
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/token/refresh,      roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/logincheck,         roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/password/init,      roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/password/forgotten, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/info,               roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/token/refresh,      roles: PUBLIC_ACCESS }
+        - { path: ^/api/logincheck,         roles: PUBLIC_ACCESS }
+        - { path: ^/api/password/init,      roles: PUBLIC_ACCESS }
+        - { path: ^/api/password/forgotten, roles: PUBLIC_ACCESS }
+        - { path: ^/api/info,               roles: PUBLIC_ACCESS }
 #        - { path: ^/api/admin,              roles: ROLE_ADMIN }
         - { path: ^/api,                    roles: IS_AUTHENTICATED_FULLY }

@@ -39,43 +39,28 @@ export default defineComponent({
 <template>
   <div class="container text-center">
     <h1>Account</h1>
-    <table>
-      <tr>
-        <th>Username: </th>
-        <td>{{ me.username }}</td>
-      </tr>
-    </table>
-    <button class="btn btn-primary"  @click="resetPassword.show = true">Reset password</button>
-    <form v-if="resetPassword.show" @submit.prevent="submitResetPassword">
-      <label for="current_password"></label>
-      <input v-model="resetPassword.currentPassword" id="current_password" name="current_password" type="password" placeholder="Current password" />
-      <label for="new_password"></label>
-      <input v-model="resetPassword.newPassword" id="new_password" name="new_password" type="password" placeholder="New password" />
-      <label for="new_password2"></label>
-      <input v-model="resetPassword.newPassword2" id="new_password2" name="new_password2" type="password" placeholder="Confirm new password" />
-      <input class="btn btn-primary" type="submit" value="Reset password" />
-    </form>
-    <span :class="{
+    <div class="app-block">
+      <table>
+        <tr>
+          <th>Username: </th>
+          <td>{{ me.username }}</td>
+        </tr>
+      </table>
+      <button v-if="!resetPassword.show" class="btn btn-primary" @click="resetPassword.show = !resetPassword.show">Reset password</button>
+      <form v-if="resetPassword.show" @submit.prevent="submitResetPassword" class="d-flex flex-column basic-form">
+        <label class="form-label" for="current_password"></label>
+        <input class="form-control" v-model="resetPassword.currentPassword" id="current_password" name="current_password" type="password" placeholder="Current password" />
+        <label class="form-label" for="new_password"></label>
+        <input class="form-control" v-model="resetPassword.newPassword" id="new_password" name="new_password" type="password" placeholder="New password" />
+        <label class="form-label" for="new_password2"></label>
+        <input class="form-control mb-2" v-model="resetPassword.newPassword2" id="new_password2" name="new_password2" type="password" placeholder="Confirm new password" />
+        <input class="btn btn-primary mb-2" type="submit" value="Reset password" />
+        <input @click.prevent="resetPassword.show = false" class="btn btn-secondary" type="submit" value="Cancel" />
+      </form>
+      <span :class="{
         err: securityRequests.resetPassword.isError,
         success: !securityRequests.resetPassword.isError
       }">{{ securityRequests.resetPassword.message }}</span>
+    </div>
   </div>
 </template>
-
-<style lang="scss">
-table {
-  margin: auto;
-
-  th {
-    text-align: right;
-  }
-}
-
-.err {
-  color: #8d0502;
-}
-
-.success {
-  color: #2ca02c;
-}
-</style>

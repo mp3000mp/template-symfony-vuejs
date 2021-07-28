@@ -45,7 +45,8 @@ Prod deployment include:
 You can easily deploy the application:
  - Step 1: Create your inventory file in deployment/ansible/inventory/hosts 
  - Step 2: Create deployment/ansible/vars.yml file based on deployment/ansible/vars.example.yml
- - Step 3: Go to deployment/ansible and run the following command
+ - Step 3: Change versions in .env.j2 and variable.json.j2
+ - Step 4: Go to deployment/ansible and run the following command
 
 ```
 ansible-playbook -i inventory/hosts site.yml
