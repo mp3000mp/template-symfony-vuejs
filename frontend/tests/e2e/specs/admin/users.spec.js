@@ -1,6 +1,6 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('Account page', () => {
+describe('Admin users page', () => {
   beforeEach(function () {
     cy.interceptInfo()
 

@@ -46,7 +46,7 @@ export default defineComponent({
           <td>{{ me.username }}</td>
         </tr>
       </table>
-      <button v-if="!resetPassword.show" class="btn btn-primary" @click="resetPassword.show = !resetPassword.show">Reset password</button>
+      <button v-if="!resetPassword.show" class="btn btn-primary" @click.prevent="resetPassword.show = !resetPassword.show">Reset password</button>
       <form v-if="resetPassword.show" @submit.prevent="submitResetPassword" class="d-flex flex-column basic-form">
         <label class="form-label" for="current_password"></label>
         <input class="form-control" v-model="resetPassword.currentPassword" id="current_password" name="current_password" type="password" placeholder="Current password" />

@@ -201,7 +201,7 @@ class PasswordControllerTest extends AbstractControllerTest
             'newPassword2' => 'Test3000!',
         ]));
 
-        $this->assertEquals(401, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
         $this->assertEquals('Authentication failed.', $jsonResponse['message']);
     }

@@ -147,7 +147,7 @@ class PasswordController extends AbstractController
         if (!$hasher->isPasswordValid($user, $json['currentPassword'])) {
             return $this->json([
                 'message' => 'Authentication failed.',
-            ], 401);
+            ], 400);
         }
 
         // check newPassword confirmation
