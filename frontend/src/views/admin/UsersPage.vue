@@ -24,6 +24,11 @@ export default defineComponent({
     const userRequests = computed(() => store.state.users.actionRequest)
     const users = computed(() => store.state.users.users)
 
+    const search = ref('')
+    const visibleUsers = computed(() => {
+      return users.value.filter(user => (user.email + user.username + user.id).toLowerCase().includes(search.value))
+    })
+
     function closeForm () {
       isFormOpened.value = false
     }
@@ -60,7 +65,7 @@ export default defineComponent({
       getAllUsers()
     })
 
-    return { isFormOpened, userRequests, users, tmpUser, addUser, setRoles, initForm, closeForm }
+    return { isFormOpened, userRequests, visibleUsers, tmpUser, addUser, setRoles, initForm, closeForm, search }
   }
 })
 </script>
@@ -68,6 +73,12 @@ export default defineComponent({
 <template>
   <div class="container">
     <h1>Users</h1>
+    <div class="row">
+      <div class="col">
+        Recherche:
+        <input type="text" v-model="search" />
+      </div>
+    </div>
     <div class="table-responsive">
       <table class="table">
         <tr>
@@ -77,7 +88,7 @@ export default defineComponent({
           <th>Action</th>
         </tr>
         <admin-user-row
-          v-for="user in users"
+          v-for="user in visibleUsers"
           :key="user.id"
           :user="user"
         />
