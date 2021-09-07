@@ -84,7 +84,7 @@ export class ApiClient {
       debug(`req ok: ${config.method} ${config.url}`)
       request.end(response.status, response.data.message || '')
       return response
-    } catch (err) {
+    } catch (err: any) {
       if (err.response) {
         debug(`req ${err.response.status}: ${config.method} ${config.url}`)
 
@@ -100,7 +100,7 @@ export class ApiClient {
             debug(`req ok: ${config.method} ${config.url}`)
             request.end(response.status, response.data.message || '')
             return response
-          } catch (refreshErr) {
+          } catch (refreshErr: any) {
             if (refreshErr.response) {
               debug(`req ${refreshErr.response.status}: ${config.method} ${config.url}`)
             } else {
