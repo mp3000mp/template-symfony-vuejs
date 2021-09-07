@@ -75,6 +75,7 @@ export default defineComponent({
 
 <template>
   <tr v-if="isUpdating">
+    <td>{{ user.id }}</td>
     <td colspan="4">
       <form @submit.prevent="updateUser" class="row">
         <div class="col-2">
@@ -96,6 +97,7 @@ export default defineComponent({
     </td>
   </tr>
   <tr v-else>
+    <td>{{ user.id }}</td>
     <td>{{ user.username }}</td>
     <td>{{ user.email }}</td>
     <td>{{ user.roles.join(', ') }}</td>

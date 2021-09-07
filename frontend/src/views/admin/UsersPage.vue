@@ -27,6 +27,7 @@ export default defineComponent({
     const search = ref('')
     const visibleUsers = computed(() => {
       return users.value.filter(user => (user.email + user.username + user.id).toLowerCase().includes(search.value))
+        .sort((a, b) => a.username > b.username ? 1 : -1)
     })
 
     function closeForm () {
@@ -82,6 +83,7 @@ export default defineComponent({
     <div class="table-responsive">
       <table class="table">
         <tr>
+          <th>Id</th>
           <th>Username</th>
           <th>Email</th>
           <th>roles</th>
