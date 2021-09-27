@@ -7,16 +7,6 @@ form {
     color: $green4;
   }
 
-  input,
-  select {
-    &.form-control,
-    &.form-control:focus,
-    &.form-select,
-    &.form-select:focus {
-      color: $body-bg-light;
-    }
-  }
-
   &.basic-form{
     background-color: $body-bg-light;
     padding: 40px;
@@ -27,6 +17,16 @@ form {
   }
 }
 
+input,
+select {
+  &.form-control,
+  &.form-control:focus,
+  &.form-select,
+  &.form-select:focus {
+    color: $body-color;
+  }
+}
+
 .btn {
   &.btn-primary {
     background-color: $link-color;
@@ -34,5 +34,11 @@ form {
     &:hover {
       background-color: $link-hover-color;
     }
+  }
+}
+
+.badge {
+  &.bg-primary {
+    background-color: $link-color!important;
   }
 }
