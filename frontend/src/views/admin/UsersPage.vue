@@ -1,73 +1,63 @@
-<script lang="ts">
+<script lang="ts" setup>
 import { HTMLElementEvent } from '@/utils/types'
 import AdminUserRow from '@/views/admin/UserRow.vue'
-import { onMounted, computed, defineComponent, reactive, ref } from 'vue'
+import { onMounted, computed, reactive, ref } from 'vue'
 import { useStore } from '@/store'
 
-export default defineComponent({
-  name: 'AdminUsersPage',
-  components: {
-    AdminUserRow
-  },
-  setup () {
-    const store = useStore()
+const store = useStore()
 
-    const isFormOpened = ref(false)
-    const emptyUser = {
-      email: '',
-      isEnabled: true,
-      roles: ['ROLE_USER'],
-      username: ''
-    }
-    let tmpUser = reactive(Object.assign({}, emptyUser))
+const isFormOpened = ref(false)
+const emptyUser = {
+  email: '',
+  isEnabled: true,
+  roles: ['ROLE_USER'],
+  username: ''
+}
+let tmpUser = reactive(Object.assign({}, emptyUser))
 
-    const userRequests = computed(() => store.state.users.actionRequest)
-    const users = computed(() => store.state.users.users)
+const userRequests = computed(() => store.state.users.actionRequest)
+const users = computed(() => store.state.users.users)
 
-    const search = ref('')
-    const visibleUsers = computed(() => {
-      return users.value.filter(user => (user.email + user.username + user.id).toLowerCase().includes(search.value))
-        .sort((a, b) => a.username > b.username ? 1 : -1)
-    })
+const search = ref('')
+const visibleUsers = computed(() => {
+  return users.value.filter(user => (user.email + user.username + user.id).toLowerCase().includes(search.value))
+    .sort((a, b) => a.username > b.username ? 1 : -1)
+})
 
-    function closeForm () {
-      isFormOpened.value = false
-    }
-    async function addUser () {
-      try {
-        await store.dispatch('users/addUser', tmpUser)
-        closeForm()
-      } catch (err) {
-        alert(err)
-      }
-    }
-    function initTmpUser () {
-      tmpUser = Object.assign(tmpUser, emptyUser)
-    }
-    function initForm () {
-      initTmpUser()
-      isFormOpened.value = true
-    }
-    function getAllUsers () {
-      store.dispatch('users/getAll')
-    }
-    function setRoles (event: HTMLElementEvent<HTMLSelectElement>) {
-      if (event.target.value === 'admin') {
-        tmpUser.roles.push('ROLE_ADMIN')
-      } else {
-        const i = tmpUser.roles.indexOf('ROLE_ADMIN')
-        if (i > -1) {
-          tmpUser.roles.splice(i, 1)
-        }
-      }
-    }
-
-    onMounted(() => {
-      getAllUsers()
-    })
-
-    return { isFormOpened, userRequests, visibleUsers, tmpUser, addUser, setRoles, initForm, closeForm, search }
+function closeForm () {
+  isFormOpened.value = false
+}
+async function addUser () {
+  try {
+    await store.dispatch('users/addUser', tmpUser)
+    closeForm()
+  } catch (err) {
+    alert(err)
   }
+}
+function initTmpUser () {
+  tmpUser = Object.assign(tmpUser, emptyUser)
+}
+function initForm () {
+  initTmpUser()
+  isFormOpened.value = true
+}
+function getAllUsers () {
+  store.dispatch('users/getAll')
+}
+function setRoles (event: HTMLElementEvent<HTMLSelectElement>) {
+  if (event.target.value === 'admin') {
+    tmpUser.roles.push('ROLE_ADMIN')
+  } else {
+    const i = tmpUser.roles.indexOf('ROLE_ADMIN')
+    if (i > -1) {
+      tmpUser.roles.splice(i, 1)
+    }
+  }
+}
+
+onMounted(() => {
+  getAllUsers()
 })
 </script>
 

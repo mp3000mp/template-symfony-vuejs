@@ -1,31 +1,24 @@
-<script lang="ts">
+<script lang="ts" setup>
 import { menuItems, MenuItem } from './data/menuItems'
-import { computed, defineComponent } from 'vue'
+import { computed } from 'vue'
 import { useStore } from '@/store'
 import { useRouter } from 'vue-router'
 
-export default defineComponent({
-  name: 'Header',
-  setup () {
-    const store = useStore()
-    const router = useRouter()
+const store = useStore()
+const router = useRouter()
 
-    const isAuth = computed(() => store.getters['security/getIsAuth'])
-    const roles = computed(() => store.getters['security/getRoles'])
-    const allowedMenuItems = computed(() => {
-      return menuItems.filter((item: MenuItem) => {
-        return roles.value.includes(item.role)
-      })
-    })
-
-    function logout () {
-      store.dispatch('security/logout')
-      router.push({ path: '/login' })
-    }
-
-    return { allowedMenuItems, isAuth, logout }
-  }
+const isAuth = computed(() => store.getters['security/getIsAuth'])
+const roles = computed(() => store.getters['security/getRoles'])
+const allowedMenuItems = computed(() => {
+  return menuItems.filter((item: MenuItem) => {
+    return roles.value.includes(item.role)
+  })
 })
+
+function logout () {
+  store.dispatch('security/logout')
+  router.push({ path: '/login' })
+}
 </script>
 
 <template>

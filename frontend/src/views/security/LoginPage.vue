@@ -1,52 +1,45 @@
-<script lang="ts">
-import { defineComponent, ref, reactive, computed, watch } from 'vue'
+<script lang="ts" setup>
+import { ref, reactive, computed, watch } from 'vue'
 import { useStore } from '@/store'
 import { useRouter } from 'vue-router'
 import { AxiosResponse } from 'axios'
 
-export default defineComponent({
-  name: 'LoginPage',
-  setup () {
-    const store = useStore()
-    const router = useRouter()
+const store = useStore()
+const router = useRouter()
 
-    const forgottenPasswordSend = reactive({
-      email: '',
-      message: '',
-      show: false,
-      status: true
+const forgottenPasswordSend = reactive({
+  email: '',
+  message: '',
+  show: false,
+  status: true
+})
+const password = ref('')
+const username = ref('')
+
+const me = computed(() => store.state.security.me)
+const securityRequests = computed(() => store.state.security.actionRequest)
+
+async function login () {
+  await store.dispatch('security/login', {
+    username: username.value,
+    password: password.value
+  })
+}
+function sendForgottenPasswordEmail () {
+  store.dispatch('security/forgottenPasswordSend', forgottenPasswordSend.email)
+    .then((res: AxiosResponse) => {
+      forgottenPasswordSend.status = true
+      forgottenPasswordSend.message = res.data.message
+      forgottenPasswordSend.email = ''
     })
-    const password = ref('')
-    const username = ref('')
-
-    const me = computed(() => store.state.security.me)
-    const securityRequests = computed(() => store.state.security.actionRequest)
-
-    async function login () {
-      await store.dispatch('security/login', {
-        username: username.value,
-        password: password.value
-      })
-    }
-    function sendForgottenPasswordEmail () {
-      store.dispatch('security/forgottenPasswordSend', forgottenPasswordSend.email)
-        .then((res: AxiosResponse) => {
-          forgottenPasswordSend.status = true
-          forgottenPasswordSend.message = res.data.message
-          forgottenPasswordSend.email = ''
-        })
-        .catch((err: string) => {
-          forgottenPasswordSend.status = false
-          forgottenPasswordSend.message = err
-        })
-    }
-
-    watch(me, () => {
-      router.push({ path: '/' })
+    .catch((err: string) => {
+      forgottenPasswordSend.status = false
+      forgottenPasswordSend.message = err
     })
+}
 
-    return { login, password, username, forgottenPasswordSend, securityRequests, sendForgottenPasswordEmail }
-  }
+watch(me, () => {
+  router.push({ path: '/' })
 })
 </script>
 

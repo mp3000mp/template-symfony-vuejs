@@ -1,75 +1,68 @@
-<script lang="ts">
-import { defineComponent, ref, reactive, onMounted } from 'vue'
+<script lang="ts" setup>
+import { ref, reactive, onMounted, defineProps } from 'vue'
 import { useStore } from '@/store'
 
-export default defineComponent({
-  name: 'AdminUserRow',
-  props: {
-    user: { type: Object, required: true }
-  },
-  setup (props) {
-    const store = useStore()
+const props = defineProps({
+  user: { type: Object, required: true }
+})
+const store = useStore()
 
-    const isUpdating = ref(false)
-    const profile = ref('user')
-    let tmpUser = reactive(Object.assign({}, props.user))
+const isUpdating = ref(false)
+const profile = ref('user')
+let tmpUser = reactive(Object.assign({}, props.user))
 
-    function getRoles (): string[] {
-      if (profile.value === 'user') {
-        return ['ROLE_USER']
-      } else {
-        return ['ROLE_USER', 'ROLE_ADMIN']
-      }
-    }
-    function initProfile () {
-      if (props.user.roles.length === 1) {
-        profile.value = 'user'
-      } else {
-        profile.value = 'admin'
-      }
-    }
-    function initTmpUser () {
-      tmpUser = Object.assign(tmpUser, props.user)
-      initProfile()
-    }
-    function closeForm () {
-      isUpdating.value = false
-    }
-    function deleteUser () {
-      if (confirm('Do you confirm you want to delete this user ?')) {
-        store.dispatch('users/deleteUser', props.user.id)
-      }
-    }
-    async function disableUser () {
-      try {
-        await store.dispatch('users/disableUser', props.user.id)
-      } catch (err) {
-        alert(err)
-      }
-    }
-    function enableUser () {
-      store.dispatch('users/enableUser', props.user.id)
-    }
-    function initForm () {
-      initTmpUser()
-      isUpdating.value = true
-    }
-    async function updateUser () {
-      tmpUser.roles = getRoles()
-      try {
-        await store.dispatch('users/updateUser', tmpUser)
-        closeForm()
-      } catch (err) {
-        alert(err)
-      }
-    }
-
-    onMounted(() => {
-      initTmpUser()
-    })
-
-    return { isUpdating, updateUser, tmpUser, closeForm, enableUser, disableUser, deleteUser, initForm, profile }
+function getRoles (): string[] {
+  if (profile.value === 'user') {
+    return ['ROLE_USER']
+  } else {
+    return ['ROLE_USER', 'ROLE_ADMIN']
   }
+}
+function initProfile () {
+  if (props.user.roles.length === 1) {
+    profile.value = 'user'
+  } else {
+    profile.value = 'admin'
+  }
+}
+function initTmpUser () {
+  tmpUser = Object.assign(tmpUser, props.user)
+  initProfile()
+}
+function closeForm () {
+  isUpdating.value = false
+}
+function deleteUser () {
+  if (confirm('Do you confirm you want to delete this user ?')) {
+    store.dispatch('users/deleteUser', props.user.id)
+  }
+}
+async function disableUser () {
+  try {
+    await store.dispatch('users/disableUser', props.user.id)
+  } catch (err) {
+    alert(err)
+  }
+}
+function enableUser () {
+  store.dispatch('users/enableUser', props.user.id)
+}
+function initForm () {
+  initTmpUser()
+  isUpdating.value = true
+}
+async function updateUser () {
+  tmpUser.roles = getRoles()
+  try {
+    await store.dispatch('users/updateUser', tmpUser)
+    closeForm()
+  } catch (err) {
+    alert(err)
+  }
+}
+
+onMounted(() => {
+  initTmpUser()
 })
 </script>
 

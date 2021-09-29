@@ -1,39 +1,32 @@
-<script lang="ts">
-import { defineComponent, computed, reactive } from 'vue'
+<script lang="ts" setup>
+import { computed, reactive } from 'vue'
 import { useStore } from '@/store'
 
-export default defineComponent({
-  name: 'AccountPage',
-  setup () {
-    const store = useStore()
+const store = useStore()
 
-    const resetPassword = reactive({
-      currentPassword: '',
-      newPassword: '',
-      newPassword2: '',
-      show: false
-    })
-
-    const me = computed(() => store.state.security.me)
-    const securityRequests = computed(() => store.state.security.actionRequest)
-
-    async function submitResetPassword () {
-      await store.dispatch('security/resetPassword', {
-        currentPassword: resetPassword.currentPassword,
-        newPassword: resetPassword.newPassword,
-        newPassword2: resetPassword.newPassword2
-      })
-      resetPassword.currentPassword = ''
-      resetPassword.newPassword = ''
-      resetPassword.newPassword2 = ''
-      if (!securityRequests.value.resetPassword.isError) {
-        resetPassword.show = false
-      }
-    }
-
-    return { resetPassword, me, securityRequests, submitResetPassword }
-  }
+const resetPassword = reactive({
+  currentPassword: '',
+  newPassword: '',
+  newPassword2: '',
+  show: false
 })
+
+const me = computed(() => store.state.security.me)
+const securityRequests = computed(() => store.state.security.actionRequest)
+
+async function submitResetPassword () {
+  await store.dispatch('security/resetPassword', {
+    currentPassword: resetPassword.currentPassword,
+    newPassword: resetPassword.newPassword,
+    newPassword2: resetPassword.newPassword2
+  })
+  resetPassword.currentPassword = ''
+  resetPassword.newPassword = ''
+  resetPassword.newPassword2 = ''
+  if (!securityRequests.value.resetPassword.isError) {
+    resetPassword.show = false
+  }
+}
 </script>
 
 <template>
