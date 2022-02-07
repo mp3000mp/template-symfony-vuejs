@@ -69,10 +69,12 @@ class UserController extends AbstractController
      */
     public function update(Request $request, User $user, MailerService $mailer): Response
     {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
         $wasEnabled = $user->getIsEnabled();
         $user = $this->requestHelper->handleRequest($request->getContent(), 'user_all', User::class, $user);
 
-        if (!$user->getIsEnabled() && $user->getId() === $this->getUser()->getId()) {
+        if (!$user->getIsEnabled() && $user->getId() === $currentUser->getId()) {
             return $this->json([
                 'message' => 'You cannot disable yourself.',
             ], 400);
@@ -132,12 +134,15 @@ class UserController extends AbstractController
      */
     public function disable(User $user): Response
     {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+
         if (!$user->getIsEnabled()) {
             return $this->json([
                 'message' => 'This user is already disabled.',
             ], 400);
         }
-        if ($user->getId() === $this->getUser()->getId()) {
+        if ($user->getId() === $currentUser->getId()) {
             return $this->json([
                 'message' => 'You cannot disable yourself.',
             ], 400);

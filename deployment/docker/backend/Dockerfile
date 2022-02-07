@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:8.1-apache
 
 # install utilities
 RUN apt-get update \
@@ -13,10 +13,10 @@ RUN curl -sSk https://getcomposer.org/installer | php -- --install-dir=/usr/loca
 
 # install ext
 RUN docker-php-ext-install pdo_mysql intl \
-    && pecl install xdebug-3.0.3 \
+    && pecl install xdebug-3.1.3 \
     && docker-php-ext-enable xdebug \
-    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.remote_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 # todo: attention pas de xdebug en prod
 

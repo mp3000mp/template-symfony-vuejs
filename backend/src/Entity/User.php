@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(fields="email", message="This email is not available")
  * @UniqueEntity(fields="username", message="This username is not available")
  */
-class User implements PasswordAuthenticatedUserInterface, UserInterface, \Serializable
+class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     /**
      * @ORM\Id()
@@ -119,12 +119,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface, \Serial
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function serialize(): string
+    public function __serialize(): array
     {
-        return serialize([
+        return [
             $this->id,
             $this->username,
             $this->email,
@@ -132,24 +129,20 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface, \Serial
             $this->isEnabled,
             // see section on salt below
             // $this->salt,
-        ]);
+        ];
     }
 
-    /**
-     * @param string $serialized
-     *                           {@inheritdoc}
-     */
-    public function unserialize($serialized): array
+    public function __unserialize(array $serialized): void
     {
-        return list($this->id, $this->username, $this->email, $this->password, $this->isEnabled,
+        list($this->id, $this->username, $this->email, $this->password, $this->isEnabled,
             // $this->salt
-            ) = unserialize($serialized, ['allowed_classes' => false]);
+            ) = $serialized;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getSalt()
+    public function getSalt(): ?string
     {
         // you *may* need a real salt depending on your encoder
         // see section on salt below

@@ -10,12 +10,11 @@ use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture implements FixtureGroupInterface, ContainerAwareInterface
 {
-    private UserPasswordEncoderInterface $encoder;
-
+    private ?UserPasswordHasherInterface $hasher;
     private ?ContainerInterface $container;
 
     public function setContainer(ContainerInterface $container = null): void
@@ -30,17 +29,15 @@ class UserFixtures extends Fixture implements FixtureGroupInterface, ContainerAw
 
     public function load(ObjectManager $manager): void
     {
-        // todo
-        // $this->hasher = $this->container->get('security.user_password_hasher');
-        $this->encoder = $this->container->get('security.password_encoder');
+        $this->hasher = $this->container->get('security.user_password_hasher');
         $password = 'Test2000!';
 
         // user
         $user = new User();
-        $encodedPassword = $this->encoder->encodePassword($user, $password);
+        $hashedPassword = $this->hasher->hashPassword($user, $password);
         $user->setEmail('user@mp3000.fr');
         $user->setUsername('user');
-        $user->setPassword($encodedPassword);
+        $user->setPassword($hashedPassword);
         $user->setPasswordUpdatedAt(new \DateTime());
         $user->setRoles(['ROLE_USER']);
         $user->setIsEnabled(true);
@@ -50,10 +47,10 @@ class UserFixtures extends Fixture implements FixtureGroupInterface, ContainerAw
 
         // admin
         $user = new User();
-        $encodedPassword = $this->encoder->encodePassword($user, $password);
+        $hashedPassword = $this->hasher->hashPassword($user, $password);
         $user->setEmail('admin@mp3000.fr');
         $user->setUsername('admin');
-        $user->setPassword($encodedPassword);
+        $user->setPassword($hashedPassword);
         $user->setPasswordUpdatedAt(new \DateTime());
         $user->setRoles(['ROLE_ADMIN']);
         $user->setIsEnabled(true);
@@ -63,10 +60,10 @@ class UserFixtures extends Fixture implements FixtureGroupInterface, ContainerAw
 
         // disabled
         $user = new User();
-        $encodedPassword = $this->encoder->encodePassword($user, $password);
+        $hashedPassword = $this->hasher->hashPassword($user, $password);
         $user->setEmail('disabled@mp3000.fr');
         $user->setUsername('disabled');
-        $user->setPassword($encodedPassword);
+        $user->setPassword($hashedPassword);
         $user->setPasswordUpdatedAt(new \DateTime());
         $user->setRoles(['ROLE_USER']);
         $user->setIsEnabled(false);

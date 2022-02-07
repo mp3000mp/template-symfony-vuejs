@@ -23,13 +23,13 @@ class CreateUserCommandTest extends AbstractCommandTest
         ]);
 
         $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('SUCCESS', $output);
+        self::assertStringContainsString('SUCCESS', $output);
 
         preg_match('/\(id=(\d+)\)/', $output, $arr);
         $id = (int) $arr[1];
 
         $user = $this->em->getRepository(User::class)->find($id);
-        $this->assertEquals($expectedRoles, $user->getRoles());
+        self::assertEquals($expectedRoles, $user->getRoles());
     }
 
     public function providerExecute(): array

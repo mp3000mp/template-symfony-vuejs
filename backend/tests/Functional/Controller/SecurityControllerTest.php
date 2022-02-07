@@ -13,7 +13,7 @@ class SecurityControllerTest extends AbstractControllerTest
             'password' => 'Test2000!',
         ]));
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testLoginBadCredentials(): void
@@ -23,9 +23,9 @@ class SecurityControllerTest extends AbstractControllerTest
             'password' => 'badPassword',
         ]));
 
-        $this->assertEquals(401, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(401, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertEquals('Invalid credentials.', $jsonResponse['message']);
+        self::assertEquals('Invalid credentials.', $jsonResponse['message']);
     }
 
     public function testLoginDisabled(): void
@@ -35,9 +35,9 @@ class SecurityControllerTest extends AbstractControllerTest
             'password' => 'Test2000!',
         ]));
 
-        $this->assertEquals(401, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(401, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertEquals('Your accound is disabled.', $jsonResponse['message']);
+        self::assertEquals('Your accound is disabled.', $jsonResponse['message']);
     }
 
     public function testRefreshTokenOk(): void
@@ -55,10 +55,10 @@ class SecurityControllerTest extends AbstractControllerTest
             'refreshToken' => $goodToken,
         ]));
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertArrayHasKey('token', $jsonResponse);
-        $this->assertArrayHasKey('refreshToken', $jsonResponse);
+        self::assertArrayHasKey('token', $jsonResponse);
+        self::assertArrayHasKey('refreshToken', $jsonResponse);
     }
 
     public function testRefreshTokenBadToken(): void
@@ -67,8 +67,8 @@ class SecurityControllerTest extends AbstractControllerTest
             'refreshToken' => 'badToken',
         ]));
 
-        $this->assertEquals(401, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(401, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertEquals('An authentication exception occurred.', $jsonResponse['message']);
+        self::assertEquals('JWT Refresh Token Not Found', $jsonResponse['message']);
     }
 }

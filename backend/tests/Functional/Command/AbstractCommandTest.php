@@ -30,7 +30,7 @@ abstract class AbstractCommandTest extends KernelTestCase
         // reset database
         $purger = new ORMPurger($this->em, []);
         $purger->setPurgeMode(ORMPurger::PURGE_MODE_DELETE);
-        $loader = new ContainerAwareLoader(self::$kernel->getContainer());
+        $loader = new ContainerAwareLoader(self::getContainer());
         $loader->addFixture(new AppTestFixtures());
         $executor = new ORMExecutor($this->em, $purger);
         $executor->execute($loader->getFixtures());

@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class PasswordController extends AbstractController
 {
@@ -22,10 +23,9 @@ class PasswordController extends AbstractController
     public function forgottenPasswordSend(Request $request, MailerService $mailer, LoggerInterface $logger): Response
     {
         $json = json_decode($request->getContent(), true);
-        $em = $this->getDoctrine()->getManager();
 
         // get users
-        $user = $em->getRepository(User::class)
+        $user = $this->em->getRepository(User::class)
             ->findOneBy(['email' => $json['email'] ?? null])
         ;
 
@@ -36,8 +36,8 @@ class PasswordController extends AbstractController
             $user->generateResetPasswordToken();
 
             // persist
-            $em->persist($user);
-            $em->flush();
+            $this->em->persist($user);
+            $this->em->flush();
 
             // send mail
             $mailer->sendEmail('forgotten_password', [
@@ -58,10 +58,8 @@ class PasswordController extends AbstractController
      */
     public function forgottenPasswordCheck(string $token): Response
     {
-        $em = $this->getDoctrine()->getManager();
-
         // get users
-        $user = $em->getRepository(User::class)
+        $user = $this->em->getRepository(User::class)
             ->findOneBy(['reset_password_token' => $token])
         ;
 
@@ -85,10 +83,9 @@ class PasswordController extends AbstractController
     public function forgottenPasswordReset(Request $request, string $token, UserPasswordHasherInterface $hasher): Response
     {
         $json = json_decode($request->getContent(), true);
-        $em = $this->getDoctrine()->getManager();
 
         // get users
-        $user = $em->getRepository(User::class)
+        $user = $this->em->getRepository(User::class)
             ->findOneBy(['reset_password_token' => $token])
         ;
 
@@ -121,9 +118,8 @@ class PasswordController extends AbstractController
         $user->setPassword($hasher->hashPassword($user, $json['password']));
 
         // persist
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
+        $this->em->persist($user);
+        $this->em->flush();
 
         return $this->json([
             'message' => 'The password has been reset successfully.',
@@ -137,11 +133,10 @@ class PasswordController extends AbstractController
      */
     public function resetPassword(Request $request, UserPasswordHasherInterface $hasher): Response
     {
-        $json = json_decode($request->getContent(), true);
-        $em = $this->getDoctrine()->getManager();
-
-        // get users
+        /** @var User $user */
         $user = $this->getUser();
+
+        $json = json_decode($request->getContent(), true);
 
         // check currentPassword
         if (!$hasher->isPasswordValid($user, $json['currentPassword'])) {
@@ -173,9 +168,8 @@ class PasswordController extends AbstractController
         $user->setPassword($hasher->hashPassword($user, $json['newPassword']));
 
         // persist
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
+        $this->em->persist($user);
+        $this->em->flush();
 
         return $this->json([
             'message' => 'The password has been reset successfully',

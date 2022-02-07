@@ -3,5 +3,3 @@ gesdinet_jwt_refresh_token:
   single_use: true
   token_parameter_name: refreshToken
   ttl: 60000
-  user_identity_field: username
-  user_provider: security.user.provider.concrete.db_provider

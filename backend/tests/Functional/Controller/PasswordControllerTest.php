@@ -20,22 +20,22 @@ class PasswordControllerTest extends AbstractControllerTest
     public function testForgottenPasswordSendOk(): void
     {
         $this->client->request('POST', '/api/password/forgotten', [], [], [], json_encode(['email' => 'user@mp3000.fr']));
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEmailCount(1);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEmailCount(1);
     }
 
     public function testForgottenPasswordSendUnknownEmail(): void
     {
         $this->client->request('POST', '/api/password/forgotten', [], [], [], json_encode(['email' => 'unknown@mp3000.fr']));
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEmailCount(0);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEmailCount(0);
     }
 
     public function testForgottenPasswordSendDisabled(): void
     {
         $this->client->request('POST', '/api/password/forgotten', [], [], [], json_encode(['email' => 'disabled@mp3000.fr']));
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEmailCount(0);
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEmailCount(0);
     }
 
     public function testForgottenPasswordCheck200(): void
@@ -44,11 +44,11 @@ class PasswordControllerTest extends AbstractControllerTest
 
         // forgotten
         $this->client->request('GET', "/api/password/forgotten/$goodToken");
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         // init
         $this->client->request('GET', "/api/password/init/$goodToken");
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testForgottenPasswordCheck404(): void
@@ -57,17 +57,17 @@ class PasswordControllerTest extends AbstractControllerTest
 
         // forgotten
         $this->client->request('GET', '/api/password/forgotten/badToken');
-        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(404, $this->client->getResponse()->getStatusCode());
 
         $this->client->request('GET', "/api/password/forgotten/$goodToken");
-        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(404, $this->client->getResponse()->getStatusCode());
 
         // init
         $this->client->request('GET', '/api/password/init/badToken');
-        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(404, $this->client->getResponse()->getStatusCode());
 
         $this->client->request('GET', "/api/password/init/$goodToken");
-        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(404, $this->client->getResponse()->getStatusCode());
     }
 
     public function testForgottenPasswordReset200(): void
@@ -77,27 +77,27 @@ class PasswordControllerTest extends AbstractControllerTest
             'password' => 'Test3000!',
             'passwordConfirm' => 'Test3000!',
         ]));
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $goodToken = $this->generateForgottenPasswordToken('user');
         $this->client->request('POST', "/api/password/init/$goodToken", [], [], [], json_encode([
             'password' => 'Test3000!',
             'passwordConfirm' => 'Test3000!',
         ]));
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testForgottenPasswordCheckExpiredToken(): void
     {
         $this->client->request('GET', '/api/password/forgotten/badToken');
-        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(404, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertEquals('This token has expired.', $jsonResponse['message']);
+        self::assertEquals('This token has expired.', $jsonResponse['message']);
 
         $this->client->request('GET', '/api/password/init/badToken');
-        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(404, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertEquals('This token has expired.', $jsonResponse['message']);
+        self::assertEquals('This token has expired.', $jsonResponse['message']);
     }
 
     public function testForgottenPasswordResetBadToken(): void
@@ -108,17 +108,17 @@ class PasswordControllerTest extends AbstractControllerTest
             'password' => 'Test3000!',
             'passwordConfirm' => 'Test3000!',
         ]));
-        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(404, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertEquals('This token has expired.', $jsonResponse['message']);
+        self::assertEquals('This token has expired.', $jsonResponse['message']);
 
         $this->client->request('POST', '/api/password/init/badToken', [], [], [], json_encode([
             'password' => 'Test3000!',
             'passwordConfirm' => 'Test3000!',
         ]));
-        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(404, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertEquals('This token has expired.', $jsonResponse['message']);
+        self::assertEquals('This token has expired.', $jsonResponse['message']);
     }
 
     public function testForgottenPasswordResetBadConfirm(): void
@@ -129,17 +129,17 @@ class PasswordControllerTest extends AbstractControllerTest
             'password' => 'Test3000!',
             'passwordConfirm' => 'Test4000!',
         ]));
-        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertEquals('Password confirmation is different.', $jsonResponse['message']);
+        self::assertEquals('Password confirmation is different.', $jsonResponse['message']);
 
         $this->client->request('POST', "/api/password/init/$goodToken", [], [], [], json_encode([
             'password' => 'Test3000!',
             'passwordConfirm' => 'Test4000!',
         ]));
-        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertEquals('Password confirmation is different.', $jsonResponse['message']);
+        self::assertEquals('Password confirmation is different.', $jsonResponse['message']);
     }
 
     public function testForgottenPasswordResetInvalid(): void
@@ -150,17 +150,17 @@ class PasswordControllerTest extends AbstractControllerTest
             'password' => '1234',
             'passwordConfirm' => '1234',
         ]));
-        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertEquals('This password is not strong enough.', $jsonResponse['message']);
+        self::assertEquals('This password is not strong enough.', $jsonResponse['message']);
 
         $this->client->request('POST', "/api/password/init/$goodToken", [], [], [], json_encode([
             'password' => '1234',
             'passwordConfirm' => '1234',
         ]));
-        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertEquals('This password is not strong enough.', $jsonResponse['message']);
+        self::assertEquals('This password is not strong enough.', $jsonResponse['message']);
     }
 
     public function testResetPassword200(): void
@@ -173,7 +173,7 @@ class PasswordControllerTest extends AbstractControllerTest
             'newPassword2' => 'Test3000!',
         ]));
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testResetPasswordBadConfirm(): void
@@ -186,9 +186,9 @@ class PasswordControllerTest extends AbstractControllerTest
             'newPassword2' => 'badConfirmation',
         ]));
 
-        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertEquals('Password confirmation is different.', $jsonResponse['message']);
+        self::assertEquals('Password confirmation is different.', $jsonResponse['message']);
     }
 
     public function testResetPasswordBadCurrent(): void
@@ -201,9 +201,9 @@ class PasswordControllerTest extends AbstractControllerTest
             'newPassword2' => 'Test3000!',
         ]));
 
-        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertEquals('Authentication failed.', $jsonResponse['message']);
+        self::assertEquals('Authentication failed.', $jsonResponse['message']);
     }
 
     public function testResetPasswordInvalid(): void
@@ -216,8 +216,8 @@ class PasswordControllerTest extends AbstractControllerTest
             'newPassword2' => '1234',
         ]));
 
-        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(400, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
-        $this->assertEquals('This password is not strong enough.', $jsonResponse['message']);
+        self::assertEquals('This password is not strong enough.', $jsonResponse['message']);
     }
 }

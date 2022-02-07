@@ -8,10 +8,10 @@ class AppControllerTest extends AbstractControllerTest
     {
         $this->client->request('GET', '/api/info');
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
-        $this->assertArrayHasKey('version', $jsonResponse);
+        self::assertArrayHasKey('version', $jsonResponse);
     }
 
     public function testMeOk(): void
@@ -20,10 +20,10 @@ class AppControllerTest extends AbstractControllerTest
 
         $this->client->request('GET', '/api/me');
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         $jsonResponse = $this->getResponseJson($this->client->getResponse());
 
-        $this->assertEquals([
+        self::assertEquals([
             'username' => 'user',
             'roles' => ['ROLE_USER'],
         ], $jsonResponse);
