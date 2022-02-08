@@ -4,6 +4,7 @@ namespace App\Tests\Unit\Service;
 
 use App\Service\Mailer\MailerService;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophet;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Twig\Environment;
@@ -41,10 +42,11 @@ class MailerServiceTest extends TestCase
 
     public function testSendEmailMailerException(): void
     {
+        $prophet = new Prophet();
         $mailerMock = $this->createMock(MailerInterface::class);
         $mailerMock->expects(self::once())
             ->method('send')
-            ->will($this->throwException($this->prophesize(TransportExceptionInterface::class)->reveal()));
+            ->will($this->throwException($prophet->prophesize(TransportExceptionInterface::class)->reveal()));
 
         $rendererMock = $this->createMock(Environment::class);
 

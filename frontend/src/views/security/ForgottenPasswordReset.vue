@@ -3,9 +3,9 @@ import { onMounted, ref, computed, defineProps } from 'vue'
 import { useStore } from '@/store'
 import { useRoute, useRouter } from 'vue-router'
 
-const props = defineProps({
-  init: { type: Boolean, required: true }
-})
+const props = defineProps<{
+  init: boolean;
+}>()
 const store = useStore()
 const router = useRouter()
 const route = useRoute()

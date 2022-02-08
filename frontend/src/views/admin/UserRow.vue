@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, defineProps } from 'vue'
 import { useStore } from '@/store'
+import { User } from '@/store/modules/users/types'
 
-const props = defineProps({
-  user: { type: Object, required: true }
-})
+const props = defineProps<{
+  user: User;
+}>()
 const store = useStore()
 
 const isUpdating = ref(false)
