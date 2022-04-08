@@ -51,3 +51,5 @@
 # e2e test
 /frontend/tests/e2e/videos/
 /frontend/tests/e2e/screenshots/
+
+/todo.txt

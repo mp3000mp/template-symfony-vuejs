@@ -1,5 +1,5 @@
 import { Me, SecurityState } from './types'
-import { StoreRequest } from '@/store/types'
+import { StoreRequest } from '@/stores/types'
 
 function initMe (): Me {
   const json = localStorage.getItem('me')

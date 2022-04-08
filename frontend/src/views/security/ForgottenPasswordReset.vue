@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { onMounted, ref, computed, defineProps } from 'vue'
-import { useStore } from '@/store'
+import { onMounted, ref, computed } from 'vue'
+import { useSecurityStore } from '@/stores/security'
 import { useRoute, useRouter } from 'vue-router'
 
 const props = defineProps<{
   init: boolean;
 }>()
-const store = useStore()
+const securityStore = useSecurityStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -14,7 +14,7 @@ const displayForm = ref(true)
 const password = ref('')
 const passwordConfirm = ref('')
 
-const securityRequests = computed(() => store.state.security.actionRequest)
+const securityRequests = computed(() => securityStore.actionRequest)
 const checkTokenIsError = computed(() => {
   return props.init ? securityRequests.value.initPasswordCheckToken.status !== 200 : securityRequests.value.forgottenPasswordCheckToken.status !== 200
 })
@@ -29,16 +29,26 @@ const resetMessage = computed(() => {
 })
 
 function checkToken () {
-  const action = props.init ? 'security/initPasswordCheckToken' : 'security/forgottenPasswordCheckToken'
-  store.dispatch(action, route.params.token)
+  if (props.init) {
+    securityStore.initPasswordCheckToken(route.params.token)
+  } else {
+    securityStore.forgottenPasswordCheckToken(route.params.token)
+  }
 }
 async function reset () {
-  const action = props.init ? 'security/initPasswordReset' : 'security/forgottenPasswordReset'
-  await store.dispatch(action, {
-    token: route.params.token,
-    password: password.value,
-    passwordConfirm: passwordConfirm.value
-  })
+  if (props.init) {
+    await securityStore.initPasswordReset({
+      token: route.params.token,
+      password: password.value,
+      passwordConfirm: passwordConfirm.value
+    })
+  } else {
+    await securityStore.forgottenPasswordReset({
+      token: route.params.token,
+      password: password.value,
+      passwordConfirm: passwordConfirm.value
+    })
+  }
   password.value = ''
   passwordConfirm.value = ''
   displayForm.value = false

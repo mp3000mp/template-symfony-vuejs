@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, reactive } from 'vue'
-import { useStore } from '@/store'
+import { useSecurityStore } from '@/stores/security'
 
-const store = useStore()
+const securityStore = useSecurityStore()
 
 const resetPassword = reactive({
   currentPassword: '',
@@ -11,11 +11,11 @@ const resetPassword = reactive({
   show: false
 })
 
-const me = computed(() => store.state.security.me)
-const securityRequests = computed(() => store.state.security.actionRequest)
+const me = computed(() => securityStore.me)
+const securityRequests = computed(() => securityStore.actionRequest)
 
 async function submitResetPassword () {
-  await store.dispatch('security/resetPassword', {
+  await securityStore.resetPassword({
     currentPassword: resetPassword.currentPassword,
     newPassword: resetPassword.newPassword,
     newPassword2: resetPassword.newPassword2

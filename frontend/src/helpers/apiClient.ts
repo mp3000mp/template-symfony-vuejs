@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
-import { StoreRequest } from '@/store/types'
-import store from '@/store'
+import { StoreRequest } from '@/stores/types'
+import { useSecurityStore } from '@/stores/security'
 
 const debugMode = false
 function debug (msg: string) {
@@ -58,7 +58,8 @@ export class ApiClient {
   }
 
   private static getJwtToken (): string {
-    return `Bearer ${store.getters['security/getToken']}`
+    const securityStore = useSecurityStore()
+    return `Bearer ${securityStore.apiToken}`
   }
 
   /**
@@ -92,7 +93,8 @@ export class ApiClient {
         if (err.response.status === 401 && err.response.data.message === 'Expired JWT Token' && this.nbRefreshTokenRetry === 0) {
           this.nbRefreshTokenRetry++
           try {
-            await store.dispatch('security/refreshLogin')
+            const securityStore = useSecurityStore()
+            await securityStore.refreshLogin()
             config.headers.Authorization = ApiClient.getJwtToken()
             const response = await this.axios.request(config)
 

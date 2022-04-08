@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { ref, reactive, onMounted, defineProps } from 'vue'
-import { useStore } from '@/store'
-import { User } from '@/store/modules/users/types'
+import { ref, reactive, onMounted } from 'vue'
+import { useUsersStore } from '@/stores/users'
+import { User } from '@/stores/users/types'
 
 const props = defineProps<{
   user: User;
 }>()
-const store = useStore()
+const usersStore = useUsersStore()
 
 const isUpdating = ref(false)
 const profile = ref('user')
@@ -35,18 +35,18 @@ function closeForm () {
 }
 function deleteUser () {
   if (confirm('Do you confirm you want to delete this user ?')) {
-    store.dispatch('users/deleteUser', props.user.id)
+    usersStore.deleteUser(props.user.id)
   }
 }
 async function disableUser () {
   try {
-    await store.dispatch('users/disableUser', props.user.id)
+    await usersStore.disableUser(props.user.id)
   } catch (err) {
     alert(err)
   }
 }
 function enableUser () {
-  store.dispatch('users/enableUser', props.user.id)
+  usersStore.enableUser(props.user.id)
 }
 function initForm () {
   initTmpUser()
@@ -55,7 +55,7 @@ function initForm () {
 async function updateUser () {
   tmpUser.roles = getRoles()
   try {
-    await store.dispatch('users/updateUser', tmpUser)
+    await usersStore.updateUser(tmpUser)
     closeForm()
   } catch (err) {
     alert(err)

@@ -1,20 +1,22 @@
 import axios from 'axios'
 import { ApiClient } from '@/helpers/apiClient'
-import { StoreRequest } from '@/store/types'
-import store from '@/store'
+import { StoreRequest } from '@/stores/types'
+import { createApp } from 'vue'
+import { createTestingPinia } from '@pinia/testing'
+import { useSecurityStore } from '@/stores/security'
+import { setActivePinia } from 'pinia'
 
 // todo test état StoreRequest après les requêtes
 
 const onErrorMock = jest.fn()
 let apiClient = new ApiClient('', onErrorMock)
 
-const mockedStore = store as jest.Mocked<typeof store>
-jest.mock('@/store', () => ({
-  getters: {
-    'security/getToken': 'apiToken'
-  },
-  dispatch: jest.fn()
-}))
+// mock security store
+const pinia = createTestingPinia()
+createApp({}).use(pinia)
+setActivePinia(pinia)
+const mockedStore = useSecurityStore()
+mockedStore.apiToken = 'apiToken'
 
 // mock axios
 const mockedAxios = axios as jest.Mocked<typeof axios>
@@ -76,34 +78,29 @@ describe('apiRegistry.ts', () => {
         return Promise.resolve(responseData[i - 1])
       }
     })
-    mockedStore.dispatch.mockImplementationOnce(jest.fn())
 
     apiClient = new ApiClient('http://mp3000.fr', onErrorMock)
     const storeRequest = new StoreRequest('GET', '/api/test-refresh-200', true)
     const result = await apiClient.httpReq(storeRequest)
 
     expect(axios.request).toHaveBeenCalledTimes(2)
-    expect(mockedStore.dispatch).toHaveBeenCalledTimes(1)
+    expect(mockedStore.refreshLogin).toHaveBeenCalledTimes(1)
     expect(result).toStrictEqual({ data: { message: 'ok' }, status: 200 })
   })
 
   it('should try refresh token once', async () => {
     const responseData = { data: { message: 'Expired JWT Token' }, status: 401 }
 
-    mockedAxios.request.mockImplementationOnce(() => {
+    mockedAxios.request.mockImplementation(() => {
       // eslint-disable-next-line prefer-promise-reject-errors
       return Promise.reject({ response: responseData })
     })
-    mockedStore.dispatch.mockImplementationOnce(jest.fn(() => {
-      // eslint-disable-next-line prefer-promise-reject-errors
-      return Promise.reject({ response: responseData })
-    }))
 
     apiClient = new ApiClient('http://mp3000.fr', onErrorMock)
     const storeRequest = new StoreRequest('GET', '/api/test-refresh-once', true)
     await expect(apiClient.httpReq(storeRequest)).rejects.toHaveProperty('response', { data: { message: 'Expired JWT Token' }, status: 401 })
 
-    expect(axios.request).toHaveBeenCalledTimes(1)
-    expect(mockedStore.dispatch).toHaveBeenCalledTimes(1)
+    expect(axios.request).toHaveBeenCalledTimes(2)
+    expect(mockedStore.refreshLogin).toHaveBeenCalledTimes(1)
   })
 })

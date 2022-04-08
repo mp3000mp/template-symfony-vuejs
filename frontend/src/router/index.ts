@@ -4,7 +4,7 @@ import AdminUsersPage from '@/views/admin/UsersPage.vue'
 import PasswordReset from '@/views/security/ForgottenPasswordReset.vue'
 import AccountPage from '@/views/account/AccountPage.vue'
 import LoginPage from '@/views/security/LoginPage.vue'
-import { state as securityState } from '@/store/modules/security/state'
+import { state as securityState } from '@/stores/security/state'
 
 function checkPermission (role: string) {
   return securityState.me.roles.includes(role)

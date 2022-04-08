@@ -1,4 +1,4 @@
-import { AbstractState } from '@/store/types'
+import { AbstractState } from '@/stores/types'
 
 export class Me {
   roles: string[] = ['ROLE_ANONYMOUS'];

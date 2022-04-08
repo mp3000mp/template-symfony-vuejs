@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { menuItems, MenuItem } from './data/menuItems'
 import { computed } from 'vue'
-import { useStore } from '@/store'
+import { useSecurityStore } from '@/stores/security'
 import { useRouter } from 'vue-router'
 
-const store = useStore()
+const securityStore = useSecurityStore()
 const router = useRouter()
 
-const isAuth = computed(() => store.getters['security/getIsAuth'])
-const roles = computed(() => store.getters['security/getRoles'])
+const isAuth = computed(() => securityStore.getIsAuth)
+const roles = computed(() => securityStore.getRoles)
 const allowedMenuItems = computed(() => {
   return menuItems.filter((item: MenuItem) => {
     return roles.value.includes(item.role)
@@ -16,7 +16,7 @@ const allowedMenuItems = computed(() => {
 })
 
 function logout () {
-  store.dispatch('security/logout')
+  securityStore.logout()
   router.push({ path: '/login' })
 }
 </script>

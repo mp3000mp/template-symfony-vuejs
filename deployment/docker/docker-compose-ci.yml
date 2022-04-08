@@ -21,6 +21,9 @@ services:
       - ../../backend:/var/www/html
       - ./backend/sites-enabled:/etc/apache2/sites-enabled
       - ./backend/conf.d/php.ini:/usr/local/etc/php/conf.d/php.ini
+    depends_on:
+      - mariadb_test
+      - maildev
 
   maildev:
     image: maildev/maildev
