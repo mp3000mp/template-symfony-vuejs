@@ -1,5 +1,5 @@
 import { AppState } from './types'
-import { StoreRequest } from '@/store/types'
+import { StoreRequest } from '@/stores/types'
 
 const state = new AppState()
 state.actionRequest = {

@@ -6,13 +6,12 @@ import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import './registerServiceWorker'
 import router from './router'
-import store from './store'
+import { createPinia } from 'pinia'
 import variables from '../config/variables.json'
-
 import apiRegistry from './helpers/apiRegistry'
+import { AxiosResponse } from 'axios'
 
 import './assets/css/app.scss'
-import { AxiosResponse } from 'axios'
 // import { Tooltip, Toast, Popover } from 'bootstrap'
 
 apiRegistry.set('default', variables.URL, (error: AxiosResponse) => {
@@ -26,6 +25,6 @@ library.add(faHandSparkles, faMagic, faUserCheck, faUserTimes, faTrashAlt, faEdi
 
 createApp(App)
   .component('font-aw', FontAwesomeIcon)
-  .use(store)
+  .use(createPinia())
   .use(router)
   .mount('#app')

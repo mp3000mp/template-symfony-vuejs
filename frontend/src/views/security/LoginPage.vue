@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch } from 'vue'
-import { useStore } from '@/store'
+import { useSecurityStore } from '@/stores/security'
 import { useRouter } from 'vue-router'
 import { AxiosResponse } from 'axios'
 
-const store = useStore()
+const securityStore = useSecurityStore()
 const router = useRouter()
 
 const forgottenPasswordSend = reactive({
@@ -16,17 +16,17 @@ const forgottenPasswordSend = reactive({
 const password = ref('')
 const username = ref('')
 
-const me = computed(() => store.state.security.me)
-const securityRequests = computed(() => store.state.security.actionRequest)
+const me = computed(() => securityStore.me)
+const securityRequests = computed(() => securityStore.actionRequest)
 
 async function login () {
-  await store.dispatch('security/login', {
+  await securityStore.login({
     username: username.value,
     password: password.value
   })
 }
 function sendForgottenPasswordEmail () {
-  store.dispatch('security/forgottenPasswordSend', forgottenPasswordSend.email)
+  securityStore.forgottenPasswordSend(forgottenPasswordSend.email)
     .then((res: AxiosResponse) => {
       forgottenPasswordSend.status = true
       forgottenPasswordSend.message = res.data.message

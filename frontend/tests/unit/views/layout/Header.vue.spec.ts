@@ -1,33 +1,24 @@
 import { shallowMount } from '@vue/test-utils'
 import Header from '@/views/layout/Header.vue'
+import { createTestingPinia } from '@pinia/testing'
+import { useSecurityStore } from '@/stores/security'
 
 jest.mock('vue-router', () => ({
   useRouter: jest.fn()
 }))
+const plugins = [createTestingPinia()]
 const stubs = {
   RouterLink: true
 }
-
-let mockRoles: string[] = []
-jest.mock('@/store', () => {
-  return {
-    useStore: jest.fn(() => {
-      return {
-        getters: {
-          'security/getIsAuth': !mockRoles.includes('ROLE_ANONYMOUS'),
-          'security/getRoles': mockRoles
-        }
-      }
-    })
-  }
-})
+const mockStore = useSecurityStore()
 
 describe('header.vue', () => {
   it('role anonym', () => {
-    mockRoles = ['ROLE_ANONYMOUS']
+    mockStore.me.roles = ['ROLE_ANONYMOUS']
     const wrapper = shallowMount(Header, {
       global: {
-        stubs
+        stubs,
+        plugins
       }
     })
     const menuItems = wrapper.findAll('.nav-link')
@@ -35,10 +26,11 @@ describe('header.vue', () => {
   })
 
   it('role user', () => {
-    mockRoles = ['ROLE_USER']
+    mockStore.me.roles = ['ROLE_USER']
     const wrapper = shallowMount(Header, {
       global: {
-        stubs
+        stubs,
+        plugins
       }
     })
     const menuItems = wrapper.findAll('.nav-link')
@@ -46,10 +38,11 @@ describe('header.vue', () => {
   })
 
   it('role admin', () => {
-    mockRoles = ['ROLE_USER', 'ROLE_ADMIN']
+    mockStore.me.roles = ['ROLE_USER', 'ROLE_ADMIN']
     const wrapper = shallowMount(Header, {
       global: {
-        stubs
+        stubs,
+        plugins
       }
     })
     const menuItems = wrapper.findAll('.nav-link')

@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue'
 import LayoutHeader from '@/views/layout/Header.vue'
-import { useStore } from '@/store'
+import { useAppStore } from '@/stores/app'
 import variables from '../config/variables.json'
 
-const store = useStore()
+const appStore = useAppStore()
 
-const backVersion = computed(() => store.state.app.version)
+const backVersion = computed(() => appStore.version)
 const frontVersion = variables.APP_VERSION
 onMounted(() => {
-  store.dispatch('app/getInfo')
+  appStore.getInfo()
 })
 </script>
 

@@ -18,6 +18,9 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'prefer-template': 2
   },
+  globals: {
+    defineProps: true
+  },
   overrides: [
     {
       files: [

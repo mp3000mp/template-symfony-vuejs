@@ -2,9 +2,9 @@
 import { HTMLElementEvent } from '@/utils/types'
 import AdminUserRow from '@/views/admin/UserRow.vue'
 import { onMounted, computed, reactive, ref } from 'vue'
-import { useStore } from '@/store'
+import { useUsersStore } from '@/stores/users'
 
-const store = useStore()
+const usersStore = useUsersStore()
 
 const isFormOpened = ref(false)
 const emptyUser = {
@@ -15,8 +15,8 @@ const emptyUser = {
 }
 let tmpUser = reactive(Object.assign({}, emptyUser))
 
-const userRequests = computed(() => store.state.users.actionRequest)
-const users = computed(() => store.state.users.users)
+const userRequests = computed(() => usersStore.actionRequest)
+const users = computed(() => usersStore.users)
 
 const search = ref('')
 const visibleUsers = computed(() => {
@@ -29,7 +29,7 @@ function closeForm () {
 }
 async function addUser () {
   try {
-    await store.dispatch('users/addUser', tmpUser)
+    await usersStore.addUser(tmpUser)
     closeForm()
   } catch (err) {
     alert(err)
@@ -43,7 +43,7 @@ function initForm () {
   isFormOpened.value = true
 }
 function getAllUsers () {
-  store.dispatch('users/getAll')
+  usersStore.getAll()
 }
 function setRoles (event: HTMLElementEvent<HTMLSelectElement>) {
   if (event.target.value === 'admin') {

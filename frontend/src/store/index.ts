@@ -1,20 +1,13 @@
-import { createStore, Store } from 'vuex'
-import { RootState } from './types'
+import { defineStore } from 'pinia'
 
-import app from './modules/app/index'
-import security from './modules/security/index'
-import users from './modules/users/index'
-
-const store = createStore({
-  modules: {
-    app,
-    security,
-    users
+export const useCounterStore = defineStore('counter', {
+  state: () => ({ count: 0 }),
+  getters: {
+    double: state => state.count * 2
+  },
+  actions: {
+    increment () {
+      this.count++
+    }
   }
 })
-
-export function useStore (): Store<RootState> {
-  return store
-}
-
-export default store

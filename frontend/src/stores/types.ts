@@ -1,7 +1,3 @@
-import { AppState } from '@/store/modules/app/types'
-import { SecurityState } from '@/store/modules/security/types'
-import { UserState } from '@/store/modules/users/types'
-
 type Method = 'GET' | 'POST' | 'DELETE' | 'PUT' | 'PATCH'
 
 export class StoreRequest {
@@ -21,7 +17,7 @@ export class StoreRequest {
     this.url = url
   }
 
-  private reset () {
+  public reset () {
     this.status = 0
     this.message = ''
     this.loading = false
@@ -46,10 +42,4 @@ export abstract class AbstractState {
   actionRequest: {
     [key: string]: StoreRequest;
   } = {};
-}
-
-export interface RootState {
-  app: AppState;
-  security: SecurityState;
-  users: UserState;
 }
