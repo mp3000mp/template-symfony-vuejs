@@ -15,7 +15,7 @@ app_version: 1.0.0
 app_secret: secret
 jwt_passphrase: secret
 
-mailer_dsn: smtp://maildev:25?verify_peer=false
+mailer_dsn: smtp://maildev:1025?verify_peer=false
 mailer_sender: "mp3000 admin"
 mailer_from: no-reply@mp3000.fr
 mailer_bcc: admin@mp3000.fr

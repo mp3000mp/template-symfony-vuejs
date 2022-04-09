@@ -6,6 +6,6 @@ parameters:
   paths:
     - src
     - tests
-  excludes_analyse:
+  excludePaths:
     - src/Kernel.php
     - tests/bootstrap.php
